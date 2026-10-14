@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Sesión - Sistema</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            /* 
+              Aquí pones tu imagen de fondo de la pagina, sea jpg, png, svg u otro.
+              Ejemplo: background: url('tu-imagen-fondo.jpg') no-repeat center center fixed;
+            */
+            background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Contenedor central con efecto Glassmorphism (adaptado para PC y Celular) */
+        .login-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 35px 30px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            text-align: center;
+            color: #fff;
+        }
+
+        /* Estilo para el logo superior */
+        .logo-container {
+            margin-bottom: 25px;
+        }
+
+        .logo-container img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px;
+            margin-bottom: 8px;
+        }
+
+        .logo-container h2 {
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+        }
+
+        /* Campos de entrada */
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            outline: none;
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .input-group input:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .input-group svg {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            fill: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Botón de acción principal (Continuar / Validar) */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.92;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* Separador o diseño inferior de botones secundarios */
+        .bottom-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .btn-secondary img {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+        }
+
+        /* Ventana emergente (Modal) para "Contactar" */
+        #contactModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Fondo negro para el modal */
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            /* 
+              Aquí ruta para colocar de fondo la imagen que yo quiera nada mas.
+              Ejemplo: background: url('tu-imagen-modal.jpg') no-repeat center center;
+            */
+            background: #111; 
+            background-size: cover;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            position: relative;
+            color: #fff;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Contenedor Principal de Login -->
+    <div class="login-card">
+        
+        <div class="logo-container">
+            <!-- 
+              Aquí el logo de inicio de sesión sea .jpg, .jpeg, .svg u otro.
+              Ejemplo: <img src="logo.png" alt="Logo">
+            -->
+            <img src="https://cdn-icons-png.flaticon.com/512/6681/6681204.png" alt="Logo">
+            <h2>Sistema de Acceso</h2>
+        </div>
+        
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <!-- Paso 1: Únicamente Campo de Usuario / Correo -->
+            <div class="input-group" id="emailGroup">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                <input type="text" id="userInput" placeholder="Ingrese su usuario" required>
+            </div>
+
+            <!-- Botón de Validar/Continuar -->
+            <button type="submit" class="btn-submit" id="btnAction">
+                <span>Continuar</span>
+                <svg style="width:18px;height:18px;fill:#fff;" viewBox="0 0 24 24"><path d="M5 13h11.86l-5.6 5.6 1.42 1.42L21.42 12l-8.8-8-1.42 1.42L16.86 11H5z"/></svg>
+            </button>
+        </form>
+
+        <!-- Botones inferiores secundarios -->
+        <div class="bottom-actions">
+            <!-- Botón Contactar -->
+            <button class="btn-secondary" onclick="abrirModalContactar()">
+                <!-- Aquí ruta de icono sea jpg, gif o svg u otro -->
+                <img src="https://cdn-icons-png.flaticon.com/512/5968/5968841.png" alt="Icono Contactar">
+                <span>Contactar</span>
+            </button>
+
+            <!-- Botón Salir -->
+            <button class="btn-secondary" onclick="cerrarPestaña()">
+                <!-- Aquí ruta de icono sea jpg, gif o svg u otro -->
+                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828427.png" alt="Icono Salir">
+                <span>Salir</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Ventana flotante (Modal) para Contactar -->
+    <div id="contactModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="cerrarModalContactar()">&times;</button>
+            <h3 style="margin-bottom: 15px;">Contacto</h3>
+            <p style="font-size: 14px; color: #ccc;">Ventana emergente de soporte o contacto.</p>
+        </div>
+    </div>
+
+    <script>
+        // Función del botón Continuar (por ahora solo simula acción inicial)
+        function handleLogin(event) {
+            event.preventDefault();
+            const usuario = document.getElementById('userInput').value;
+            alert("Usuario ingresado: " + usuario);
+        }
+
+        // Funciones para la ventana flotante de Contactar
+        function abrirModalContactar() {
+            document.getElementById('contactModal').style.display = 'flex';
+        }
+
+        function cerrarModalContactar() {
+            document.getElementById('contactModal').style.display = 'none';
+        }
+
+        // Función del botón Salir (cierra la pestaña de la web)
+        function cerrarPestaña() {
+            window.close();
+            // Nota: Algunos navegadores bloquean el cierre automático de pestañas si no fueron abiertas por script,
+            // por lo que como respaldo redirigimos o mostramos aviso si falla:
+            setTimeout(() => {
+                window.location.href = "about:blank";
+            }, 100);
+        }
+    </script>
+</body>
+</html>
