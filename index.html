@@ -5,23 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión - Sistema JIRQ</title>
 
-    <!-- Importar SDKs de Firebase mediante etiquetas script (versión compatible con GitHub Pages) -->
+    <!-- SDKs de Firebase y lógica del sistema -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // ==========================================
-        // CONFIGURACIÓN DE FIREBASE (Tus llaves reales)
-        // ==========================================
+        // ==========================================================
+        // TUS LLAVES REALES OBTENIDAS DE FIREBASE
+        // ==========================================================
         const firebaseConfig = {
-            apiKey: "TU_API_KEY_REAL",
+            apiKey: "AIzaSyDmM8-8C3fxkPdSY3pVgudP35mVOcGdg9E",
             authDomain: "sistemas-jirq.firebaseapp.com",
             databaseURL: "https://sistemas-jirq-default-rtdb.firebaseio.com",
             projectId: "sistemas-jirq",
-            storageBucket: "sistemas-jirq.appspot.com",
+            storageBucket: "sistemas-jirq.firebasestorage.app",
             messagingSenderId: "556134226398",
-            appId: "TU_APP_ID_REAL"
+            appId: "1:556134226398:web:f42fde5a0a9d733b7c254f",
+            measurementId: "G-0XSVPF2LRH"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -32,7 +33,6 @@
         let passwordGeneradaGlobal = "";
         let intentosFallidos = 0;
 
-        // Función principal del formulario (Cambia dinámicamente según el flujo)
         window.handleLogin = async function(event) {
             event.preventDefault();
             const inputVal = document.getElementById('userInput').value.trim();
@@ -41,12 +41,10 @@
 
             if (!inputVal) return;
 
-            // PASO 1: Validación del correo ingresado
             if (btnAction.getAttribute('data-estado') === "ingresar_correo") {
                 correoGlobal = inputVal;
 
                 try {
-                    // Buscar en Realtime Database (codificando el correo para que sea una ruta válida)
                     const safeEmailKey = btoa(correoGlobal).replace(/=/g, '');
                     const userRef = ref(db, 'usuarios/' + safeEmailKey);
                     const snapshot = await get(userRef);
@@ -63,17 +61,14 @@
 
                     const userData = snapshot.val();
 
-                    // CASO A: Si el usuario ya está Activo
                     if (userData.estado === "activo") {
-                        alert("Cuenta activa. (Aquí pasará a la pantalla principal en blanco próximamente).");
+                        alert("Cuenta activa. (Aquí pasará a la pantalla principal próximamente).");
                     } 
-                    // CASO B: Si el usuario está Pendiente (Primera vez)
-                    else if (userData.estado === "pendiente" || !userData.fecha_activacion) {
+                    else if (userData.estado === "pendiente" || !userData.fecha_hora) {
                         
-                        // Extraer hasta 7 letras del correo antes del "@"
+                        // Generar contraseña autogenerada según regla (7 letras del correo antes del @ + AñoMesDíaHoraMinuto + _ + Símbolo)
                         const nombreLimpio = correoGlobal.split('@')[0].replace(/[^a-zA-Z]/g, '').substring(0, 7).toLowerCase();
                         
-                        // Obtener fecha y hora actual: AñoMesDíaHoraMinuto
                         const ahora = new Date();
                         const anio = ahora.getFullYear();
                         const mes = String(ahora.getMonth() + 1).padStart(2, '0');
@@ -82,16 +77,13 @@
                         const minuto = String(ahora.getMinutes()).padStart(2, '0');
                         const fechaHoraStr = `${anio}${mes}${dia}${hora}${minuto}`;
 
-                        // Simbología al azar
                         const simbolos = ['%', '$', '&', '@', '/', '+', '*'];
                         const simboloAzar = simbolos[Math.floor(Math.random() * simbolos.length)];
 
-                        // Armar contraseña autogenerada final
                         passwordGeneradaGlobal = `${nombreLimpio}${fechaHoraStr}_${simboloAzar}`;
 
-                        // Modificar pantalla para mostrar la contraseña autogenerada
                         tituloHeader.innerText = "Activación de Cuenta";
-                        document.getElementById('inputLabelIcon').style.display = 'none'; // Ocultar icono de correo si deseas
+                        document.getElementById('inputLabelIcon').style.display = 'none';
                         const campoInput = document.getElementById('userInput');
                         campoInput.value = passwordGeneradaGlobal;
                         campoInput.readOnly = true;
@@ -99,17 +91,14 @@
                         campoInput.style.fontWeight = "bold";
                         campoInput.style.textAlign = "center";
 
-                        // Cambiar texto de ayuda o mostrar mensaje debajo
                         btnAction.setAttribute('data-estado', "copiar_y_activar");
                         btnAction.innerHTML = `<span>Copiar Contraseña</span>`;
                         btnAction.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
 
-                        // Cambiar el botón Salir por "Iniciar"
                         const btnSalir = document.getElementById('btnSalir');
                         btnSalir.innerHTML = `<span>Iniciar</span>`;
                         btnSalir.setAttribute('onclick', 'reiniciarSistema()');
 
-                        // Mensaje de advertencia seguro
                         alert("Favor de copiarlo en una hoja es más seguro ;)");
                     }
 
@@ -117,14 +106,12 @@
                     alert("Error al verificar usuario: " + error.message);
                 }
             } 
-            // PASO 2: Acción del botón al mostrar la contraseña generada
             else if (btnAction.getAttribute('data-estado') === "copiar_y_activar") {
                 const campoInput = document.getElementById('userInput');
                 campoInput.select();
                 navigator.clipboard.writeText(campoInput.value);
                 alert("¡Contraseña copiada al portapapeles!");
 
-                // Proceder a registrar en Firebase Auth y actualizar Realtime Database
                 try {
                     let paisDetectado = "Desconocido";
                     try {
@@ -132,19 +119,17 @@
                         const data = await response.json();
                         paisDetectado = data.country_name || "Desconocido";
                     } catch (e) {
-                        console.log("No se pudo detectar el país por IP");
+                        console.log("No se pudo detectar el país");
                     }
 
-                    // Crear credencial en Firebase Auth
                     const userCredential = await createUserWithEmailAndPassword(auth, correoGlobal, passwordGeneradaGlobal);
                     const uid = userCredential.user.uid;
 
-                    // Actualizar nodo en Realtime Database
                     const safeEmailKey = btoa(correoGlobal).replace(/=/g, '');
                     const userRef = ref(db, 'usuarios/' + safeEmailKey);
                     await update(userRef, {
                         id: uid,
-                        correo: correoGlobal,
+                        usuario: correoGlobal,
                         contraseña: passwordGeneradaGlobal,
                         fecha_hora: new Date().toISOString(),
                         pais: paisDetectado,
@@ -160,22 +145,17 @@
             }
         }
 
-        // Función de Bloqueo por exceso de intentos (Fondo en B/N, textos en rojo)
         function activarBloqueoPorIP() {
             document.body.style.filter = "grayscale(100%)";
-            document.getElementById('tituloSistema').innerText = "Bloqueado";
-            document.getElementById('tituloSistema').style.color = "#ef4444";
-            
             const card = document.querySelector('.login-card');
             card.innerHTML = `
                 <div class="logo-container">
-                    <h2 id="tituloSistema" style="color: #ef4444; font-size: 22px;">Bloqueado</h2>
+                    <h2 style="color: #ef4444; font-size: 22px;">Bloqueado</h2>
                 </div>
                 <p style="color: #ef4444; font-size: 16px; font-weight: bold; margin-bottom: 20px;">Tiempo límite</p>
-                <div id="conteoRegresivo" style="font-size: 28px; font-weight: bold; color: #ef4444; margin-bottom: 25px;">03:00:00</div>
+                <div style="font-size: 28px; font-weight: bold; color: #ef4444; margin-bottom: 25px;">03:00:00</div>
                 <p style="font-size: 13px; color: rgba(255,255,255,0.7);">Acceso restringido temporalmente por seguridad de IP.</p>
             `;
-            // Aquí se podría activar un temporizador de 3 horas si se desea
         }
 
         window.reiniciarSistema = function() {
@@ -383,7 +363,6 @@
                 <input type="text" id="userInput" placeholder="Ingrese su correo" required>
             </div>
 
-            <!-- Botón con estado inicial de "ingresar_correo" -->
             <button type="submit" class="btn-submit" id="btnAction" data-estado="ingresar_correo">
                 <span>Continuar</span>
                 <svg style="width:18px;height:18px;fill:#fff;" viewBox="0 0 24 24"><path d="M5 13h11.86l-5.6 5.6 1.42 1.42L21.42 12l-8.8-8-1.42 1.42L16.86 11H5z"/></svg>
@@ -396,7 +375,6 @@
                 <span>Contactar</span>
             </button>
 
-            <!-- Botón Salir (cambiará a "Iniciar" cuando se genere la clave) -->
             <button class="btn-secondary" id="btnSalir" onclick="cerrarPestaña()">
                 <img src="https://cdn-icons-png.flaticon.com/512/1828/1828427.png" alt="Icono Salir">
                 <span>Salir</span>
