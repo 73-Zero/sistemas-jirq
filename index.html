@@ -3,7 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio de Sesión - Sistema</title>
+    <title>Inicio de Sesión - Sistema JIRQ</title>
+
+    <!-- Importar SDKs de Firebase mediante etiquetas script (versión compatible con GitHub Pages) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // ==========================================
+        // CONFIGURACIÓN DE FIREBASE (Tus llaves reales)
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY_REAL",
+            authDomain: "sistemas-jirq.firebaseapp.com",
+            databaseURL: "https://sistemas-jirq-default-rtdb.firebaseio.com",
+            projectId: "sistemas-jirq",
+            storageBucket: "sistemas-jirq.appspot.com",
+            messagingSenderId: "556134226398",
+            appId: "TU_APP_ID_REAL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let correoGlobal = "";
+        let passwordGeneradaGlobal = "";
+        let intentosFallidos = 0;
+
+        // Función principal del formulario (Cambia dinámicamente según el flujo)
+        window.handleLogin = async function(event) {
+            event.preventDefault();
+            const inputVal = document.getElementById('userInput').value.trim();
+            const btnAction = document.getElementById('btnAction');
+            const tituloHeader = document.getElementById('tituloSistema');
+
+            if (!inputVal) return;
+
+            // PASO 1: Validación del correo ingresado
+            if (btnAction.getAttribute('data-estado') === "ingresar_correo") {
+                correoGlobal = inputVal;
+
+                try {
+                    // Buscar en Realtime Database (codificando el correo para que sea una ruta válida)
+                    const safeEmailKey = btoa(correoGlobal).replace(/=/g, '');
+                    const userRef = ref(db, 'usuarios/' + safeEmailKey);
+                    const snapshot = await get(userRef);
+
+                    if (!snapshot.exists()) {
+                        intentosFallidos++;
+                        if (intentosFallidos >= 3) {
+                            activarBloqueoPorIP();
+                            return;
+                        }
+                        alert(`Correo no registrado. Te quedan ${3 - intentosFallidos} intentos.`);
+                        return;
+                    }
+
+                    const userData = snapshot.val();
+
+                    // CASO A: Si el usuario ya está Activo
+                    if (userData.estado === "activo") {
+                        alert("Cuenta activa. (Aquí pasará a la pantalla principal en blanco próximamente).");
+                    } 
+                    // CASO B: Si el usuario está Pendiente (Primera vez)
+                    else if (userData.estado === "pendiente" || !userData.fecha_activacion) {
+                        
+                        // Extraer hasta 7 letras del correo antes del "@"
+                        const nombreLimpio = correoGlobal.split('@')[0].replace(/[^a-zA-Z]/g, '').substring(0, 7).toLowerCase();
+                        
+                        // Obtener fecha y hora actual: AñoMesDíaHoraMinuto
+                        const ahora = new Date();
+                        const anio = ahora.getFullYear();
+                        const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+                        const dia = String(ahora.getDate()).padStart(2, '0');
+                        const hora = String(ahora.getHours()).padStart(2, '0');
+                        const minuto = String(ahora.getMinutes()).padStart(2, '0');
+                        const fechaHoraStr = `${anio}${mes}${dia}${hora}${minuto}`;
+
+                        // Simbología al azar
+                        const simbolos = ['%', '$', '&', '@', '/', '+', '*'];
+                        const simboloAzar = simbolos[Math.floor(Math.random() * simbolos.length)];
+
+                        // Armar contraseña autogenerada final
+                        passwordGeneradaGlobal = `${nombreLimpio}${fechaHoraStr}_${simboloAzar}`;
+
+                        // Modificar pantalla para mostrar la contraseña autogenerada
+                        tituloHeader.innerText = "Activación de Cuenta";
+                        document.getElementById('inputLabelIcon').style.display = 'none'; // Ocultar icono de correo si deseas
+                        const campoInput = document.getElementById('userInput');
+                        campoInput.value = passwordGeneradaGlobal;
+                        campoInput.readOnly = true;
+                        campoInput.style.background = "rgba(255, 255, 255, 0.15)";
+                        campoInput.style.fontWeight = "bold";
+                        campoInput.style.textAlign = "center";
+
+                        // Cambiar texto de ayuda o mostrar mensaje debajo
+                        btnAction.setAttribute('data-estado', "copiar_y_activar");
+                        btnAction.innerHTML = `<span>Copiar Contraseña</span>`;
+                        btnAction.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
+
+                        // Cambiar el botón Salir por "Iniciar"
+                        const btnSalir = document.getElementById('btnSalir');
+                        btnSalir.innerHTML = `<span>Iniciar</span>`;
+                        btnSalir.setAttribute('onclick', 'reiniciarSistema()');
+
+                        // Mensaje de advertencia seguro
+                        alert("Favor de copiarlo en una hoja es más seguro ;)");
+                    }
+
+                } catch (error) {
+                    alert("Error al verificar usuario: " + error.message);
+                }
+            } 
+            // PASO 2: Acción del botón al mostrar la contraseña generada
+            else if (btnAction.getAttribute('data-estado') === "copiar_y_activar") {
+                const campoInput = document.getElementById('userInput');
+                campoInput.select();
+                navigator.clipboard.writeText(campoInput.value);
+                alert("¡Contraseña copiada al portapapeles!");
+
+                // Proceder a registrar en Firebase Auth y actualizar Realtime Database
+                try {
+                    let paisDetectado = "Desconocido";
+                    try {
+                        const response = await fetch('https://ipapi.co/json/');
+                        const data = await response.json();
+                        paisDetectado = data.country_name || "Desconocido";
+                    } catch (e) {
+                        console.log("No se pudo detectar el país por IP");
+                    }
+
+                    // Crear credencial en Firebase Auth
+                    const userCredential = await createUserWithEmailAndPassword(auth, correoGlobal, passwordGeneradaGlobal);
+                    const uid = userCredential.user.uid;
+
+                    // Actualizar nodo en Realtime Database
+                    const safeEmailKey = btoa(correoGlobal).replace(/=/g, '');
+                    const userRef = ref(db, 'usuarios/' + safeEmailKey);
+                    await update(userRef, {
+                        id: uid,
+                        correo: correoGlobal,
+                        contraseña: passwordGeneradaGlobal,
+                        fecha_hora: new Date().toISOString(),
+                        pais: paisDetectado,
+                        estado: "activo"
+                    });
+
+                    alert("¡Cuenta activada con éxito!");
+                    location.reload();
+
+                } catch (error) {
+                    alert("Error en la activación: " + error.message);
+                }
+            }
+        }
+
+        // Función de Bloqueo por exceso de intentos (Fondo en B/N, textos en rojo)
+        function activarBloqueoPorIP() {
+            document.body.style.filter = "grayscale(100%)";
+            document.getElementById('tituloSistema').innerText = "Bloqueado";
+            document.getElementById('tituloSistema').style.color = "#ef4444";
+            
+            const card = document.querySelector('.login-card');
+            card.innerHTML = `
+                <div class="logo-container">
+                    <h2 id="tituloSistema" style="color: #ef4444; font-size: 22px;">Bloqueado</h2>
+                </div>
+                <p style="color: #ef4444; font-size: 16px; font-weight: bold; margin-bottom: 20px;">Tiempo límite</p>
+                <div id="conteoRegresivo" style="font-size: 28px; font-weight: bold; color: #ef4444; margin-bottom: 25px;">03:00:00</div>
+                <p style="font-size: 13px; color: rgba(255,255,255,0.7);">Acceso restringido temporalmente por seguridad de IP.</p>
+            `;
+            // Aquí se podría activar un temporizador de 3 horas si se desea
+        }
+
+        window.reiniciarSistema = function() {
+            location.reload();
+        }
+    </script>
+
     <style>
         * {
             margin: 0;
@@ -13,10 +192,6 @@
         }
 
         body {
-            /* 
-              Aquí pones tu imagen de fondo de la pagina, sea jpg, png, svg u otro.
-              Ejemplo: background: url('tu-imagen-fondo.jpg') no-repeat center center fixed;
-            */
             background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
             background-size: cover;
             height: 100vh;
@@ -25,7 +200,6 @@
             align-items: center;
         }
 
-        /* Contenedor central con efecto Glassmorphism (adaptado para PC y Celular) */
         .login-card {
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(16px);
@@ -40,7 +214,6 @@
             color: #fff;
         }
 
-        /* Estilo para el logo superior */
         .logo-container {
             margin-bottom: 25px;
         }
@@ -62,7 +235,6 @@
             color: #ffffff;
         }
 
-        /* Campos de entrada */
         .input-group {
             position: relative;
             margin-bottom: 20px;
@@ -99,7 +271,6 @@
             fill: rgba(255, 255, 255, 0.6);
         }
 
-        /* Botón de acción principal (Continuar / Validar) */
         .btn-submit {
             width: 100%;
             padding: 14px;
@@ -127,7 +298,6 @@
             transform: scale(0.98);
         }
 
-        /* Separador o diseño inferior de botones secundarios */
         .bottom-actions {
             display: flex;
             gap: 12px;
@@ -161,7 +331,6 @@
             object-fit: contain;
         }
 
-        /* Ventana emergente (Modal) para "Contactar" */
         #contactModal {
             display: none;
             position: fixed;
@@ -169,7 +338,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* Fondo negro para el modal */
             background-color: rgba(0, 0, 0, 0.85);
             z-index: 9999;
             justify-content: center;
@@ -177,12 +345,7 @@
         }
 
         .modal-content {
-            /* 
-              Aquí ruta para colocar de fondo la imagen que yo quiera nada mas.
-              Ejemplo: background: url('tu-imagen-modal.jpg') no-repeat center center;
-            */
-            background: #111; 
-            background-size: cover;
+            background: #111;
             border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 30px;
             border-radius: 20px;
@@ -208,68 +371,48 @@
 </head>
 <body>
 
-    <!-- Contenedor Principal de Login -->
     <div class="login-card">
-        
         <div class="logo-container">
-            <!-- 
-              Aquí el logo de inicio de sesión sea .jpg, .jpeg, .svg u otro.
-              Ejemplo: <img src="logo.png" alt="Logo">
-            -->
             <img src="https://cdn-icons-png.flaticon.com/512/6681/6681204.png" alt="Logo">
-            <h2>Sistema de Acceso</h2>
+            <h2 id="tituloSistema">Sistema de Acceso</h2>
         </div>
         
         <form id="loginForm" onsubmit="handleLogin(event)">
-            <!-- Paso 1: Únicamente Campo de Usuario / Correo -->
             <div class="input-group" id="emailGroup">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-                <input type="text" id="userInput" placeholder="Ingrese su usuario" required>
+                <svg id="inputLabelIcon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                <input type="text" id="userInput" placeholder="Ingrese su correo" required>
             </div>
 
-            <!-- Botón de Validar/Continuar -->
-            <button type="submit" class="btn-submit" id="btnAction">
+            <!-- Botón con estado inicial de "ingresar_correo" -->
+            <button type="submit" class="btn-submit" id="btnAction" data-estado="ingresar_correo">
                 <span>Continuar</span>
                 <svg style="width:18px;height:18px;fill:#fff;" viewBox="0 0 24 24"><path d="M5 13h11.86l-5.6 5.6 1.42 1.42L21.42 12l-8.8-8-1.42 1.42L16.86 11H5z"/></svg>
             </button>
         </form>
 
-        <!-- Botones inferiores secundarios -->
         <div class="bottom-actions">
-            <!-- Botón Contactar -->
             <button class="btn-secondary" onclick="abrirModalContactar()">
-                <!-- Aquí ruta de icono sea jpg, gif o svg u otro -->
                 <img src="https://cdn-icons-png.flaticon.com/512/5968/5968841.png" alt="Icono Contactar">
                 <span>Contactar</span>
             </button>
 
-            <!-- Botón Salir -->
-            <button class="btn-secondary" onclick="cerrarPestaña()">
-                <!-- Aquí ruta de icono sea jpg, gif o svg u otro -->
+            <!-- Botón Salir (cambiará a "Iniciar" cuando se genere la clave) -->
+            <button class="btn-secondary" id="btnSalir" onclick="cerrarPestaña()">
                 <img src="https://cdn-icons-png.flaticon.com/512/1828/1828427.png" alt="Icono Salir">
                 <span>Salir</span>
             </button>
         </div>
     </div>
 
-    <!-- Ventana flotante (Modal) para Contactar -->
     <div id="contactModal">
         <div class="modal-content">
             <button class="close-modal" onclick="cerrarModalContactar()">&times;</button>
             <h3 style="margin-bottom: 15px;">Contacto</h3>
-            <p style="font-size: 14px; color: #ccc;">Ventana emergente de soporte o contacto.</p>
+            <p style="font-size: 14px; color: #ccc;">Soporte técnico del sistema.</p>
         </div>
     </div>
 
     <script>
-        // Función del botón Continuar (por ahora solo simula acción inicial)
-        function handleLogin(event) {
-            event.preventDefault();
-            const usuario = document.getElementById('userInput').value;
-            alert("Usuario ingresado: " + usuario);
-        }
-
-        // Funciones para la ventana flotante de Contactar
         function abrirModalContactar() {
             document.getElementById('contactModal').style.display = 'flex';
         }
@@ -278,11 +421,8 @@
             document.getElementById('contactModal').style.display = 'none';
         }
 
-        // Función del botón Salir (cierra la pestaña de la web)
         function cerrarPestaña() {
             window.close();
-            // Nota: Algunos navegadores bloquean el cierre automático de pestañas si no fueron abiertas por script,
-            // por lo que como respaldo redirigimos o mostramos aviso si falla:
             setTimeout(() => {
                 window.location.href = "about:blank";
             }, 100);
