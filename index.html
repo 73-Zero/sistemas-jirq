@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión - Sistema JIRQ</title>
 
+    <!-- Importar la fuente Roboto desde Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
     <!-- SDKs de Firebase y lógica del sistema -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -42,11 +47,9 @@
             if (!inputVal) return;
 
             if (btnAction.getAttribute('data-estado') === "ingresar_correo") {
-                // Normalizamos el correo a minúsculas antes de guardarlo
                 correoGlobal = inputVal.toLowerCase();
 
                 try {
-                    // Llave Base64 ultra segura y limpia (en minúsculas y sin '=')
                     const safeEmailKey = btoa(correoGlobal).replace(/=/g, '');
                     const userRef = ref(db, 'usuarios/' + safeEmailKey);
                     const snapshot = await get(userRef);
@@ -68,7 +71,6 @@
                     } 
                     else if (userData.estado === 0 || userData.estado === "pendiente" || !userData.fecha_hora) {
                         
-                        // Generar contraseña autogenerada según regla (7 letras del correo antes del @ + AñoMesDíaHoraMinuto + _ + Símbolo)
                         const nombreLimpio = correoGlobal.split('@')[0].replace(/[^a-zA-Z]/g, '').substring(0, 7).toLowerCase();
                         
                         const ahora = new Date();
@@ -170,7 +172,8 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Aplicamos la fuente Roboto jalada desde Google Fonts */
+            font-family: 'Roboto', sans-serif;
         }
 
         body {
