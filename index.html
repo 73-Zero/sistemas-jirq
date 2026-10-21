@@ -56,7 +56,8 @@
                     if (!snapshot.exists()) {
                         intentosFallidos++;
                         if (intentosFallidos >= 3) {
-                            alert("Acceso bloqueado temporalmente por intentos fallidos.");
+                            alert("Acceso bloqueado por intentos fallidos.");
+                            bloquearSistema();
                             return;
                         }
                         alert(`Correo no registrado. Te quedan ${3 - intentosFallidos} intentos.`);
@@ -70,7 +71,7 @@
                         return;
                     }
 
-                    // Guardamos la clave real que está en Firebase para validarla después
+                    // Guardamos la clave real de Firebase
                     claveRealFirebase = userData.clave;
 
                     // CAMBIO DE MÁSCARA: Transicionar a ingresar contraseña
@@ -92,14 +93,37 @@
             else if (btnAction.getAttribute('data-estado') === "ingresar_clave") {
                 if (inputVal === claveRealFirebase) {
                     alert("¡Contraseña correcta! Acceso concedido al sistema principal.");
-                    // Aquí puedes redirigir a tu panel principal o dashboard próximamente
                 } else {
-                    alert("Contraseña incorrecta. Intente nuevamente.");
+                    intentosFallidos++;
+                    if (intentosFallidos >= 3) {
+                        alert("Acceso bloqueado temporalmente por múltiples intentos fallidos de contraseña.");
+                        bloquearSistema();
+                        return;
+                    }
+                    alert(`Contraseña incorrecta. Te quedan ${3 - intentosFallidos} intentos.`);
                 }
             }
         }
-    </script>
 
+        function bloquearSistema() {
+            // 1. Fondo en escala de grises
+            document.body.classList.add('bloqueado-gris');
+            
+            // 2. Estilo de bloqueo a la tarjeta
+            const loginCard = document.querySelector('.login-card');
+            if (loginCard) loginCard.classList.add('tarjeta-bloqueada');
+            
+            // 3. Desactivar controles
+            const inputField = document.getElementById('userInput');
+            const btnAction = document.getElementById('btnAction');
+            if (inputField) inputField.disabled = true;
+            if (btnAction) {
+                btnAction.disabled = true;
+                btnAction.style.opacity = "0.4";
+                btnAction.style.cursor = "not-allowed";
+            }
+        }
+    </script>
     <style>
         * {
             margin: 0;
@@ -115,6 +139,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: filter 0.6s ease;
+        }
+
+        /* EFECTO VISUAL: Fondo en blanco y negro al bloquearse */
+        body.bloqueado-gris {
+            filter: grayscale(100%);
         }
 
         .login-card {
@@ -129,6 +159,14 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             text-align: center;
             color: #fff;
+            transition: all 0.5s ease;
+        }
+
+        /* EFECTO VISUAL: Tarjeta bloqueada */
+        .login-card.tarjeta-bloqueada {
+            background: rgba(20, 20, 20, 0.82) !important;
+            border: 1px solid rgba(255, 50, 50, 0.5) !important;
+            box-shadow: 0 8px 32px 0 rgba(255, 0, 0, 0.35) !important;
         }
 
         .logo-container {
