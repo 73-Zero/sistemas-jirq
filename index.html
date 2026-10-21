@@ -13,8 +13,7 @@
     <!-- SDKs de Firebase y lógica del sistema -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDmM8-8C3fxkPdSY3pVgudP35mVOcGdg9E",
@@ -28,39 +27,36 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getDatabase(app);
 
         let correoGlobal = "";
-        let passwordGeneradaGlobal = "";
+        let claveRealFirebase = "";
         let intentosFallidos = 0;
 
         window.handleLogin = async function(event) {
             event.preventDefault();
-            console.log("--- SE EJECUTÓ HANDLE LOGIN ---"); // Rastreo en consola
             
             const inputVal = document.getElementById('userInput').value.trim();
             const btnAction = document.getElementById('btnAction');
             const tituloHeader = document.getElementById('tituloSistema');
+            const inputField = document.getElementById('userInput');
+            const labelIcon = document.getElementById('inputLabelIcon');
 
             if (!inputVal) return;
 
+            // FASE 1: Verificar el Correo
             if (btnAction.getAttribute('data-estado') === "ingresar_correo") {
                 correoGlobal = inputVal.toLowerCase();
 
                 try {
                     const safeEmailKey = btoa(correoGlobal).replace(/=/g, '');
-                    console.log("Llave Base64 generada por JS:", safeEmailKey); // Ver qué llave busca exactamente
-
                     const userRef = ref(db, 'usuarios/' + safeEmailKey);
                     const snapshot = await get(userRef);
-
-                    console.log("¿Existe el nodo en Firebase?:", snapshot.exists());
 
                     if (!snapshot.exists()) {
                         intentosFallidos++;
                         if (intentosFallidos >= 3) {
-                            activarBloqueoPorIP();
+                            alert("Acceso bloqueado temporalmente por intentos fallidos.");
                             return;
                         }
                         alert(`Correo no registrado. Te quedan ${3 - intentosFallidos} intentos.`);
@@ -68,37 +64,39 @@
                     }
 
                     const userData = snapshot.val();
-                    console.log("Datos encontrados:", userData);
 
-                    if (userData.estado === 1 || userData.estado === "activo") {
-                        alert("Cuenta activa. (Aquí pasará a la pantalla principal próximamente).");
-                    } 
-                    else {
+                    if (userData.estado !== 1 && userData.estado !== "activo") {
                         alert("Cuenta pendiente de activación.");
+                        return;
                     }
 
+                    // Guardamos la clave real que está en Firebase para validarla después
+                    claveRealFirebase = userData.clave;
+
+                    // CAMBIO DE MÁSCARA: Transicionar a ingresar contraseña
+                    inputField.value = "";
+                    inputField.type = "password";
+                    inputField.placeholder = "Ingrese su contraseña";
+                    tituloHeader.textContent = "Ingrese su Contraseña";
+                    btnAction.setAttribute('data-estado', "ingresar_clave");
+                    
+                    // Cambiar icono a candado
+                    labelIcon.innerHTML = '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0-2-.9-2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>';
+
                 } catch (error) {
-                    console.error("Error detallado:", error);
-                    alert("Error al verificar usuario: " + error.message);
+                    console.error("Error:", error);
+                    alert("Error al conectar con la base de datos.");
+                }
+            } 
+            // FASE 2: Verificar la Contraseña
+            else if (btnAction.getAttribute('data-estado') === "ingresar_clave") {
+                if (inputVal === claveRealFirebase) {
+                    alert("¡Contraseña correcta! Acceso concedido al sistema principal.");
+                    // Aquí puedes redirigir a tu panel principal o dashboard próximamente
+                } else {
+                    alert("Contraseña incorrecta. Intente nuevamente.");
                 }
             }
-        }
-
-        function activarBloqueoPorIP() {
-            document.body.style.filter = "grayscale(100%)";
-            const card = document.querySelector('.login-card');
-            card.innerHTML = `
-                <div class="logo-container">
-                    <h2 style="color: #ef4444; font-size: 22px;">Bloqueado</h2>
-                </div>
-                <p style="color: #ef4444; font-size: 16px; font-weight: bold; margin-bottom: 20px;">Tiempo límite</p>
-                <div style="font-size: 28px; font-weight: bold; color: #ef4444; margin-bottom: 25px;">03:00:00</div>
-                <p style="font-size: 13px; color: rgba(255,255,255,0.7);">Acceso restringido temporalmente por seguridad de IP.</p>
-            `;
-        }
-
-        window.reiniciarSistema = function() {
-            location.reload();
         }
     </script>
 
@@ -249,43 +247,6 @@
             height: 18px;
             object-fit: contain;
         }
-
-        #contactModal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: #111;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 30px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 350px;
-            text-align: center;
-            position: relative;
-            color: #fff;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 12px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 20px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -309,41 +270,17 @@
         </form>
 
         <div class="bottom-actions">
-            <button class="btn-secondary" onclick="abrirModalContactar()">
+            <button class="btn-secondary" onclick="alert('Soporte técnico JIRQ')">
                 <img src="https://cdn-icons-png.flaticon.com/512/5968/5968841.png" alt="Icono Contactar">
                 <span>Contactar</span>
             </button>
 
-            <button class="btn-secondary" id="btnSalir" onclick="cerrarPestaña()">
+            <button class="btn-secondary" onclick="window.close()">
                 <img src="https://cdn-icons-png.flaticon.com/512/1828/1828427.png" alt="Icono Salir">
                 <span>Salir</span>
             </button>
         </div>
     </div>
 
-    <div id="contactModal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="cerrarModalContactar()">&times;</button>
-            <h3 style="margin-bottom: 15px;">Contacto</h3>
-            <p style="font-size: 14px; color: #ccc;">Soporte técnico del sistema.</p>
-        </div>
-    </div>
-
-    <script>
-        function abrirModalContactar() {
-            document.getElementById('contactModal').style.display = 'flex';
-        }
-
-        function cerrarModalContactar() {
-            document.getElementById('contactModal').style.display = 'none';
-        }
-
-        function cerrarPestaña() {
-            window.close();
-            setTimeout(() => {
-                window.location.href = "about:blank";
-            }, 100);
-        }
-    </script>
 </body>
 </html>
