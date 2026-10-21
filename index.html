@@ -139,7 +139,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: filter 0.6s ease;
+            transition: -webkit-filter 0.6s ease, filter 0.6s ease;
+        }
+
+        /* EFECTO VISUAL: Fondo en blanco y negro forzado */
+        body.bloqueado-gris {
+            -webkit-filter: grayscale(100%) !important;
+            filter: grayscale(100%) contrast(90%) !important;
         }
 
         /* EFECTO VISUAL: Fondo en blanco y negro al bloquearse */
