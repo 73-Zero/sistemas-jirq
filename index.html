@@ -34,6 +34,9 @@
         let intentosFallidos = 0;
         let paisFirebase = "";
 
+        // URL DE TU GOOGLE APPS SCRIPT
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOaipfJ-Jfmm44xxTzJ5bR_rRpwZ8SFFucK1Pmqx3ywuXhmRi5yc32hindxhs62OpG/exec";
+
         window.handleLogin = async function(event) {
             event.preventDefault();
             
@@ -57,7 +60,7 @@
                     if (!snapshot.exists()) {
                         intentosFallidos++;
                         if (intentosFallidos >= 3) {
-                            enviarAlertaWhatsApp("Correo inexistente bloqueado");
+                            enviarAlertaCorreo("Correo inexistente bloqueado");
                             return;
                         }
                         inputField.value = "";
@@ -95,7 +98,7 @@
                 } else {
                     intentosFallidos++;
                     if (intentosFallidos >= 3) {
-                        enviarAlertaWhatsApp("Bloqueo por 3 intentos fallidos de contraseña");
+                        enviarAlertaCorreo("Bloqueo por 3 intentos fallidos de contraseña");
                         return;
                     }
                     inputField.value = "";
@@ -104,14 +107,14 @@
             }
         }
 
-        // FUNCIÓN PARA OBTENER IP, UBICACIÓN Y ENVIAR ALERTA A WHATSAPP
-        async function enviarAlertaWhatsApp(motivo) {
+        // FUNCIÓN PARA OBTENER IP, UBICACIÓN Y ENVIAR ALERTA A GMAIL VÍA SCRIPT
+        async function enviarAlertaCorreo(motivo) {
             bloquearSistema();
             
             let ipPublica = "Desconocida";
-            let lat = "0";
-            let lon = "0";
-            let coordsFormato = "No disponible";
+            let ciudad = "Desconocida";
+            let region = "Desconocida";
+            let pais = paisFirebase || "Desconocido";
             let googleMapsLink = "No disponible";
             
             try {
@@ -120,11 +123,15 @@
                 
                 if (data && data.ip) {
                     ipPublica = data.ip;
-                    lat = data.latitude;
-                    lon = data.longitude;
+                    ciudad = data.city || 'Desconocida';
+                    region = data.region || 'Desconocida';
+                    if (data.country_name) pais = data.country_name;
                     
-                    coordsFormato = `${lat}, ${lon}`;
-                    googleMapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
+                    const lat = data.latitude;
+                    const lon = data.longitude;
+                    if (lat && lon) {
+                        googleMapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
+                    }
                 }
             } catch (e) {
                 console.error("No se pudo obtener la IP:", e);
@@ -132,21 +139,27 @@
 
             const fechaHoraActual = new Date().toLocaleString();
             
-            // Armar el mensaje para WhatsApp
-            const mensaje = `🚨 *ALERTA DE SEGURIDAD - JIRQ* 🚨%0A` +
-                            `• *Motivo:* ${motivo}%0A` +
-                            `• *Correo:* ${correoGlobal || 'No ingresado'}%0A` +
-                            `• *Fecha y Hora:* ${fechaHoraActual}%0A` +
-                            `• *País (DB):* ${paisFirebase}%0A` +
-                            `• *IP Pública:* ${ipPublica}%0A` +
-                            `• *Coordenadas:* ${coordsFormato}%0A` +
-                            `• *Ver en Google Maps:* ${googleMapsLink}`;
+            // Paquete de datos a enviar por POST al Script de Google
+            const payload = {
+                correo: correoGlobal || 'No ingresado',
+                motivo: motivo,
+                ip: ipPublica,
+                region: `${ciudad}, ${region}`,
+                pais: pais,
+                maps: googleMapsLink,
+                fecha: fechaHoraActual
+            };
 
-            // Número configurado
-            const tuNumeroWhatsApp = "51984177699"; 
-
-            const urlWsp = `https://api.whatsapp.com/send?phone=${tuNumeroWhatsApp}&text=${mensaje}`;
-            window.open(urlWsp, '_blank');
+            try {
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (err) {
+                console.error("Error al enviar la alerta al servidor de Google:", err);
+            }
         }
 
         function bloquearSistema() {
