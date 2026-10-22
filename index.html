@@ -32,6 +32,7 @@
         let correoGlobal = "";
         let claveRealFirebase = "";
         let intentosFallidos = 0;
+        let paisFirebase = "";
 
         window.handleLogin = async function(event) {
             event.preventDefault();
@@ -56,19 +57,17 @@
                     if (!snapshot.exists()) {
                         intentosFallidos++;
                         if (intentosFallidos >= 3) {
-                            alert("Acceso bloqueado por intentos fallidos.");
-                            bloquearSistema();
+                            enviarAlertaWhatsApp("Correo inexistente bloqueado");
                             return;
                         }
-                        alert(`Correo no registrado. Te quedan ${3 - intentosFallidos} intentos.`);
-                        inputField.value = ""; // Limpiar input también aquí si falla
+                        inputField.value = "";
                         return;
                     }
 
                     const userData = snapshot.val();
+                    paisFirebase = userData.pais || "No registrado";
 
                     if (userData.estado !== 1 && userData.estado !== "activo") {
-                        alert("Cuenta pendiente de activación.");
                         return;
                     }
 
@@ -87,7 +86,6 @@
 
                 } catch (error) {
                     console.error("Error:", error);
-                    alert("Error al conectar con la base de datos.");
                 }
             } 
             // FASE 2: Verificar la Contraseña
@@ -97,31 +95,73 @@
                 } else {
                     intentosFallidos++;
                     if (intentosFallidos >= 3) {
-                        alert("Acceso bloqueado temporalmente por múltiples intentos fallidos de contraseña.");
-                        bloquearSistema();
-                        inputField.value = ""; // Limpiar casilla al bloquearse
+                        enviarAlertaWhatsApp("Bloqueo por 3 intentos fallidos de contraseña");
                         return;
                     }
-                    alert(`Contraseña incorrecta. Te quedan ${3 - intentosFallidos} intentos.`);
-                    inputField.value = ""; // LIMPIAR LA CASILLA AUTOMÁTICAMENTE EN CADA ERROR
-                    inputField.focus();    // Volver a poner el cursor listo para escribir
+                    inputField.value = "";
+                    inputField.focus();
                 }
             }
         }
 
+        // FUNCIÓN PARA OBTENER IP, UBICACIÓN Y ENVIAR ALERTA A WHATSAPP
+        async function enviarAlertaWhatsApp(motivo) {
+            bloquearSistema();
+            
+            let ipPublica = "Desconocida";
+            let lat = "0";
+            let lon = "0";
+            let coordsFormato = "No disponible";
+            let googleMapsLink = "No disponible";
+            
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                
+                if (data && data.ip) {
+                    ipPublica = data.ip;
+                    lat = data.latitude;
+                    lon = data.longitude;
+                    
+                    coordsFormato = `${lat}, ${lon}`;
+                    googleMapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
+                }
+            } catch (e) {
+                console.error("No se pudo obtener la IP:", e);
+            }
+
+            const fechaHoraActual = new Date().toLocaleString();
+            
+            // Armar el mensaje para WhatsApp
+            const mensaje = `🚨 *ALERTA DE SEGURIDAD - JIRQ* 🚨%0A` +
+                            `• *Motivo:* ${motivo}%0A` +
+                            `• *Correo:* ${correoGlobal || 'No ingresado'}%0A` +
+                            `• *Fecha y Hora:* ${fechaHoraActual}%0A` +
+                            `• *País (DB):* ${paisFirebase}%0A` +
+                            `• *IP Pública:* ${ipPublica}%0A` +
+                            `• *Coordenadas:* ${coordsFormato}%0A` +
+                            `• *Ver en Google Maps:* ${googleMapsLink}`;
+
+            // Número configurado
+            const tuNumeroWhatsApp = "51984177699"; 
+
+            const urlWsp = `https://api.whatsapp.com/send?phone=${tuNumeroWhatsApp}&text=${mensaje}`;
+            window.open(urlWsp, '_blank');
+        }
+
         function bloquearSistema() {
-            // 1. Fondo en escala de grises forzado en HTML y Body
             document.body.classList.add('bloqueado-gris');
             document.documentElement.classList.add('bloqueado-gris');
             
-            // 2. Estilo de bloqueo a la tarjeta
             const loginCard = document.querySelector('.login-card');
             if (loginCard) loginCard.classList.add('tarjeta-bloqueada');
             
-            // 3. Desactivar controles
             const inputField = document.getElementById('userInput');
             const btnAction = document.getElementById('btnAction');
-            if (inputField) inputField.disabled = true;
+            if (inputField) {
+                inputField.disabled = true;
+                inputField.value = "";
+            }
             if (btnAction) {
                 btnAction.disabled = true;
                 btnAction.style.opacity = "0.4";
