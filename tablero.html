@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablero Principal - Sistema JIRQ</title>
+    
+    <!-- Fuente Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        html, body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* Fondo idéntico al login para mantener la línea visual del sistema */
+        body {
+            background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Contenedor Principal tipo Glassmorphism (HarmonyOS style) */
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 28px;
+            padding: 35px;
+            width: 90%;
+            max-width: 820px;
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.35);
+            color: #fff;
+        }
+
+        .dashboard-header {
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 15px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            font-style: italic;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .dashboard-header p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        /* Caja interna translúcida */
+        .menu-inner-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        /* Cuadrícula de 3x2 para los 6 botones principales */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .module-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 18px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .module-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+        }
+
+        .module-icon {
+            width: 46px;
+            height: 46px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .module-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: #ffffff;
+        }
+
+        .module-btn span {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Estilos de las Ventanas Modales (Ventanas flotantes internas) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-window {
+            background: rgba(30, 30, 40, 0.85);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 22px;
+            width: 85%;
+            max-width: 750px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            color: #fff;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .close-modal {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .close-modal:hover {
+            background: rgba(255, 50, 50, 0.6);
+        }
+
+        /* Sistema de pestañas dentro de las modales */
+        .tabs-header {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 14px;
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #6366f1;
+            color: white;
+            border-color: #6366f1;
+            font-weight: 500;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Contenedor Principal del Menú -->
+    <div class="dashboard-card">
+        <div class="dashboard-header">
+            <h1>Menú Inicial</h1>
+            <p>Opciones para realizar los trabajos KIWOX-ENTEL</p>
+        </div>
+        
+        <div class="menu-inner-box">
+            <!-- Cuadrícula de 6 Módulos -->
+            <div class="modules-grid">
+                
+                <!-- 1. Listado Funciones -->
+                <button class="module-btn" onclick="abrirModal('modalAyuda')">
+                    <div class="module-icon">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    </div>
+                    <span>Listado Funciones</span>
+                </button>
+
+                <!-- 2. Calcular Datos -->
+                <button class="module-btn" onclick="alert('Módulo Calcular Datos listo para configurar')">
+                    <div class="module-icon">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/></svg>
+                    </div>
+                    <span>Calcular Datos</span>
+                </button>
+
+                <!-- 3. Ayuda Rápida -->
+                <button class="module-btn" onclick="abrirModal('modalAyuda')">
+                    <div class="module-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    </div>
+                    <span>Ayuda Rápida</span>
+                </button>
+
+                <!-- 4. Bigquery Conteo -->
+                <button class="module-btn" onclick="abrirModal('modalBigquery')">
+                    <div class="module-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 4.79 4 7s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4M4 9v3c0 2.21 3.58 4 8 4s8-1.79 8-4V9c0 2.21-3.58 4-8 4s-8-1.79-8-4m0 5v3c0 2.21 3.58 4 8 4s8-1.79 8-4v-3c0 2.21-3.58 4-8 4s-8-1.79-8-4z"/></svg>
+                    </div>
+                    <span>Bigquery Conteo</span>
+                </button>
+
+                <!-- 5. Metas Entel y Socios -->
+                <button class="module-btn" onclick="alert('Módulo Metas Entel listo para configurar')">
+                    <div class="module-icon">
+                        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-35zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    </div>
+                    <span>Metas Entel y Socios</span>
+                </button>
+
+                <!-- 6. Query Variadas -->
+                <button class="module-btn" onclick="alert('Módulo Query Variadas listo para configurar')">
+                    <div class="module-icon">
+                        <svg viewBox="0 0 24 24"><path d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-6c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-4v-7h4v7z"/></svg>
+                    </div>
+                    <span>Query Variadas</span>
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= VENTANA MODAL 1: AYUDA RÁPIDA ================= -->
+    <div class="modal-overlay" id="modalAyuda">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3>:: Ayuda Procesos ... ::</h3>
+                <button class="close-modal" onclick="cerrarModal('modalAyuda')">✕</button>
+            </div>
+
+            <!-- Pestañas Superiores -->
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="cambiarTab(event, 'tab1')">NAC - DEACS Anonimizador</button>
+                <button class="tab-btn" onclick="cambiarTab(event, 'tab2')">Transponer Campañas</button>
+                <button class="tab-btn" onclick="cambiarTab(event, 'tab3')">Reporte Alignet</button>
+                <button class="tab-btn" onclick="cambiarTab(event, 'tab4')">Reporte IVR</button>
+                <button class="tab-btn" onclick="cambiarTab(event, 'tab5')">S2S y Packs Migras Metas</button>
+            </div>
+
+            <!-- Contenido de las pestañas -->
+            <div id="tab1" class="tab-content active">
+                <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 15px;">Dirección del archivo: Ya esta fija en Descargas\ Aquí</p>
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 13px; display:block; margin-bottom: 5px;">Nombre del archivo:</label>
+                    <input type="text" placeholder="Colocar el nombre del archivo sin la extensión" style="width:100%; padding: 10px; border-radius: 8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.05); color:#fff;">
+                </div>
+                <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 20px;">Carpeta de Salida: Ya esta fija en Descargas\ Aquí</p>
+                
+                <div style="display:flex; gap:10px; justify-content: flex-end;">
+                    <button style="padding: 8px 16px; background:#eab308; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('Calculando proceso...')">[#|#] Calcular</button>
+                    <button style="padding: 8px 16px; background:#a855f7; border:none; border-radius:6px; color:#fff; font-weight:bold; cursor:pointer;" onclick="alert('Función ejecutada')">[☰ ☺] Procesar</button>
+                    <button style="padding: 8px 16px; background:#d97706; border:none; border-radius:6px; color:#fff; font-weight:bold; cursor:pointer;" onclick="cerrarModal('modalAyuda')">[&lt;] Salir</button>
+                </div>
+            </div>
+
+            <div id="tab2" class="tab-content">
+                <p style="font-size: 14px; color: #fff;">Contenido para la pestaña Transponer Campañas...</p>
+            </div>
+            <div id="tab3" class="tab-content">
+                <p style="font-size: 14px; color: #fff;">Contenido para la pestaña Reporte Alignet...</p>
+            </div>
+            <div id="tab4" class="tab-content">
+                <p style="font-size: 14px; color: #fff;">Contenido para la pestaña Reporte IVR...</p>
+            </div>
+            <div id="tab5" class="tab-content">
+                <p style="font-size: 14px; color: #fff;">Contenido para la pestaña S2S y Packs Migras Metas...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= VENTANA MODAL 2: BIGQUERY CONTEO ================= -->
+    <div class="modal-overlay" id="modalBigquery">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3>:: Tienes 3 opciones de Querys ::</h3>
+                <button class="close-modal" onclick="cerrarModal('modalBigquery')">✕</button>
+            </div>
+
+            <!-- Pestañas de Querys -->
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="cambiarTabBQ(event, 'bq1')">Conteo diario</button>
+                <button class="tab-btn" onclick="cambiarTabBQ(event, 'bq2')">Conteo Mensual</button>
+                <button class="tab-btn" onclick="cambiarTabBQ(event, 'bq3')">Días Reg x Mes</button>
+            </div>
+
+            <!-- Contenido del Bloc de Notas SQL -->
+            <div id="bq1" class="bq-content active">
+                <p style="font-size: 12px; color: #38bdf8; margin-bottom: 10px;">Si quieres modificar algo solo pega el nuevo contenido o modifica aquí mismo y dale click en actualizar</p>
+                <textarea style="width:100%; height: 220px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #34d399; padding: 12px; font-family: monospace; font-size: 13px;" spellcheck="false">-- CONTEO SUBIDA DE LA MAÑANA DIARIA POR DIA
+--------------------------------------------------
+-- LISTA DE TABLAS:
+-- 1. Entreg  -&gt; raw_entregas
+-- 2. LogxC   -&gt; raw_logixtal_citas
+-- 3. WspUs   -&gt; raw_whatsapp_users
+-- 4. WspOs   -&gt; raw_whatsapp_operators_sessions
+-- 5. Omnix   -&gt; raw_omnnix
+-- 6. GXsto   -&gt; raw_grafana_xstore
+-- 7. Siebel  -&gt; raw_siebel</textarea>
+                
+                <div style="display:flex; gap:10px; justify-content: flex-end; margin-top: 15px;">
+                    <button style="padding: 8px 16px; background:#eab308; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('Código copiado al portapapeles')">[=] Copiar</button>
+                    <button style="padding: 8px 16px; background:#22c55e; border:none; border-radius:6px; color:#fff; font-weight:bold; cursor:pointer;" onclick="alert('Query actualizada correctamente')">[&gt;&gt;] Actualizar</button>
+                    <button style="padding: 8px 16px; background:#d97706; border:none; border-radius:6px; color:#fff; font-weight:bold; cursor:pointer;" onclick="cerrarModal('modalBigquery')">[&lt;] Salir</button>
+                </div>
+            </div>
+
+            <div id="bq2" class="bq-content" style="display:none;">
+                <p style="font-size: 12px; color: #38bdf8; margin-bottom: 10px;">Consulta de Conteo Mensual</p>
+                <textarea style="width:100%; height: 220px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #34d399; padding: 12px; font-family: monospace; font-size: 13px;">SELECT * FROM `sistemas-jirq.mensual_conteo`</textarea>
+            </div>
+            
+            <div id="bq3" class="bq-content" style="display:none;">
+                <p style="font-size: 12px; color: #38bdf8; margin-bottom: 10px;">Consulta de Días Reg x Mes</p>
+                <textarea style="width:100%; height: 220px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #34d399; padding: 12px; font-family: monospace; font-size: 13px;">SELECT * FROM `sistemas-jirq.dias_registro`</textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para controlar las ventanas modales y pestañas -->
+    <script>
+        function abrirModal(idModal) {
+            document.getElementById(idModal).style.display = 'flex';
+        }
+
+        function cerrarModal(idModal) {
+            document.getElementById(idModal).style.display = 'none';
+        }
+
+        function cambiarTab(evt, tabId) {
+            let contents = document.querySelectorAll('.tab-content');
+            contents.forEach(c => c.classList.remove('active'));
+
+            let buttons = document.querySelectorAll('#modalAyuda .tab-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function cambiarTabBQ(evt, tabId) {
+            let contents = document.querySelectorAll('.bq-content');
+            contents.forEach(c => {
+                c.style.display = 'none';
+                c.classList.remove('active');
+            });
+
+            let buttons = document.querySelectorAll('#modalBigquery .tab-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+
+            let activeTab = document.getElementById(tabId);
+            activeTab.style.display = 'block';
+            activeTab.classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>
