@@ -94,8 +94,8 @@
             // FASE 2: Verificar la Contraseña
             else if (btnAction.getAttribute('data-estado') === "ingresar_clave") {
                 if (inputVal === claveRealFirebase) {
-                    // REDIRECCIÓN EXITOSA: Aquí carga tu siguiente página (puedes cambiar "dashboard.html" por el nombre de tu archivo)
-                    window.location.href = "dashboard.html";
+                    // REDIRECCIÓN EXITOSA: Aquí carga tu siguiente página (puedes cambiar "tablero.html" por el nombre de tu archivo)
+                    window.location.href = "tablero.html";
                 } else {
                     intentosFallidos++;
                     if (intentosFallidos >= 3) {
