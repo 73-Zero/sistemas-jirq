@@ -94,7 +94,8 @@
             // FASE 2: Verificar la Contraseña
             else if (btnAction.getAttribute('data-estado') === "ingresar_clave") {
                 if (inputVal === claveRealFirebase) {
-                    alert("¡Contraseña correcta! Acceso concedido al sistema principal.");
+                    // REDIRECCIÓN EXITOSA: Aquí carga tu siguiente página (puedes cambiar "dashboard.html" por el nombre de tu archivo)
+                    window.location.href = "dashboard.html";
                 } else {
                     intentosFallidos++;
                     if (intentosFallidos >= 3) {
@@ -139,7 +140,6 @@
 
             const fechaHoraActual = new Date().toLocaleString();
             
-            // Paquete de datos a enviar por POST al Script de Google
             const payload = {
                 correo: correoGlobal || 'No ingresado',
                 motivo: motivo,
@@ -205,7 +205,6 @@
             transition: -webkit-filter 0.6s ease, filter 0.6s ease;
         }
 
-        /* EFECTO VISUAL: Fondo en blanco y negro absoluto y forzado al bloquearse */
         html.bloqueado-gris, body.bloqueado-gris {
             -webkit-filter: grayscale(100%) !important;
             filter: grayscale(100%) !important;
@@ -226,7 +225,6 @@
             transition: all 0.5s ease;
         }
 
-        /* EFECTO VISUAL: Tarjeta bloqueada */
         .login-card.tarjeta-bloqueada {
             background: rgba(20, 20, 20, 0.82) !important;
             border: 1px solid rgba(255, 50, 50, 0.5) !important;
