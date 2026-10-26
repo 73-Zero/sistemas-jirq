@@ -200,6 +200,43 @@
             color: white;
         }
 
+        /* Pestañas internas de modales */
+        .tabs-header {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 8px 14px;
+            border-radius: 8px;
+            color: #475569;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #7c3aed;
+            color: white;
+            border-color: #7c3aed;
+            font-weight: 500;
+        }
+
+        .tab-content, .bq-content {
+            display: none;
+        }
+
+        .tab-content.active, .bq-content.active {
+            display: block;
+        }
+
         /* Tabla Interactiva Estilo Excel */
         .table-toolbar {
             display: flex;
@@ -395,7 +432,7 @@
         </div>
     </div>
 
-    <!-- Modal Listado de Funciones -->
+    <!-- Modal 1: Listado de Funciones -->
     <div class="modal-overlay" id="modalListadoFunciones">
         <div class="modal-window">
             <div class="modal-header">
@@ -494,24 +531,87 @@
         </div>
     </div>
 
-    <!-- Modales Adicionales -->
+    <!-- Modal 2: Ayuda Rápida -->
     <div class="modal-overlay" id="modalAyuda">
         <div class="modal-window">
             <div class="modal-header">
                 <h3>:: Ayuda Procesos ... ::</h3>
                 <button class="close-modal" onclick="cerrarModal('modalAyuda')">✕</button>
             </div>
-            <p style="color: #3b2d54;">Contenido de ayuda rápida...</p>
+
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="cambiarTab(event, 'tab1')">NAC - DEACS Anonimizador</button>
+                <button class="tab-btn" onclick="cambiarTab(event, 'tab2')">Transponer Campañas</button>
+                <button class="tab-btn" onclick="cambiarTab(event, 'tab3')">Reporte Alignet</button>
+                <button class="tab-btn" onclick="cambiarTab(event, 'tab4')">Reporte IVR</button>
+                <button class="tab-btn" onclick="cambiarTab(event, 'tab5')">S2S y Packs Migras Metas</button>
+            </div>
+
+            <div id="tab1" class="tab-content active">
+                <p style="font-size: 13px; color: #475569; margin-bottom: 15px;">Dirección del archivo: Ya esta fija en Descargas\ Aquí</p>
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 13px; display:block; margin-bottom: 5px; font-weight: 500;">Nombre del archivo:</label>
+                    <input type="text" placeholder="Colocar el nombre del archivo sin la extensión" style="width:100%; padding: 10px; border-radius: 8px; border:1px solid rgba(0,0,0,0.2); background:rgba(255,255,255,0.8); color:#0f172a;">
+                </div>
+                <p style="font-size: 13px; color: #475569; margin-bottom: 20px;">Carpeta de Salida: Ya esta fija en Descargas\ Aquí</p>
+                
+                <div style="display:flex; gap:10px; justify-content: flex-end;">
+                    <button style="padding: 8px 16px; background:#eab308; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('Calculando proceso...')">[#|#] Calcular</button>
+                    <button style="padding: 8px 16px; background:#7c3aed; color:#fff; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('Función ejecutada')">[☰ ☺] Procesar</button>
+                    <button style="padding: 8px 16px; background:#d97706; color:#fff; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="cerrarModal('modalAyuda')">[&lt;] Salir</button>
+                </div>
+            </div>
+
+            <div id="tab2" class="tab-content"><p style="font-size: 14px; color: #1e293b;">Contenido para la pestaña Transponer Campañas...</p></div>
+            <div id="tab3" class="tab-content"><p style="font-size: 14px; color: #1e293b;">Contenido para la pestaña Reporte Alignet...</p></div>
+            <div id="tab4" class="tab-content"><p style="font-size: 14px; color: #1e293b;">Contenido para la pestaña Reporte IVR...</p></div>
+            <div id="tab5" class="tab-content"><p style="font-size: 14px; color: #1e293b;">Contenido para la pestaña S2S y Packs Migras Metas...</p></div>
         </div>
     </div>
 
+    <!-- Modal 3: Bigquery Conteo -->
     <div class="modal-overlay" id="modalBigquery">
         <div class="modal-window">
             <div class="modal-header">
                 <h3>:: Tienes 3 opciones de Querys ::</h3>
                 <button class="close-modal" onclick="cerrarModal('modalBigquery')">✕</button>
             </div>
-            <p style="color: #3b2d54;">Contenido de Bigquery...</p>
+
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="cambiarTabBQ(event, 'bq1')">Conteo diario</button>
+                <button class="tab-btn" onclick="cambiarTabBQ(event, 'bq2')">Conteo Mensual</button>
+                <button class="tab-btn" onclick="cambiarTabBQ(event, 'bq3')">Días Reg x Mes</button>
+            </div>
+
+            <div id="bq1" class="bq-content active">
+                <p style="font-size: 12px; color: #0284c7; margin-bottom: 10px; font-weight: 500;">Si quieres modificar algo solo pega el nuevo contenido o modifica aquí mismo y dale click en actualizar</p>
+                <textarea style="width:100%; height: 220px; background: #0f172a; border: 1px solid rgba(0,0,0,0.2); border-radius: 8px; color: #34d399; padding: 12px; font-family: monospace; font-size: 13px;" spellcheck="false">-- CONTEO SUBIDA DE LA MAÑANA DIARIA POR DIA
+--------------------------------------------------
+-- LISTA DE TABLAS:
+-- 1. Entreg  -> raw_entregas
+-- 2. LogxC   -> raw_logixtal_citas
+-- 3. WspUs   -> raw_whatsapp_users
+-- 4. WspOs   -> raw_whatsapp_operators_sessions
+-- 5. Omnix   -> raw_omnnix
+-- 6. GXsto   -> raw_grafana_xstore
+-- 7. Siebel  -> raw_siebel</textarea>
+                
+                <div style="display:flex; gap:10px; justify-content: flex-end; margin-top: 15px;">
+                    <button style="padding: 8px 16px; background:#eab308; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('Código copiado al portapapeles')">[=] Copiar</button>
+                    <button style="padding: 8px 16px; background:#22c55e; border:none; border-radius:6px; color:#fff; font-weight:bold; cursor:pointer;" onclick="alert('Query actualizada correctamente')">[&gt;&gt;] Actualizar</button>
+                    <button style="padding: 8px 16px; background:#d97706; border:none; border-radius:6px; color:#fff; font-weight:bold; cursor:pointer;" onclick="cerrarModal('modalBigquery')">[&lt;] Salir</button>
+                </div>
+            </div>
+
+            <div id="bq2" class="bq-content" style="display:none;">
+                <p style="font-size: 12px; color: #0284c7; margin-bottom: 10px; font-weight: 500;">Consulta de Conteo Mensual</p>
+                <textarea style="width:100%; height: 220px; background: #0f172a; border: 1px solid rgba(0,0,0,0.2); border-radius: 8px; color: #34d399; padding: 12px; font-family: monospace; font-size: 13px;">SELECT * FROM `sistemas-jirq.mensual_conteo`</textarea>
+            </div>
+            
+            <div id="bq3" class="bq-content" style="display:none;">
+                <p style="font-size: 12px; color: #0284c7; margin-bottom: 10px; font-weight: 500;">Consulta de Días Reg x Mes</p>
+                <textarea style="width:100%; height: 220px; background: #0f172a; border: 1px solid rgba(0,0,0,0.2); border-radius: 8px; color: #34d399; padding: 12px; font-family: monospace; font-size: 13px;">SELECT * FROM `sistemas-jirq.dias_registro`</textarea>
+            </div>
         </div>
     </div>
 
@@ -529,6 +629,33 @@
         function abrirTutorial(num) {
             document.getElementById('tituloTutorial').innerText = ":: Tutorial del Proceso #" + num + " ::";
             abrirModal('modalTutorial');
+        }
+
+        function cambiarTab(evt, tabId) {
+            let contents = document.querySelectorAll('#modalAyuda .tab-content');
+            contents.forEach(c => c.classList.remove('active'));
+
+            let buttons = document.querySelectorAll('#modalAyuda .tab-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function cambiarTabBQ(evt, tabId) {
+            let contents = document.querySelectorAll('#modalBigquery .bq-content');
+            contents.forEach(c => {
+                c.style.display = 'none';
+                c.classList.remove('active');
+            });
+
+            let buttons = document.querySelectorAll('#modalBigquery .tab-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+
+            let activeTab = document.getElementById(tabId);
+            activeTab.style.display = 'block';
+            activeTab.classList.add('active');
+            evt.currentTarget.classList.add('active');
         }
 
         function evaluarTurno(input) {
@@ -620,7 +747,7 @@
                 let textoEstado = inputEstado ? inputEstado.value.trim().toLowerCase() : "";
 
                 let coincideEstado = (filtroEstado === "" || textoEstado === filtroEstado || textoEstado.includes(filtroEstado));
-                let coincideTexto = (filtroTexto === "" || textoFuncion.includes(textoFiltro));
+                let coincideTexto = (filtroTexto === "" || textoFuncion.includes(filtroTexto));
 
                 if (coincideEstado && coincideTexto) {
                     row.style.display = "";
