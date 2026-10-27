@@ -108,7 +108,7 @@
             box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2);
         }
 
-      /* Estilo de Iconos: Efecto Carpeta / Capa Frontal Traslúcida Estilo Windows */
+      /* Estilo de Iconos: Efecto Carpeta Real con Sombreado Plomito y Capa Desplazada */
         .module-icon {
             width: 54px;
             height: 54px;
@@ -117,24 +117,24 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: visible; /* Permite que la sombra sobresalga un poco */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            overflow: visible;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
         }
 
-        /* Panel frontal translúcido (el rectángulo con difuminado suave y sombradito plomito) */
+        /* Panel frontal traslúcido desplazado a la izquierda con el sombradito plomito de fondo */
         .module-icon::after {
             content: '';
             position: absolute;
-            bottom: 3px;
-            left: 2px;
-            width: 44px;
+            bottom: 4px;
+            left: -3px; /* Desplazado un poquito más a la izquierda como pediste */
+            width: 45px;
             height: 38px;
-            background: rgba(255, 255, 255, 0.45);
+            background: rgba(255, 255, 255, 0.42);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.75);
-            box-shadow: -2px 4px 12px rgba(0, 0, 0, 0.18); /* Sombra plomita de profundidad */
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 3px 4px 14px rgba(0, 0, 0, 0.22); /* Sombra plomita de profundidad proyectada */
             z-index: 1;
         }
 
@@ -145,15 +145,16 @@
         .icon-emerald { background: linear-gradient(135deg, #10b981, #059669); }
         .icon-rose { background: linear-gradient(135deg, #f43f5e, #be123c); }
 
-        /* El icono SVG queda al frente absoluto con su propia sombrita */
+        /* El icono y su SVG flotando nítidamente al frente */
         .module-icon svg {
             width: 24px;
             height: 24px;
             fill: #ffffff;
             position: relative;
             z-index: 2; 
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
-        }        
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        
         .module-btn span {
             font-size: 13px;
             font-weight: 600;
