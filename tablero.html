@@ -108,14 +108,34 @@
             box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2);
         }
 
+        /* Estilo de Iconos con Capa Traslúcida Superpuesta (Efecto Carpeta) */
         .module-icon {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             border-radius: 14px;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+        }
+
+        /* Panel frontal traslúcido simulando la capa de las carpetas de Windows */
+        .module-icon::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 75%;
+            height: 65%;
+            background: rgba(255, 255, 255, 0.32);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-top-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            border-left: 1px solid rgba(255, 255, 255, 0.6);
         }
 
         .icon-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
@@ -126,9 +146,11 @@
         .icon-rose { background: linear-gradient(135deg, #f43f5e, #be123c); }
 
         .module-icon svg {
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             fill: #ffffff;
+            z-index: 2; /* Asegura que el icono quede por encima de la capa traslúcida */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
 
         .module-btn span {
@@ -285,7 +307,7 @@
             border-bottom: 1px solid rgba(0,0,0,0.08);
             border-right: 1px solid rgba(0,0,0,0.05);
             text-align: center;
-            color: #000000; /* Texto de la tabla en negro nítido */
+            color: #000000;
         }
 
         .excel-table tr:hover {
@@ -317,7 +339,7 @@
             background: transparent;
             font-size: 12px;
             text-align: center;
-            color: #000000; /* Inputs en negro nítido */
+            color: #000000;
             font-weight: 500;
         }
 
@@ -326,6 +348,19 @@
             border-color: #7c3aed;
             border-radius: 4px;
             outline: none;
+        }
+
+        /* Estilo para el combobox de estado en la tabla */
+        .select-estado {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.9);
+            font-size: 12px;
+            color: #000000;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
         }
 
         .input-turn {
@@ -493,7 +528,12 @@
                             <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
                             <td><input type="text" value="actualización"></td>
                             <td><input type="text" value="carga"></td>
-                            <td><input type="text" value="inactivo" onkeyup="filtrarTabla()" onchange="filtrarTabla()"></td>
+                            <td>
+                                <select class="select-estado" onchange="filtrarTabla()">
+                                    <option value="activo">Activo</option>
+                                    <option value="inactivo" selected>Inactivo</option>
+                                </select>
+                            </td>
                             <td><input type="text" value="Lunes"></td>
                             <td><button class="delete-row-btn" onclick="eliminarFila(this)">✕</button></td>
                         </tr>
@@ -510,7 +550,12 @@
                             <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
                             <td><input type="text" value="Actualización de data"></td>
                             <td><input type="text" value="Envíos"></td>
-                            <td><input type="text" value="Activo" onkeyup="filtrarTabla()" onchange="filtrarTabla()"></td>
+                            <td>
+                                <select class="select-estado" onchange="filtrarTabla()">
+                                    <option value="activo" selected>Activo</option>
+                                    <option value="inactivo">Inactivo</option>
+                                </select>
+                            </td>
                             <td><input type="text" value="Martes y Miércoles"></td>
                             <td><button class="delete-row-btn" onclick="eliminarFila(this)">✕</button></td>
                         </tr>
@@ -616,7 +661,7 @@
         </div>
     </div>
 
-    <!-- Script de control y funcionalidades interactivas con barrido de filtros mejorado -->
+    <!-- Script de control y funcionalidades interactivas -->
     <script>
         function abrirModal(idModal) {
             document.getElementById(idModal).style.display = 'flex';
@@ -715,7 +760,12 @@
                 <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
                 <td><input type="text" placeholder="Función"></td>
                 <td><input type="text" placeholder="Detalle"></td>
-                <td><input type="text" value="Activo" onkeyup="filtrarTabla()" onchange="filtrarTabla()"></td>
+                <td>
+                    <select class="select-estado" onchange="filtrarTabla()">
+                        <option value="activo" selected>Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                    </select>
+                </td>
                 <td><input type="text" placeholder="Días"></td>
                 <td><button class="delete-row-btn" onclick="eliminarFila(this)">✕</button></td>
             `;
@@ -735,25 +785,20 @@
             filtrarTabla();
         }
 
-       /* Barrido y filtrado automático */
+        /* Filtrado automático adaptado para el combobox (select) de estado */
         function filtrarTabla() {
-            let selectElem = document.getElementById('filtroEstado');
-            let inputBuscarElem = document.getElementById('filtroBuscar');
-            
-            let filtroEstado = selectElem ? selectElem.value.trim().toLowerCase() : "";
-            let filtroTexto = inputBuscarElem ? inputBuscarElem.value.trim().toLowerCase() : "";
-            
+            let filtroEstado = document.getElementById('filtroEstado').value.trim().toLowerCase();
+            let filtroTexto = document.getElementById('filtroBuscar').value.trim().toLowerCase();
             let filas = document.querySelectorAll('#cuerpoTabla tr');
 
             filas.forEach(row => {
                 let inputFuncion = row.querySelector('td:nth-child(3) input');
-                let inputEstado = row.querySelector('td:nth-child(13) input');
+                let selectEstado = row.querySelector('td:nth-child(13) select');
 
                 let textoFuncion = inputFuncion ? inputFuncion.value.trim().toLowerCase() : "";
-                let textoEstado = inputEstado ? inputEstado.value.trim().toLowerCase() : "";
+                let valorEstado = selectEstado ? selectEstado.value.trim().toLowerCase() : "";
 
-                // Comparamos ambos lados estrictamente en minúsculas y limpiando espacios
-                let coincideEstado = (filtroEstado === "" || textoEstado === filtroEstado || textoEstado.includes(filtroEstado));
+                let coincideEstado = (filtroEstado === "" || valorEstado === filtroEstado);
                 let coincideTexto = (filtroTexto === "" || textoFuncion.includes(filtroTexto));
 
                 if (coincideEstado && coincideTexto) {
@@ -763,6 +808,7 @@
                 }
             });
         }
+
         let filaArrastrada = null;
 
         function dragStart(e) {
