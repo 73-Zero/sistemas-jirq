@@ -108,7 +108,7 @@
             box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2);
         }
 
-      /* Estilo de Iconos: Efecto Carpeta Real con Sombreado Plomito y Capa Desplazada */
+        /* Estilo de Iconos: Efecto Carpeta Real con Sombreado Plomito y Capa Desplazada */
         .module-icon {
             width: 54px;
             height: 54px;
@@ -121,12 +121,11 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.06);
         }
 
-        /* Panel frontal traslúcido desplazado a la izquierda con el sombradito plomito de fondo */
         .module-icon::after {
             content: '';
             position: absolute;
             bottom: 4px;
-            left: -3px; /* Desplazado un poquito más a la izquierda como pediste */
+            left: -3px;
             width: 45px;
             height: 38px;
             background: rgba(255, 255, 255, 0.42);
@@ -134,7 +133,7 @@
             -webkit-backdrop-filter: blur(6px);
             border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.7);
-            box-shadow: 3px 4px 14px rgba(0, 0, 0, 0.22); /* Sombra plomita de profundidad proyectada */
+            box-shadow: 3px 4px 14px rgba(0, 0, 0, 0.22);
             z-index: 1;
         }
 
@@ -145,7 +144,6 @@
         .icon-emerald { background: linear-gradient(135deg, #10b981, #059669); }
         .icon-rose { background: linear-gradient(135deg, #f43f5e, #be123c); }
 
-        /* El icono y su SVG flotando nítidamente al frente */
         .module-icon svg {
             width: 24px;
             height: 24px;
@@ -154,7 +152,7 @@
             z-index: 2; 
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
-        
+
         .module-btn span {
             font-size: 13px;
             font-weight: 600;
@@ -352,7 +350,6 @@
             outline: none;
         }
 
-        /* Estilo para el combobox de estado en la tabla */
         .select-estado {
             padding: 4px 8px;
             border-radius: 6px;
@@ -787,7 +784,6 @@
             filtrarTabla();
         }
 
-        /* Filtrado automático adaptado para el combobox (select) de estado */
         function filtrarTabla() {
             let filtroEstado = document.getElementById('filtroEstado').value.trim().toLowerCase();
             let filtroTexto = document.getElementById('filtroBuscar').value.trim().toLowerCase();
