@@ -121,19 +121,28 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.06);
         }
 
-        .module-icon::after {
+       .module-icon::after {
             content: '';
             position: absolute;
             bottom: 4px;
             left: -3px;
             width: 48px;
-            height: 42px;
-            background: rgba(255, 255, 255, 0.42);
+            height: 50px;
+            background: rgba(255, 255, 255, 0.38);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            box-shadow: 3px 4px 18px rgba(0, 0, 0, 0.35);
+            border-radius: 12px;
+            
+            /* Borde superior y lateral más brillante para simular el relieve de la carpeta */
+            border-top: 1px solid rgba(255, 255, 255, 0.9);
+            border-left: 1px solid rgba(255, 255, 255, 0.8);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+
+            /* Sombra ultra ceñida al contorno */
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), 
+                        inset 0 0 6px rgba(255, 255, 255, 0.5);
+            
             z-index: 1;
         }
 
