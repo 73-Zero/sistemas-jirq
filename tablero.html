@@ -108,10 +108,10 @@
             box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2);
         }
 
-        /* Estilo de Iconos con Capa Traslúcida Superpuesta (Efecto Carpeta) */
+       /* Estilo de Iconos con Capa Traslúcida desde la izquierda (Efecto Carpeta Real) */
         .module-icon {
-            width: 52px;
-            height: 52px;
+            width: 54px;
+            height: 54px;
             border-radius: 14px;
             display: flex;
             justify-content: center;
@@ -121,21 +121,22 @@
             box-shadow: 0 6px 15px rgba(0,0,0,0.12);
         }
 
-        /* Panel frontal traslúcido simulando la capa de las carpetas de Windows */
+        /* Panel frontal traslúcido alineado a la izquierda con sombradito sutil */
         .module-icon::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 75%;
-            height: 65%;
-            background: rgba(255, 255, 255, 0.32);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border-top-left-radius: 12px;
+            top: 10px;
+            left: 2px;
+            width: 78%;
+            height: 72%;
+            background: rgba(255, 255, 255, 0.38);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-top-right-radius: 12px;
             border-bottom-right-radius: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.6);
-            border-left: 1px solid rgba(255, 255, 255, 0.6);
+            border-top: 1px solid rgba(255, 255, 255, 0.7);
+            border-right: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.1); /* Sombradito plomito característico */
         }
 
         .icon-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
@@ -149,10 +150,10 @@
             width: 26px;
             height: 26px;
             fill: #ffffff;
-            z-index: 2; /* Asegura que el icono quede por encima de la capa traslúcida */
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            z-index: 2; /* Mantiene el icono nítido al frente */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
         }
-
+        
         .module-btn span {
             font-size: 13px;
             font-weight: 600;
