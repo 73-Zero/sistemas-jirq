@@ -108,7 +108,7 @@
             box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2);
         }
 
-       /* Estilo de Iconos con Capa Traslúcida desde la izquierda (Efecto Carpeta Real) */
+      /* Estilo de Iconos: Efecto Carpeta / Capa Frontal Traslúcida Estilo Windows */
         .module-icon {
             width: 54px;
             height: 54px;
@@ -117,26 +117,25 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+            overflow: visible; /* Permite que la sombra sobresalga un poco */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
         }
 
-        /* Panel frontal traslúcido alineado a la izquierda con sombradito sutil */
+        /* Panel frontal translúcido (el rectángulo con difuminado suave y sombradito plomito) */
         .module-icon::after {
             content: '';
             position: absolute;
-            top: 10px;
+            bottom: 3px;
             left: 2px;
-            width: 78%;
-            height: 72%;
-            background: rgba(255, 255, 255, 0.38);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border-top-right-radius: 12px;
-            border-bottom-right-radius: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.7);
-            border-right: 1px solid rgba(255, 255, 255, 0.7);
-            box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.1); /* Sombradito plomito característico */
+            width: 44px;
+            height: 38px;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            box-shadow: -2px 4px 12px rgba(0, 0, 0, 0.18); /* Sombra plomita de profundidad */
+            z-index: 1;
         }
 
         .icon-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
@@ -146,14 +145,15 @@
         .icon-emerald { background: linear-gradient(135deg, #10b981, #059669); }
         .icon-rose { background: linear-gradient(135deg, #f43f5e, #be123c); }
 
+        /* El icono SVG queda al frente absoluto con su propia sombrita */
         .module-icon svg {
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             fill: #ffffff;
-            z-index: 2; /* Mantiene el icono nítido al frente */
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
-        }
-        
+            position: relative;
+            z-index: 2; 
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+        }        
         .module-btn span {
             font-size: 13px;
             font-weight: 600;
