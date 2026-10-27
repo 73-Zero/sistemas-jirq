@@ -735,10 +735,14 @@
             filtrarTabla();
         }
 
-        /* Barrido y filtrado automático en tiempo real */
+       /* Barrido y filtrado automático */
         function filtrarTabla() {
-            let filtroEstado = document.getElementById('filtroEstado').value.trim().toLowerCase();
-            let filtroTexto = document.getElementById('filtroBuscar').value.trim().toLowerCase();
+            let selectElem = document.getElementById('filtroEstado');
+            let inputBuscarElem = document.getElementById('filtroBuscar');
+            
+            let filtroEstado = selectElem ? selectElem.value.trim().toLowerCase() : "";
+            let filtroTexto = inputBuscarElem ? inputBuscarElem.value.trim().toLowerCase() : "";
+            
             let filas = document.querySelectorAll('#cuerpoTabla tr');
 
             filas.forEach(row => {
@@ -748,7 +752,7 @@
                 let textoFuncion = inputFuncion ? inputFuncion.value.trim().toLowerCase() : "";
                 let textoEstado = inputEstado ? inputEstado.value.trim().toLowerCase() : "";
 
-                // Verificación exacta o parcial del estado tras el barrido
+                // Comparamos ambos lados estrictamente en minúsculas y limpiando espacios
                 let coincideEstado = (filtroEstado === "" || textoEstado === filtroEstado || textoEstado.includes(filtroEstado));
                 let coincideTexto = (filtroTexto === "" || textoFuncion.includes(filtroTexto));
 
@@ -759,7 +763,6 @@
                 }
             });
         }
-
         let filaArrastrada = null;
 
         function dragStart(e) {
