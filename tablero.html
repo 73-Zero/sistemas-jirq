@@ -285,7 +285,7 @@
             border-bottom: 1px solid rgba(0,0,0,0.08);
             border-right: 1px solid rgba(0,0,0,0.05);
             text-align: center;
-            color: #1e293b;
+            color: #000000; /* Texto de la tabla en negro nítido */
         }
 
         .excel-table tr:hover {
@@ -317,7 +317,8 @@
             background: transparent;
             font-size: 12px;
             text-align: center;
-            color: #1e293b;
+            color: #000000; /* Inputs en negro nítido */
+            font-weight: 500;
         }
 
         .excel-table input[type="text"]:focus {
@@ -445,8 +446,8 @@
                     <label style="font-size: 12px; font-weight: 500; margin-right: 5px;">Estado:</label>
                     <select id="filtroEstado" onchange="filtrarTabla()">
                         <option value="">[ Todos ]</option>
-                        <option value="Activo">Activo</option>
-                        <option value="Inactivo">Inactivo</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
                     </select>
                 </div>
                 <div style="flex-grow: 1;">
@@ -482,23 +483,6 @@
                         <tr draggable="true" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)">
                             <td><span class="drag-handle" title="Arrastrar para mover">⠿</span></td>
                             <td><a href="#" onclick="abrirTutorial(1); return false;" style="color:#7c3aed; font-weight:bold;">1</a></td>
-                            <td><input type="text" value="Envíos Automáticos Python - Jose" onkeyup="filtrarTabla()"></td>
-                            <td><input type="text" value="Python"></td>
-                            <td><input type="text" value="SharePoint"></td>
-                            <td><input type="text" class="input-turn has-check" value="✔" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" value="Actualización de data"></td>
-                            <td><input type="text" value="Envíos"></td>
-                            <td><input type="text" value="Activo" onkeyup="filtrarTabla()" onchange="filtrarTabla()"></td>
-                            <td><input type="text" value="Martes y Miércoles"></td>
-                            <td><button class="delete-row-btn" onclick="eliminarFila(this)">✕</button></td>
-                        </tr>
-                        <tr draggable="true" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)">
-                            <td><span class="drag-handle" title="Arrastrar para mover">⠿</span></td>
-                            <td><a href="#" onclick="abrirTutorial(2); return false;" style="color:#7c3aed; font-weight:bold;">2</a></td>
                             <td><input type="text" value="probando" onkeyup="filtrarTabla()"></td>
                             <td><input type="text" value="aws"></td>
                             <td><input type="text" value="bigquery"></td>
@@ -511,6 +495,23 @@
                             <td><input type="text" value="carga"></td>
                             <td><input type="text" value="inactivo" onkeyup="filtrarTabla()" onchange="filtrarTabla()"></td>
                             <td><input type="text" value="Lunes"></td>
+                            <td><button class="delete-row-btn" onclick="eliminarFila(this)">✕</button></td>
+                        </tr>
+                        <tr draggable="true" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)">
+                            <td><span class="drag-handle" title="Arrastrar para mover">⠿</span></td>
+                            <td><a href="#" onclick="abrirTutorial(2); return false;" style="color:#7c3aed; font-weight:bold;">2</a></td>
+                            <td><input type="text" value="Envíos Automáticos Python - Jose" onkeyup="filtrarTabla()"></td>
+                            <td><input type="text" value="Python"></td>
+                            <td><input type="text" value="SharePoint"></td>
+                            <td><input type="text" class="input-turn has-check" value="✔" onkeyup="evaluarTurno(this)"></td>
+                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
+                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
+                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
+                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
+                            <td><input type="text" value="Actualización de data"></td>
+                            <td><input type="text" value="Envíos"></td>
+                            <td><input type="text" value="Activo" onkeyup="filtrarTabla()" onchange="filtrarTabla()"></td>
+                            <td><input type="text" value="Martes y Miércoles"></td>
                             <td><button class="delete-row-btn" onclick="eliminarFila(this)">✕</button></td>
                         </tr>
                     </tbody>
@@ -615,7 +616,7 @@
         </div>
     </div>
 
-    <!-- Script de control y funcionalidades interactivas -->
+    <!-- Script de control y funcionalidades interactivas con barrido de filtros mejorado -->
     <script>
         function abrirModal(idModal) {
             document.getElementById(idModal).style.display = 'flex';
@@ -734,6 +735,7 @@
             filtrarTabla();
         }
 
+        /* Barrido y filtrado automático en tiempo real */
         function filtrarTabla() {
             let filtroEstado = document.getElementById('filtroEstado').value.trim().toLowerCase();
             let filtroTexto = document.getElementById('filtroBuscar').value.trim().toLowerCase();
@@ -746,6 +748,7 @@
                 let textoFuncion = inputFuncion ? inputFuncion.value.trim().toLowerCase() : "";
                 let textoEstado = inputEstado ? inputEstado.value.trim().toLowerCase() : "";
 
+                // Verificación exacta o parcial del estado tras el barrido
                 let coincideEstado = (filtroEstado === "" || textoEstado === filtroEstado || textoEstado.includes(filtroEstado));
                 let coincideTexto = (filtroTexto === "" || textoFuncion.includes(filtroTexto));
 
