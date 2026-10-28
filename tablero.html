@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tablero Principal - Sistema JIRQ</title>
     
-    <!-- ICONO DE LA PESTAÑA (FAVICON) -->
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2950/2950683.png">
-
+    
     <!-- Fuente Roboto -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
-    <!-- Enlace exclusivo al CSS del tablero -->
+    <!-- CSS Exclusivo del Tablero -->
     <link rel="stylesheet" href="css/estilojirq_tablero.css">
 </head>
 <body>
@@ -23,10 +23,19 @@
             <h1>Menú Inicial</h1>
             <p>Opciones para realizar los trabajos KIWOX-ENTEL</p>
         </div>
-        
+
         <div class="menu-inner-box">
             <div class="modules-grid">
                 
+                <!-- 1. Registro Usuarios -->
+                <button class="module-btn" onclick="abrirModal('modalRegistroUsuarios')">
+                    <div class="module-icon icon-teal">
+                        <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    </div>
+                    <span>Registro Usuarios</span>
+                </button>
+
+                <!-- 2. Listado Funciones -->
                 <button class="module-btn" onclick="abrirModal('modalListadoFunciones')">
                     <div class="module-icon icon-blue">
                         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
@@ -34,37 +43,50 @@
                     <span>Listado Funciones</span>
                 </button>
 
-                <button class="module-btn" onclick="alert('Módulo Calcular Datos listo para configurar')">
+                <!-- 3. Calcular Datos -->
+                <button class="module-btn" onclick="abrirModulo('calcular_datos')">
                     <div class="module-icon icon-purple">
-                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 16H6V5h12v14zM7 7h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>
                     </div>
                     <span>Calcular Datos</span>
                 </button>
 
+                <!-- 4. Ayuda Rápida -->
                 <button class="module-btn" onclick="abrirModal('modalAyuda')">
-                    <div class="module-icon icon-amber">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <div class="module-icon icon-orange">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
                     </div>
                     <span>Ayuda Rápida</span>
                 </button>
 
+                <!-- 5. Léeme primero -->
+                <button class="module-btn" onclick="abrirModal('modalLeemePrimero')">
+                    <div class="module-icon icon-green-light">
+                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
+                    </div>
+                    <span>Léeme primero</span>
+                </button>
+
+                <!-- 6. Bigquery Conteo -->
                 <button class="module-btn" onclick="abrirModal('modalBigquery')">
                     <div class="module-icon icon-cyan">
-                        <svg viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 4.79 4 7s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4M4 9v3c0 2.21 3.58 4 8 4s8-1.79 8-4V9c0 2.21-3.58 4-8 4s-8-1.79-8-4m0 5v3c0 2.21 3.58 4 8 4s8-1.79 8-4v-3c0 2.21-3.58 4-8 4s-8-1.79-8-4z"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
                     </div>
                     <span>Bigquery Conteo</span>
                 </button>
 
-                <button class="module-btn" onclick="alert('Módulo Metas Entel listo para configurar')">
+                <!-- 7. Metas Entel y Socios -->
+                <button class="module-btn" onclick="abrirModulo('metas_entel')">
                     <div class="module-icon icon-emerald">
-                        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-35zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
                     </div>
                     <span>Metas Entel y Socios</span>
                 </button>
 
-                <button class="module-btn" onclick="alert('Módulo Query Variadas listo para configurar')">
+                <!-- 8. Query Variadas -->
+                <button class="module-btn" onclick="abrirModulo('query_variadas')">
                     <div class="module-icon icon-rose">
-                        <svg viewBox="0 0 24 24"><path d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-6c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-4v-7h4v7z"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
                     </div>
                     <span>Query Variadas</span>
                 </button>
@@ -73,7 +95,109 @@
         </div>
     </div>
 
-    <!-- Modal 1: Listado de Funciones -->
+    <!-- Modal 1: Registro de Usuarios -->
+    <div class="modal-overlay" id="modalRegistroUsuarios">
+        <div class="modal-window" style="max-width: 1200px;">
+            <div class="modal-header">
+                <h3>:: Gestión y Registro de Usuarios - Sistema JIRQ ::</h3>
+                <button class="close-modal" onclick="cerrarModal('modalRegistroUsuarios')">✕</button>
+            </div>
+
+            <!-- Barra de Herramientas -->
+            <div class="table-toolbar">
+                <div>
+                    <label style="font-size: 12px; font-weight: 500; margin-right: 5px;">Estado:</label>
+                    <select id="filtroEstadoUsuarios">
+                        <option value="">[ Todos ]</option>
+                        <option value="1">Activo</option>
+                        <option value="0">Inactivo</option>
+                    </select>
+                </div>
+                <div style="flex-grow: 1;">
+                    <input type="text" id="filtroBuscarUsuario" placeholder="🔍 Buscar por correo o ID..." style="width: 100%;">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="abrirModal('modalNuevoUsuarioForm')" style="padding: 8px 14px; background:#10b981; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">+ Nuevo Usuario</button>
+                    <button onclick="exportarUsuariosCSV()" style="padding: 8px 14px; background:#0284c7; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">📥 Exportar CSV</button>
+                </div>
+            </div>
+
+           <!-- Tabla de Usuarios -->
+            <div class="table-container">
+                <table class="excel-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;">#</th>
+                            <th style="width: 90px;">ID / Nombre</th>
+                            <th>Correo (Usuario)</th>
+                            <th style="width: 140px;">Clave Generada</th>
+                            <th style="width: 90px;">Estado</th>
+                            <th style="width: 80px;">País</th>
+                            <th style="width: 120px;">Fecha_Hora</th>
+                            <th>Permisos Módulos (Checks)</th>
+                            <th style="width: 70px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" value="admin" style="width: 50px; text-align: center;"></td>
+                            <td><input type="text" value="zerolimite73@gmail.com"></td>
+                            <td><input type="text" value="Animes73.*-*@####ñ" style="font-family: monospace; color: #0284c7;" readonly></td>
+                            <td>
+                                <select class="select-estado">
+                                    <option value="1" selected>Activo</option>
+                                    <option value="0">Inactivo</option>
+                                </select>
+                            </td>
+                            <td><input type="text" value="Peru" style="text-align: center;"></td>
+                            <td><input type="text" value="Pendiente" style="color: #d97706; text-align: center; font-size: 11px;" readonly></td>
+                            <td>
+                                <div class="permisos-checks-grid">
+                                    <label title="Listado Funciones"><input type="checkbox" checked> Func.</label>
+                                    <label title="Calcular Datos"><input type="checkbox" checked> Calc.</label>
+                                    <label title="Ayuda Rápida"><input type="checkbox" checked> Ayu.</label>
+                                    <label title="Conteo Tablas"><input type="checkbox" checked> Cont.</label>
+                                    <label title="Metas Entel"><input type="checkbox" checked> Met.</label>
+                                    <label title="Querys variadas"><input type="checkbox" checked> Var.</label>
+                                </div>
+                            </td>
+                            <td><button class="delete-row-btn" onclick="alert('Eliminar usuario')">✕</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+    <!-- Sub-Modal: Formulario para Agregar Nuevo Usuario (Solo ID/Nombre y Correo) -->
+    <div class="modal-overlay" id="modalNuevoUsuarioForm">
+        <div class="modal-window" style="max-width: 480px; height: auto;">
+            <div class="modal-header">
+                <h3>:: Registrar Nuevo Usuario ::</h3>
+                <button class="close-modal" onclick="cerrarModal('modalNuevoUsuarioForm')">✕</button>
+            </div>
+            <div style="padding: 15px; display: flex; flex-direction: column; gap: 14px;">
+                <div>
+                    <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 5px; color: #3b2d54;">Correo Electrónico (Usuario):</label>
+                    <input type="text" id="nuevoCorreo" placeholder="ej. nombre_apellido@empresa.com.pe" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.15);">
+                </div>
+                <div>
+                    <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 5px; color: #3b2d54;">ID o Nombre Corto:</label>
+                    <input type="text" id="nuevoId" placeholder="ej. jose_admin" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.15);">
+                </div>
+                
+                <div style="background: rgba(124, 58, 237, 0.06); padding: 10px 12px; border-radius: 8px; border: 1px dashed #7c3aed;">
+                    <p style="font-size: 11px; color: #5b587b; margin: 0; line-height: 1.4;">ℹ️ La contraseña se generará automáticamente en el primer acceso del usuario. El estado iniciará por defecto como Activo.</p>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 5px;">
+                    <button onclick="cerrarModal('modalNuevoUsuarioForm')" style="padding: 8px 16px; background: #64748b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">Cancelar</button>
+                    <button onclick="guardarNuevoUsuario()" style="padding: 8px 16px; background: #7c3aed; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Listado de Funciones -->
     <div class="modal-overlay" id="modalListadoFunciones">
         <div class="modal-window">
             <div class="modal-header">
@@ -169,7 +293,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Sub-ventana Modal para Tutorial -->
     <div class="modal-overlay" id="modalTutorial">
         <div class="modal-window" style="max-width: 500px; height: auto;">
@@ -183,7 +307,7 @@
         </div>
     </div>
 
-    <!-- Modal 2: Ayuda Rápida -->
+    <!-- Modal 4: Ayuda Rápida -->
     <div class="modal-overlay" id="modalAyuda">
         <div class="modal-window">
             <div class="modal-header">
@@ -221,7 +345,39 @@
         </div>
     </div>
 
-    <!-- Modal 3: Bigquery Conteo -->
+    <!-- Modal 5: Léeme Primero -->
+    <div class="modal-overlay" id="modalLeemePrimero">
+        <div class="modal-window" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3>::: Leer no cuesta nada: :::</h3>
+                <button class="close-modal" onclick="cerrarModal('modalLeemePrimero')">✕</button>
+            </div>
+
+            <div style="padding: 10px 15px; max-height: 65vh; overflow-y: auto; color: #2b284c; font-size: 13.5px; line-height: 1.6;">
+                <p style="margin-bottom: 12px;"><strong>1.-</strong> Antes de usar el sistema debes saber que tu carpeta descargas será donde se descarguen los archivos según sea el caso</p>
+                <p style="margin-bottom: 12px; padding-left: 20px; color: #475569;">Así también, habrán otros procesos de donde es recomendable subir archivos desde ahí.............</p>
+                
+                <p style="margin-bottom: 12px;"><strong>2.-</strong> La 1era Opción de Listado de funciones el excel es editable para que puedas agregar o quitar funciones.</p>
+                
+                <p style="margin-bottom: 12px;"><strong>3.-</strong> La Opción Calcular Datos: es para realizar la suma de los leads brutos, netos, las preventas y las válidas según socio/canal editable.</p>
+                
+                <p style="margin-bottom: 12px;"><strong>4.-</strong> La Opción de Ayuda Rápida es para realizar trabajos de:<br>
+                <span style="color: #7c3aed; font-weight: 500; padding-left: 20px; display:inline-block; margin-top: 3px;">NAC DEACS Anonimizador / Transportar campañas / Alignet / IVR#1 / IVR#2</span></p>
+                
+                <p style="margin-bottom: 12px;"><strong>5.-</strong> La Opción de Bigquery conteo: es para revisar las tablas y cantidad de registros por cada una de ellas (conteo de filas), tanto por día, mes y año, dividivo en 3 pestañas para obtener uno día y otro mensual.</p>
+                                
+                <p style="margin-bottom: 12px;"><strong>6.-</strong> También está de Bigquery Meta Entel y Socios : es para verificar los leads, válidas, activas, resumen general esta contiene pestañas donde está agrupado por socios, fuente.</p>
+                
+                <p style="margin-bottom: 15px;"><strong>7.-</strong> La Opción de Query varios: es para tener aquellas consultas que puedan facilitar alguna tarea y/o obtener alguna respuesta más rápida</p>
+            </div>
+
+            <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px; margin-top: 10px; text-align: right;">
+                <p style="font-style: italic; font-weight: bold; color: #7c3aed; font-size: 14px;">¡Que tengas un lindo Día!</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal 6: Bigquery Conteo -->
     <div class="modal-overlay" id="modalBigquery">
         <div class="modal-window">
             <div class="modal-header">
@@ -267,7 +423,7 @@
         </div>
     </div>
 
-    <!-- Enlace exclusivo al Script JS del tablero -->
+    <!-- JS Exclusivo del Tablero -->
     <script src="js/scriptjirq_tablero.js"></script>
 </body>
 </html>

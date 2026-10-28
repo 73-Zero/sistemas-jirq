@@ -3,172 +3,132 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
-    /* Bloqueo de selección de texto en toda la web */
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-/* Permitir que el usuario pueda escribir en inputs y textareas */
-input, textarea {
-    -webkit-user-select: text !important;
-    -ms-user-select: text !important;
-    user-select: text !important;
-}
-
-html, body {
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
+    user-select: none; /* Bloqueo de selección de texto */
 }
 
 body {
-    background: url('https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?q=80&w=1974&auto=format&fit=crop') no-repeat center center fixed;
-    background-size: cover;
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #cbe2ff 0%, #e8dbfc 50%, #fbd5e7 100%);
+    padding: 20px;
 }
 
+/* Contenedor Principal con ancho fijo para 4 columnas exactas */
 .dashboard-card {
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border-top: 2px solid rgba(255, 255, 255, 0.9);
-    border-left: 2px solid rgba(255, 255, 255, 0.8);
-    border-right: 1px solid rgba(255, 255, 255, 0.3);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.7);
     border-radius: 32px;
-    padding: 35px;
-    
-    /* Ancho y centrado simétrico corregido */
-    max-width: 850px;
+    padding: 35px 40px;
     width: 100%;
-    margin: 0 auto;
-    
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 
-                inset 0 0 20px rgba(255, 255, 255, 0.5);
-    color: #3b2d54;
-}
-
-.dashboard-header {
-    margin-bottom: 25px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    padding-bottom: 15px;
+    max-width: 950px;
+    box-shadow: 
+        20px 20px 50px rgba(166, 180, 200, 0.5),
+        -15px -15px 35px rgba(255, 255, 255, 0.9),
+        inset 2px 2px 4px rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .dashboard-header h1 {
-    font-size: 26px;
-    font-weight: 700;
+    font-size: 1.9rem;
     font-style: italic;
-    color: #3b2d54;
-    text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+    color: #2b284c;
+    font-weight: 700;
 }
 
 .dashboard-header p {
-    font-size: 13px;
-    color: #5c4b78;
+    color: #6d6b8b;
+    font-size: 0.95rem;
     margin-top: 4px;
-    font-style: italic;
-    font-weight: 500;
+    margin-bottom: 25px;
 }
 
+/* Caja Interna con relieve */
 .menu-inner-box {
-    background: rgba(255, 255, 255, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 20px;
+    background: rgba(240, 243, 250, 0.55);
+    border-radius: 24px;
     padding: 25px;
-    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.4);
+    box-shadow: 
+        inset 4px 4px 10px rgba(180, 190, 210, 0.4),
+        inset -4px -4px 10px rgba(255, 255, 255, 0.9);
 }
 
+/* Grilla adaptable y responsive automática */
 .modules-grid {
     display: grid;
-    grid-template-columns: repeat(3, 180px);
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 20px;
-    justify-content: center;
 }
 
+/* Botones con Efecto Claymorphism */
 .module-btn {
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    border-radius: 16px;
-    padding: 18px 5px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: #3b2d54;
+    background: #ffffff;
+    border: none;
+    border-radius: 20px;
+    padding: 25px 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; 
-    gap: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    width: 180px;      
-    height: 130px;     
-    flex-shrink: 0;    
-    margin: 0;         
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        8px 8px 18px rgba(170, 180, 200, 0.35),
+        -8px -8px 18px rgba(255, 255, 255, 0.9);
 }
 
 .module-btn:hover {
-    background: rgba(255, 255, 255, 0.85);
-    border-color: #8b5cf6;
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 
+        12px 12px 22px rgba(160, 170, 195, 0.45),
+        -10px -10px 22px rgba(255, 255, 255, 1);
 }
 
-.module-icon {
-    width: 54px;
-    height: 54px;
-    border-radius: 14px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    overflow: visible;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-}
-
-.module-icon::after {
-    content: '';
-    position: absolute;
-    bottom: -3px;
-    left: -5px;
-    width: 48px;
-    height: 50px;
-    background: rgba(255, 255, 255, 0.38);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border-radius: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.9);
-    border-left: 1px solid rgba(255, 255, 255, 0.8);
-    border-right: 1px solid rgba(255, 255, 255, 0.3);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.20), inset 0 0 6px rgba(255, 255, 255, 0.5);
-    z-index: 1;
-}
-
-.icon-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-.icon-purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
-.icon-amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
-.icon-cyan { background: linear-gradient(135deg, #06b6d4, #0891b2); }
-.icon-emerald { background: linear-gradient(135deg, #10b981, #059669); }
-.icon-rose { background: linear-gradient(135deg, #f43f5e, #be123c); }
-
-.module-icon svg {
-    width: 24px;
-    height: 24px;
-    fill: #ffffff;
-    position: relative;
-    z-index: 2; 
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+.module-btn:active {
+    transform: translateY(2px);
+    box-shadow: 
+        inset 3px 3px 6px rgba(170, 180, 200, 0.4),
+        inset -3px -3px 6px rgba(255, 255, 255, 0.8);
 }
 
 .module-btn span {
-    font-size: 13px;
-    font-weight: 600;
-    color: #3b2d54;
+    margin-top: 15px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #3b395d;
+    text-align: center;
 }
 
+/* Iconos Claymorphic 3D */
+.module-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.module-icon svg {
+    width: 28px;
+    height: 28px;
+    fill: #ffffff;
+    z-index: 2;
+}
+
+/* Variaciones de colores estilo Clay */
+.icon-teal { background: linear-gradient(135deg, #00c6ff, #0072ff); box-shadow: 5px 5px 12px rgba(0, 114, 255, 0.35), inset -2px -2px 5px rgba(0, 0, 0, 0.15); }
+.icon-blue { background: linear-gradient(135deg, #3a86ff, #2554d7); box-shadow: 5px 5px 12px rgba(58, 134, 255, 0.35), inset -2px -2px 5px rgba(0, 0, 0, 0.15); }
+.icon-purple { background: linear-gradient(135deg, #a855f7, #7e22ce); box-shadow: 5px 5px 12px rgba(168, 85, 247, 0.35), inset -2px -2px 5px rgba(0, 0, 0, 0.15); }
+.icon-orange { background: linear-gradient(135deg, #f97316, #c2410c); box-shadow: 5px 5px 12px rgba(249, 115, 22, 0.35), inset -2px -2px 5px rgba(0, 0, 0, 0.15); }
+.icon-green-light { background: linear-gradient(135deg, #10b981, #047857); box-shadow: 5px 5px 12px rgba(16, 185, 129, 0.35), inset -2px -2px 5px rgba(0, 0, 0, 0.15); }
+.icon-cyan { background: linear-gradient(135deg, #06b6d4, #0e7490); box-shadow: 5px 5px 12px rgba(6, 182, 212, 0.35), inset -2px -2px 5px rgba(0, 0, 0, 0.15); }
+.icon-emerald { background: linear-gradient(135deg, #059669, #064e3b); box-shadow: 5px 5px 12px rgba(5, 150, 105, 0.35), inset -2px -2px 5px rgba(0, 0, 0, 0.15); }
+.icon-rose { background: linear-gradient(135deg, #f43f5e, #be123c); box-shadow: 5px 5px 12px rgba(244, 63, 94, 0.35), inset -2px -2px 5px rgba(0, 0, 0, 0.15); }
+
+/* Ventanas Modales */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -231,6 +191,7 @@ body {
     color: white;
 }
 
+/* Pestañas internas de modales */
 .tabs-header {
     display: flex;
     gap: 8px;
@@ -267,6 +228,7 @@ body {
     display: block;
 }
 
+/* Tabla Interactiva Estilo Excel */
 .table-toolbar {
     display: flex;
     gap: 15px;

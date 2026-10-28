@@ -1,6 +1,28 @@
+// --- BLOQUEOS DE SEGURIDAD ---
+document.addEventListener('contextmenu', event => event.preventDefault());
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'F12' || 
+       (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+       (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S'))) {
+        e.preventDefault();
+    }
+});
+
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        document.title = "Te espero aqui 🥺​🤲​";
+    } else {
+        document.title = "Tablero Principal - Sistema JIRQ";
+    }
+});
+
+// --- CONTROL DE MODALES Y FUNCIONES ---
 function abrirModal(idModal) {
     document.getElementById(idModal).style.display = 'flex';
-    filtrarTabla();
+    if(idModal === 'modalListadoFunciones') {
+        filtrarTabla();
+    }
 }
 
 function cerrarModal(idModal) {
@@ -83,27 +105,30 @@ function agregarNuevaFila() {
     nuevaTr.setAttribute('ondrop', 'drop(event)');
 
     nuevaTr.innerHTML = `
-        <td><span class="drag-handle" title="Arrastrar para mover">⠿</span></td>
-        <td><a href="#" onclick="abrirTutorial(${totalFilas}); return false;" style="color:#7c3aed; font-weight:bold;">${totalFilas}</a></td>
-        <td><input type="text" class="highlight-new" placeholder="Escribe la función aquí..." onkeyup="filtrarTabla()"></td>
-        <td><input type="text" placeholder="Plat. Inicial"></td>
-        <td><input type="text" placeholder="Plat. Final"></td>
-        <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-        <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-        <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-        <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-        <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-        <td><input type="text" placeholder="Función"></td>
-        <td><input type="text" placeholder="Detalle"></td>
-        <td>
-            <select class="select-estado" onchange="filtrarTabla()">
-                <option value="activo" selected>Activo</option>
-                <option value="inactivo">Inactivo</option>
-            </select>
-        </td>
-        <td><input type="text" placeholder="Días"></td>
-        <td><button class="delete-row-btn" onclick="eliminarFila(this)">✕</button></td>
-    `;
+            <td>${totalFilas}</td>
+            <td><input type="text" value="${idNombre}" style="width: 50px; text-align: center;"></td>
+            <td><input type="text" value="${correo}"></td>
+            <td><input type="text" value="Pendiente" style="font-family: monospace; color: #d97706; font-size: 11px;" readonly></td>
+            <td>
+                <select class="select-estado">
+                    <option value="1" selected>Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+            </td>
+            <td><input type="text" value="Pendiente" style="color: #d97706; text-align: center;" readonly></td>
+            <td><input type="text" value="Pendiente" style="color: #d97706; text-align: center; font-size: 11px;" readonly></td>
+            <td>
+                <div class="permisos-checks-grid">
+                    <label title="Listado Funciones"><input type="checkbox" checked> Func.</label>
+                    <label title="Calcular Datos"><input type="checkbox" checked> Calc.</label>
+                    <label title="Ayuda Rápida"><input type="checkbox" checked> Ayu.</label>
+                    <label title="Conteo Tablas"><input type="checkbox" checked> Cont.</label>
+                    <label title="Metas Entel"><input type="checkbox" checked> Met.</label>
+                    <label title="Querys variadas"><input type="checkbox" checked> Var.</label>
+                </div>
+            </td>
+            <td><button class="delete-row-btn" onclick="this.closest('tr').remove();">✕</button></td>
+        `;
 
     tbody.appendChild(nuevaTr);
 
@@ -176,12 +201,150 @@ function drop(e) {
     }
 }
 
-// DETECTOR DE CAMBIO DE PESTAÑA CON MENSAJE PERSONALIZADO
-const tituloOriginalTablero = document.title;
-document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-        document.title = "Te espero aqui 🥺​🤲​";
-    } else {
-        document.title = tituloOriginalTablero;
+// --- ACCIONES PARA LOS OTROS MÓDULOS ---
+function abrirModulo(nombreModulo) {
+    switch (nombreModulo) {
+        case 'registro_usuarios':
+            alert('Abriendo módulo: Registro de Usuarios');
+            break;
+        case 'calcular_datos':
+            alert('Abriendo módulo: Calcular Datos');
+            break;
+        case 'leeme_primero':
+            alert('¡Bienvenido! Haz clicado: Léeme primero');
+            break;
+        case 'metas_entel':
+            alert('Abriendo módulo: Metas Entel y Socios');
+            break;
+        case 'query_variadas':
+            alert('Abriendo módulo: Query Variadas');
+            break;
+        default:
+            console.log('Módulo no reconocido');
     }
-});
+}
+
+
+// --- LÓGICA DEL MÓDULO: REGISTRO DE USUARIOS ---
+
+function guardarNuevoUsuario() {
+    let inputCorreo = document.getElementById('nuevoCorreo');
+    let inputId = document.getElementById('nuevoId');
+    
+    let correo = inputCorreo.value.trim();
+    let idNombre = inputId.value.trim();
+    
+    if (correo === "") {
+        alert("Por favor ingresa un correo electrónico válido.");
+        inputCorreo.focus();
+        return;
+    }
+    
+    // Si no puso ID, usamos la parte antes del @ como ID por defecto
+    if (idNombre === "") {
+        idNombre = correo.split('@')[0];
+    }
+    
+    // Estado por defecto: 1 (Activo)
+    let estadoDefault = 1;
+    
+    // Capturar el estado de los permisos (checks) actuales de la interfaz
+    // (Puedes ajustar esto si luego deseas leer los checks reales del formulario)
+    let permisos = {
+        listado_funciones: true,
+        calcular_datos: true,
+        ayuda_rapida: true,
+        conteo_tablas: true,
+        metas_entel: true,
+        querys_variadas: true
+    };
+
+    // Objeto exacto que se enviará a Firebase con campos pendientes
+    let nuevoUsuarioData = {
+        id: idNombre,
+        usuario: correo,
+        estado: estadoDefault,
+        clave: "",         // Vacío hasta que index.html lo genere
+        pais: "",          // Vacío / Pendiente
+        fecha_hora: "",    // Vacío / Pendiente hasta el primer login
+        permisos: permisos
+    };
+
+    console.log("Guardando en Firebase con campos pendientes:", nuevoUsuarioData);
+    
+    // AQUÍ ES DONDE SE CONECTARÁ CON FIREBASE (Pronto añadiremos esta línea de Firebase SDK)
+    // database.ref('usuarios/' + idNombre).set(nuevoUsuarioData);
+
+    // Insertar nueva fila en la tabla visual del tablero
+    let tablaUsuarios = document.querySelector('#modalRegistroUsuarios tbody');
+    if (tablaUsuarios) {
+        let totalFilas = tablaUsuarios.rows.length + 1;
+        let nuevaTr = document.createElement('tr');
+        
+        nuevaTr.innerHTML = `
+            <td>${totalFilas}</td>
+            <td><input type="text" value="${idNombre}"></td>
+            <td><input type="text" value="${correo}"></td>
+            <td><input type="text" value="Pendiente" style="font-family: monospace; color: #d97706; font-size: 11px;" readonly></td>
+            <td>
+                <select class="select-estado">
+                    <option value="1" selected>Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+            </td>
+            <td><input type="text" value="Pendiente" style="color: #d97706;" readonly></td>
+            <td>
+                <div class="permisos-checks-grid">
+                    <label title="Listado Funciones"><input type="checkbox" checked> Func.</label>
+                    <label title="Calcular Datos"><input type="checkbox" checked> Calc.</label>
+                    <label title="Ayuda Rápida"><input type="checkbox" checked> Ayu.</label>
+                    <label title="Conteo Tablas"><input type="checkbox" checked> Cont.</label>
+                    <label title="Metas Entel"><input type="checkbox" checked> Met.</label>
+                    <label title="Querys variadas"><input type="checkbox" checked> Var.</label>
+                </div>
+            </td>
+            <td><button class="delete-row-btn" onclick="this.closest('tr').remove();">✕</button></td>
+        `;
+        
+        tablaUsuarios.appendChild(nuevaTr);
+    }
+    
+    // Limpiar formulario y cerrar submodal silenciosamente
+    inputCorreo.value = "";
+    inputId.value = "";
+    cerrarModal('modalNuevoUsuarioForm');
+}
+
+// Exportar usuarios a formato CSV
+function exportarUsuariosCSV() {
+    let filas = document.querySelectorAll('#modalRegistroUsuarios table tbody tr');
+    if (filas.length === 0) {
+        alert("No hay usuarios para exportar.");
+        return;
+    }
+    
+    let csvContent = "data:text/csv;charset=utf-8,ID,Correo,Clave,Estado,Pais\n";
+    
+    filas.forEach(row => {
+        let inputs = row.querySelectorAll('input[type="text"]');
+        let selectEstado = row.querySelector('select');
+        
+        if (inputs.length >= 3) {
+            let id = inputs[0].value;
+            let correo = inputs[1].value;
+            let clave = inputs[2].value;
+            let estado = selectEstado ? selectEstado.value : "1";
+            let pais = inputs[3] ? inputs[3].value : "Peru";
+            
+            csvContent += `"${id}","${correo}","${clave}","${estado}","${pais}"\n`;
+        }
+    });
+    
+    let encodedUri = encodeURI(csvContent);
+    let link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "usuarios_sistema_jirq.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
