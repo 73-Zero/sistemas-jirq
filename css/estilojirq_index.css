@@ -3,13 +3,13 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
-    /* 2. BLOQUEAR LA SELECCIÓN Y COPIA DE TEXTOS EN TODA LA WEB */
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none;     /* IE 10+ */
-    user-select: none;         /* Estándar */
+    /* Bloquear la selección de textos en toda la página */
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
-/* Permitir que el input sí permita escribir (aunque tenga bloqueado el copiar/pegar) */
+/* Permitir que el usuario sí pueda escribir y seleccionar dentro del campo de texto */
 input {
     -webkit-user-select: text !important;
     -ms-user-select: text !important;

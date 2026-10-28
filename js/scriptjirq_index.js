@@ -167,12 +167,12 @@ function bloquearSistema() {
     }
 }
 
-// 4. DETECTOR DE CAMBIO DE PESTAÑA (VISIBILITY CHANGE)
-const tituloOriginal = document.title;
+// DETECTOR DE CAMBIO DE PESTAÑA CON TU MENSAJE PERSONALIZADO
+const tituloOriginalIndex = document.title;
 document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
-        document.title = "Vuelve Pronto 😩👐";
+        document.title = "Te espero aqui 🥺​🤲​";
     } else {
-        document.title = tituloOriginal;
+        document.title = tituloOriginalIndex;
     }
 });
