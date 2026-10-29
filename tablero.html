@@ -4,20 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tablero Principal - Sistema JIRQ</title>
-    
-    <!-- Favicon -->
+
+    <!-- Icono de la pestaña del navegador -->
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2950/2950683.png">
-    
-    <!-- Fuente Roboto -->
+
+    <!-- Fuentes tipograficas de Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- CSS Exclusivo del Tablero -->
+
+    <!-- Hoja de estilos CSS exclusiva para el diseño del tablero -->
     <link rel="stylesheet" href="css/estilojirq_tablero.css">
 </head>
 <body>
 
+    <!-- Contenedor principal de la tarjeta del tablero -->
     <div class="dashboard-card">
         <div class="dashboard-header">
             <h1>Menú Inicial</h1>
@@ -25,41 +26,42 @@
         </div>
 
         <div class="menu-inner-box">
-            <div class="modules-grid">
+            <!-- Grilla contenedora de los botones de modulos -->
+            <div class="modules-grid" id="modulesGrid">
                 
-                <!-- 1. Registro Usuarios -->
-                <button class="module-btn" onclick="abrirModal('modalRegistroUsuarios')">
+                <!-- 1. Modulo de Registro de Usuarios (Restringido solo para Administrador) -->
+                <button class="module-btn" id="btnRegistroUsuarios" onclick="abrirModal('modalRegistroUsuarios')">
                     <div class="module-icon icon-teal">
                         <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                     </div>
                     <span>Registro Usuarios</span>
                 </button>
 
-                <!-- 2. Listado Funciones -->
-                <button class="module-btn" onclick="abrirModal('modalListadoFunciones')">
+                <!-- 2. Modulo de Listado de Funciones -->
+                <button class="module-btn" data-permiso="listado_funciones" onclick="abrirModal('modalListadoFunciones')">
                     <div class="module-icon icon-blue">
                         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
                     </div>
                     <span>Listado Funciones</span>
                 </button>
 
-                <!-- 3. Calcular Datos -->
-                <button class="module-btn" onclick="abrirModulo('calcular_datos')">
+                <!-- 3. Modulo de Calcular Datos -->
+                <button class="module-btn" data-permiso="calcular_datos" onclick="abrirModulo('calcular_datos')">
                     <div class="module-icon icon-purple">
                         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 16H6V5h12v14zM7 7h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>
                     </div>
                     <span>Calcular Datos</span>
                 </button>
 
-                <!-- 4. Ayuda Rápida -->
-                <button class="module-btn" onclick="abrirModal('modalAyuda')">
+                <!-- 4. Modulo de Ayuda Rapida -->
+                <button class="module-btn" data-permiso="ayuda_rapida" onclick="abrirModal('modalAyuda')">
                     <div class="module-icon icon-orange">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
                     </div>
                     <span>Ayuda Rápida</span>
                 </button>
 
-                <!-- 5. Léeme primero -->
+                <!-- 5. Modulo Leeme primero -->
                 <button class="module-btn" onclick="abrirModal('modalLeemePrimero')">
                     <div class="module-icon icon-green-light">
                         <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
@@ -67,24 +69,24 @@
                     <span>Léeme primero</span>
                 </button>
 
-                <!-- 6. Bigquery Conteo -->
-                <button class="module-btn" onclick="abrirModal('modalBigquery')">
+                <!-- 6. Modulo Bigquery Conteo -->
+                <button class="module-btn" data-permiso="conteo_tablas" onclick="abrirModal('modalBigquery')">
                     <div class="module-icon icon-cyan">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
                     </div>
                     <span>Bigquery Conteo</span>
                 </button>
 
-                <!-- 7. Metas Entel y Socios -->
-                <button class="module-btn" onclick="abrirModulo('metas_entel')">
+                <!-- 7. Modulo Metas Entel y Socios -->
+                <button class="module-btn" data-permiso="metas_entel" onclick="abrirModulo('metas_entel')">
                     <div class="module-icon icon-emerald">
                         <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
                     </div>
                     <span>Metas Entel y Socios</span>
                 </button>
 
-                <!-- 8. Query Variadas -->
-                <button class="module-btn" onclick="abrirModulo('query_variadas')">
+                <!-- 8. Modulo Query Variadas -->
+                <button class="module-btn" data-permiso="querys_variadas" onclick="abrirModulo('query_variadas')">
                     <div class="module-icon icon-rose">
                         <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
                     </div>
@@ -92,10 +94,13 @@
                 </button>
 
             </div>
+
+            <!-- Contenedor para el mensaje de bienvenida personalizado -->
+            <div class="welcome-banner-container" id="welcomeMessageBanner"></div>
         </div>
     </div>
 
-    <!-- Modal 1: Registro de Usuarios -->
+    <!-- MODAL 1: Gestion y Registro de Usuarios -->
     <div class="modal-overlay" id="modalRegistroUsuarios">
         <div class="modal-window" style="max-width: 1200px;">
             <div class="modal-header">
@@ -103,7 +108,6 @@
                 <button class="close-modal" onclick="cerrarModal('modalRegistroUsuarios')">✕</button>
             </div>
 
-            <!-- Barra de Herramientas -->
             <div class="table-toolbar">
                 <div>
                     <label style="font-size: 12px; font-weight: 500; margin-right: 5px;">Estado:</label>
@@ -114,15 +118,14 @@
                     </select>
                 </div>
                 <div style="flex-grow: 1;">
-                    <input type="text" id="filtroBuscarUsuario" placeholder="🔍 Buscar por correo o ID..." style="width: 100%;">
+                    <input type="text" id="filtroBuscarUsuario" placeholder="Buscar por correo o ID..." style="width: 100%;">
                 </div>
                 <div style="display: flex; gap: 10px;">
                     <button onclick="abrirModal('modalNuevoUsuarioForm')" style="padding: 8px 14px; background:#10b981; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">+ Nuevo Usuario</button>
-                    <button onclick="exportarUsuariosCSV()" style="padding: 8px 14px; background:#0284c7; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">📥 Exportar CSV</button>
+                    <button onclick="exportarUsuariosCSV()" style="padding: 8px 14px; background:#0284c7; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Exportar CSV</button>
                 </div>
             </div>
 
-           <!-- Tabla de Usuarios -->
             <div class="table-container">
                 <table class="excel-table">
                     <thead>
@@ -138,37 +141,13 @@
                             <th style="width: 70px;">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td><input type="text" value="admin" style="width: 50px; text-align: center;"></td>
-                            <td><input type="text" value="zerolimite73@gmail.com"></td>
-                            <td><input type="text" value="Animes73.*-*@####ñ" style="font-family: monospace; color: #0284c7;" readonly></td>
-                            <td>
-                                <select class="select-estado">
-                                    <option value="1" selected>Activo</option>
-                                    <option value="0">Inactivo</option>
-                                </select>
-                            </td>
-                            <td><input type="text" value="Peru" style="text-align: center;"></td>
-                            <td><input type="text" value="Pendiente" style="color: #d97706; text-align: center; font-size: 11px;" readonly></td>
-                            <td>
-                                <div class="permisos-checks-grid">
-                                    <label title="Listado Funciones"><input type="checkbox" checked> Func.</label>
-                                    <label title="Calcular Datos"><input type="checkbox" checked> Calc.</label>
-                                    <label title="Ayuda Rápida"><input type="checkbox" checked> Ayu.</label>
-                                    <label title="Conteo Tablas"><input type="checkbox" checked> Cont.</label>
-                                    <label title="Metas Entel"><input type="checkbox" checked> Met.</label>
-                                    <label title="Querys variadas"><input type="checkbox" checked> Var.</label>
-                                </div>
-                            </td>
-                            <td><button class="delete-row-btn" onclick="alert('Eliminar usuario')">✕</button></td>
-                        </tr>
-                    </tbody>
+                    <tbody id="cuerpoTablaUsuarios"></tbody>
                 </table>
             </div>
+        </div>
+    </div>
 
-    <!-- Sub-Modal: Formulario para Agregar Nuevo Usuario (Solo ID/Nombre y Correo) -->
+    <!-- SUB-MODAL: Formulario para Agregar Nuevo Usuario -->
     <div class="modal-overlay" id="modalNuevoUsuarioForm">
         <div class="modal-window" style="max-width: 480px; height: auto;">
             <div class="modal-header">
@@ -184,11 +163,6 @@
                     <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 5px; color: #3b2d54;">ID o Nombre Corto:</label>
                     <input type="text" id="nuevoId" placeholder="ej. jose_admin" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.15);">
                 </div>
-                
-                <div style="background: rgba(124, 58, 237, 0.06); padding: 10px 12px; border-radius: 8px; border: 1px dashed #7c3aed;">
-                    <p style="font-size: 11px; color: #5b587b; margin: 0; line-height: 1.4;">ℹ️ La contraseña se generará automáticamente en el primer acceso del usuario. El estado iniciará por defecto como Activo.</p>
-                </div>
-                
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 5px;">
                     <button onclick="cerrarModal('modalNuevoUsuarioForm')" style="padding: 8px 16px; background: #64748b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">Cancelar</button>
                     <button onclick="guardarNuevoUsuario()" style="padding: 8px 16px; background: #7c3aed; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Guardar</button>
@@ -197,233 +171,114 @@
         </div>
     </div>
 
-    <!-- Modal 2: Listado de Funciones -->
+    <!-- MODAL 2: Listado de Funciones (Sincronizado en tiempo real con Firebase) -->
     <div class="modal-overlay" id="modalListadoFunciones">
-        <div class="modal-window">
+        <div class="modal-window" style="max-width: 1250px;">
             <div class="modal-header">
                 <h3>:: Listado de Funciones - KIWOX ENTEL ::</h3>
                 <button class="close-modal" onclick="cerrarModal('modalListadoFunciones')">✕</button>
             </div>
-
+            
             <div class="table-toolbar">
                 <div>
                     <label style="font-size: 12px; font-weight: 500; margin-right: 5px;">Estado:</label>
-                    <select id="filtroEstado" onchange="filtrarTabla()">
+                    <select id="filtroEstadoFunciones" onchange="filtrarFuncionesTabla()">
                         <option value="">[ Todos ]</option>
-                        <option value="activo">Activo</option>
-                        <option value="inactivo">Inactivo</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
                     </select>
                 </div>
                 <div style="flex-grow: 1;">
-                    <input type="text" id="filtroBuscar" placeholder="🔍 Buscar función..." onkeyup="filtrarTabla()" style="width: 100%;">
+                    <input type="text" id="buscadorFunciones" placeholder="Buscar función..." onkeyup="filtrarFuncionesTabla()" style="width: 100%;">
                 </div>
                 <div>
-                    <button onclick="agregarNuevaFila()" style="padding: 8px 14px; background:#7c3aed; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">+ Nueva Función</button>
+                    <button onclick="agregarNuevaFilaFuncion()" style="padding: 8px 16px; background: #7c3aed; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">+ Nueva Función</button>
                 </div>
             </div>
 
-            <div class="table-container" id="tablaContainer">
+            <div class="table-container">
                 <table class="excel-table" id="tablaFunciones">
                     <thead>
                         <tr>
-                            <th>⠿</th>
-                            <th>#</th>
+                            <th style="width: 40px;">::</th>
+                            <th style="width: 40px;">#</th>
                             <th>Listado de funciones</th>
                             <th>Plataforma Inicial</th>
                             <th>Plataforma Final</th>
-                            <th>8-9</th>
-                            <th>10-11</th>
-                            <th>12-1</th>
-                            <th>2-3</th>
-                            <th>4-5</th>
+                            <th style="width: 55px;">8-9</th>
+                            <th style="width: 55px;">10-11</th>
+                            <th style="width: 55px;">12-1</th>
+                            <th style="width: 55px;">2-3</th>
+                            <th style="width: 55px;">4-5</th>
                             <th>Función</th>
                             <th>Detalle</th>
-                            <th>Estado</th>
+                            <th style="width: 110px;">Estado</th>
                             <th>Días</th>
-                            <th>Acciones</th>
+                            <th style="width: 60px;">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="cuerpoTabla">
-                        <tr draggable="true" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)">
-                            <td><span class="drag-handle" title="Arrastrar para mover">⠿</span></td>
-                            <td><a href="#" onclick="abrirTutorial(1); return false;" style="color:#7c3aed; font-weight:bold;">1</a></td>
-                            <td><input type="text" value="probando" onkeyup="filtrarTabla()"></td>
-                            <td><input type="text" value="aws"></td>
-                            <td><input type="text" value="bigquery"></td>
-                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" value="actualización"></td>
-                            <td><input type="text" value="carga"></td>
-                            <td>
-                                <select class="select-estado" onchange="filtrarTabla()">
-                                    <option value="activo">Activo</option>
-                                    <option value="inactivo" selected>Inactivo</option>
-                                </select>
-                            </td>
-                            <td><input type="text" value="Lunes"></td>
-                            <td><button class="delete-row-btn" onclick="eliminarFila(this)">✕</button></td>
-                        </tr>
-                        <tr draggable="true" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)">
-                            <td><span class="drag-handle" title="Arrastrar para mover">⠿</span></td>
-                            <td><a href="#" onclick="abrirTutorial(2); return false;" style="color:#7c3aed; font-weight:bold;">2</a></td>
-                            <td><input type="text" value="Envíos Automáticos Python - Jose" onkeyup="filtrarTabla()"></td>
-                            <td><input type="text" value="Python"></td>
-                            <td><input type="text" value="SharePoint"></td>
-                            <td><input type="text" class="input-turn has-check" value="✔" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" class="input-turn" value="" onkeyup="evaluarTurno(this)"></td>
-                            <td><input type="text" value="Actualización de data"></td>
-                            <td><input type="text" value="Envíos"></td>
-                            <td>
-                                <select class="select-estado" onchange="filtrarTabla()">
-                                    <option value="activo" selected>Activo</option>
-                                    <option value="inactivo">Inactivo</option>
-                                </select>
-                            </td>
-                            <td><input type="text" value="Martes y Miércoles"></td>
-                            <td><button class="delete-row-btn" onclick="eliminarFila(this)">✕</button></td>
-                        </tr>
+                    <tbody id="cuerpoTablaFunciones">
+                        <!-- Se llena dinámicamente desde Firebase -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- Sub-ventana Modal para Tutorial -->
-    <div class="modal-overlay" id="modalTutorial">
-        <div class="modal-window" style="max-width: 500px; height: auto;">
-            <div class="modal-header">
-                <h3 id="tituloTutorial">:: Tutorial del Proceso ::</h3>
-                <button class="close-modal" onclick="cerrarModal('modalTutorial')">✕</button>
-            </div>
-            <div style="padding: 20px; text-align: center; color: #475569;">
-                <p>Aquí se mostrará el tutorial o guía detallada para este proceso específico próximamente.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal 4: Ayuda Rápida -->
+    <!-- MODAL 3: Ayuda Rápida -->
     <div class="modal-overlay" id="modalAyuda">
         <div class="modal-window">
             <div class="modal-header">
-                <h3>:: Ayuda Procesos ... ::</h3>
+                <h3>:: Ayuda Rápida y Soporte ::</h3>
                 <button class="close-modal" onclick="cerrarModal('modalAyuda')">✕</button>
             </div>
-
-            <div class="tabs-header">
-                <button class="tab-btn active" onclick="cambiarTab(event, 'tab1')">NAC - DEACS Anonimizador</button>
-                <button class="tab-btn" onclick="cambiarTab(event, 'tab2')">Transponer Campañas</button>
-                <button class="tab-btn" onclick="cambiarTab(event, 'tab3')">Reporte Alignet</button>
-                <button class="tab-btn" onclick="cambiarTab(event, 'tab4')">Reporte IVR</button>
-                <button class="tab-btn" onclick="cambiarTab(event, 'tab5')">S2S y Packs Migras Metas</button>
+            <div style="padding: 15px; color: #3b2d54;">
+                <p>Sección de asistencia técnica y manuales rápidos de uso.</p>
             </div>
-
-            <div id="tab1" class="tab-content active">
-                <p style="font-size: 13px; color: #475569; margin-bottom: 15px;">Dirección del archivo: Ya esta fija en Descargas\ Aquí</p>
-                <div style="margin-bottom: 15px;">
-                    <label style="font-size: 13px; display:block; margin-bottom: 5px; font-weight: 500;">Nombre del archivo:</label>
-                    <input type="text" placeholder="Colocar el nombre del archivo sin la extensión" style="width:100%; padding: 10px; border-radius: 8px; border:1px solid rgba(0,0,0,0.2); background:rgba(255,255,255,0.8); color:#0f172a;">
-                </div>
-                <p style="font-size: 13px; color: #475569; margin-bottom: 20px;">Carpeta de Salida: Ya esta fija en Descargas\ Aquí</p>
-                
-                <div style="display:flex; gap:10px; justify-content: flex-end;">
-                    <button style="padding: 8px 16px; background:#eab308; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('Calculando proceso...')">[#|#] Calcular</button>
-                    <button style="padding: 8px 16px; background:#7c3aed; color:#fff; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('Función ejecutada')">[☰ ☺] Procesar</button>
-                    <button style="padding: 8px 16px; background:#d97706; color:#fff; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="cerrarModal('modalAyuda')">[&lt;] Salir</button>
-                </div>
-            </div>
-
-            <div id="tab2" class="tab-content"><p style="font-size: 14px; color: #1e293b;">Contenido para la pestaña Transponer Campañas...</p></div>
-            <div id="tab3" class="tab-content"><p style="font-size: 14px; color: #1e293b;">Contenido para la pestaña Reporte Alignet...</p></div>
-            <div id="tab4" class="tab-content"><p style="font-size: 14px; color: #1e293b;">Contenido para la pestaña Reporte IVR...</p></div>
-            <div id="tab5" class="tab-content"><p style="font-size: 14px; color: #1e293b;">Contenido para la pestaña S2S y Packs Migras Metas...</p></div>
         </div>
     </div>
 
-    <!-- Modal 5: Léeme Primero -->
+    <!-- MODAL 4: Léeme Primero -->
     <div class="modal-overlay" id="modalLeemePrimero">
         <div class="modal-window" style="max-width: 900px;">
             <div class="modal-header">
                 <h3>::: Leer no cuesta nada: :::</h3>
                 <button class="close-modal" onclick="cerrarModal('modalLeemePrimero')">✕</button>
             </div>
-
             <div style="padding: 10px 15px; max-height: 65vh; overflow-y: auto; color: #2b284c; font-size: 13.5px; line-height: 1.6;">
                 <p style="margin-bottom: 12px;"><strong>1.-</strong> Antes de usar el sistema debes saber que tu carpeta descargas será donde se descarguen los archivos según sea el caso</p>
                 <p style="margin-bottom: 12px; padding-left: 20px; color: #475569;">Así también, habrán otros procesos de donde es recomendable subir archivos desde ahí.............</p>
-                
                 <p style="margin-bottom: 12px;"><strong>2.-</strong> La 1era Opción de Listado de funciones el excel es editable para que puedas agregar o quitar funciones.</p>
-                
                 <p style="margin-bottom: 12px;"><strong>3.-</strong> La Opción Calcular Datos: es para realizar la suma de los leads brutos, netos, las preventas y las válidas según socio/canal editable.</p>
-                
-                <p style="margin-bottom: 12px;"><strong>4.-</strong> La Opción de Ayuda Rápida es para realizar trabajos de:<br>
-                <span style="color: #7c3aed; font-weight: 500; padding-left: 20px; display:inline-block; margin-top: 3px;">NAC DEACS Anonimizador / Transportar campañas / Alignet / IVR#1 / IVR#2</span></p>
-                
-                <p style="margin-bottom: 12px;"><strong>5.-</strong> La Opción de Bigquery conteo: es para revisar las tablas y cantidad de registros por cada una de ellas (conteo de filas), tanto por día, mes y año, dividivo en 3 pestañas para obtener uno día y otro mensual.</p>
-                                
-                <p style="margin-bottom: 12px;"><strong>6.-</strong> También está de Bigquery Meta Entel y Socios : es para verificar los leads, válidas, activas, resumen general esta contiene pestañas donde está agrupado por socios, fuente.</p>
-                
-                <p style="margin-bottom: 15px;"><strong>7.-</strong> La Opción de Query varios: es para tener aquellas consultas que puedan facilitar alguna tarea y/o obtener alguna respuesta más rápida</p>
+                <p style="margin-bottom: 12px;"><strong>4.-</strong> La Opción de Ayuda Rápida es para realizar trabajos de:<br><span style="color: #7c3aed; font-weight: 500; padding-left: 20px; display:inline-block; margin-top: 3px;">NAC DEACS Anonimizador / Transportar campañas / Alignet / IVR#1 / IVR#2</span></p>
+                <p style="margin-bottom: 12px;"><strong>5.-</strong> La Opción de Bigquery conteo: es para revisar las tablas y cantidad de registros por cada una de ellas (conteo de filas), tanto por día, mes y año.</p>
+                <p style="margin-bottom: 12px;"><strong>6.-</strong> También está de Bigquery Meta Entel y Socios : es para verificar los leads, válidas, activas, resumen general.</p>
+                <p style="margin-bottom: 15px;"><strong>7.-</strong> La Opción de Query varios: es para tener aquellas consultas que puedan facilitar alguna tarea.</p>
             </div>
-
             <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px; margin-top: 10px; text-align: right;">
                 <p style="font-style: italic; font-weight: bold; color: #7c3aed; font-size: 14px;">¡Que tengas un lindo Día!</p>
             </div>
         </div>
     </div>
-    
-    <!-- Modal 6: Bigquery Conteo -->
+
+    <!-- MODAL 5: Bigquery Conteo -->
     <div class="modal-overlay" id="modalBigquery">
         <div class="modal-window">
             <div class="modal-header">
-                <h3>:: Tienes 3 opciones de Querys ::</h3>
+                <h3>:: Bigquery Conteo de Tablas ::</h3>
                 <button class="close-modal" onclick="cerrarModal('modalBigquery')">✕</button>
             </div>
-
-            <div class="tabs-header">
-                <button class="tab-btn active" onclick="cambiarTabBQ(event, 'bq1')">Conteo diario</button>
-                <button class="tab-btn" onclick="cambiarTabBQ(event, 'bq2')">Conteo Mensual</button>
-                <button class="tab-btn" onclick="cambiarTabBQ(event, 'bq3')">Días Reg x Mes</button>
-            </div>
-
-            <div id="bq1" class="bq-content active">
-                <p style="font-size: 12px; color: #0284c7; margin-bottom: 10px; font-weight: 500;">Si quieres modificar algo solo pega el nuevo contenido o modifica aquí mismo y dale click en actualizar</p>
-                <textarea style="width:100%; height: 220px; background: #0f172a; border: 1px solid rgba(0,0,0,0.2); border-radius: 8px; color: #34d399; padding: 12px; font-family: monospace; font-size: 13px;" spellcheck="false">-- CONTEO SUBIDA DE LA MAÑANA DIARIA POR DIA
---------------------------------------------------
--- LISTA DE TABLAS:
--- 1. Entreg  -> raw_entregas
--- 2. LogxC   -> raw_logixtal_citas
--- 3. WspUs   -> raw_whatsapp_users
--- 4. WspOs   -> raw_whatsapp_operators_sessions
--- 5. Omnix   -> raw_omnnix
--- 6. GXsto   -> raw_grafana_xstore
--- 7. Siebel  -> raw_siebel</textarea>
-                
-                <div style="display:flex; gap:10px; justify-content: flex-end; margin-top: 15px;">
-                    <button style="padding: 8px 16px; background:#eab308; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('Código copiado al portapapeles')">[=] Copiar</button>
-                    <button style="padding: 8px 16px; background:#22c55e; border:none; border-radius:6px; color:#fff; font-weight:bold; cursor:pointer;" onclick="alert('Query actualizada correctamente')">[&gt;&gt;] Actualizar</button>
-                    <button style="padding: 8px 16px; background:#d97706; border:none; border-radius:6px; color:#fff; font-weight:bold; cursor:pointer;" onclick="cerrarModal('modalBigquery')">[&lt;] Salir</button>
-                </div>
-            </div>
-
-            <div id="bq2" class="bq-content" style="display:none;">
-                <p style="font-size: 12px; color: #0284c7; margin-bottom: 10px; font-weight: 500;">Consulta de Conteo Mensual</p>
-                <textarea style="width:100%; height: 220px; background: #0f172a; border: 1px solid rgba(0,0,0,0.2); border-radius: 8px; color: #34d399; padding: 12px; font-family: monospace; font-size: 13px;">SELECT * FROM `sistemas-jirq.mensual_conteo`</textarea>
-            </div>
-            
-            <div id="bq3" class="bq-content" style="display:none;">
-                <p style="font-size: 12px; color: #0284c7; margin-bottom: 10px; font-weight: 500;">Consulta de Días Reg x Mes</p>
-                <textarea style="width:100%; height: 220px; background: #0f172a; border: 1px solid rgba(0,0,0,0.2); border-radius: 8px; color: #34d399; padding: 12px; font-family: monospace; font-size: 13px;">SELECT * FROM `sistemas-jirq.dias_registro`</textarea>
+            <div style="padding: 15px; color: #3b2d54;">
+                <p>Panel de consulta y conteo de registros en Bigquery.</p>
             </div>
         </div>
     </div>
 
-    <!-- JS Exclusivo del Tablero -->
+    <!-- SDKs de compatibilidad para Firebase Realtime Database -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    
+    <!-- Script principal de logica del tablero -->
     <script src="js/scriptjirq_tablero.js"></script>
 </body>
 </html>

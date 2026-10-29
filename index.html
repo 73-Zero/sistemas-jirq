@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,29 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión - Sistema JIRQ</title>
 
-    <!--  ICONO DE LA PESTAÑA (FAVICON) -->
+    <!-- Icono de la pestaña del navegador -->
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2950/2950683.png">
 
-    <!-- Importar la fuente Roboto desde Google Fonts -->
+    <!-- Fuentes tipograficas de Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-    <!-- Enlace exclusivo al CSS de la página de index -->
+    <!-- Hoja de estilos CSS para la interfaz de acceso -->
     <link rel="stylesheet" href="css/estilojirq_index.css">
 </head>
 <body>
 
+    <!-- Tarjeta principal contenedora del formulario de autenticacion -->
     <div class="login-card">
         <div class="logo-container">
-            <img src="https://cdn-icons-png.flaticon.com/512/6681/6681204.png" alt="Logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/6681/6681204.png" alt="Logo Sistema">
             <h2 id="tituloSistema">Sistema de Acceso</h2>
         </div>
         
+        <!-- Formulario de acceso gestionado por JavaScript -->
         <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="input-group" id="emailGroup">
                 <svg id="inputLabelIcon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-                <!-- Bloqueo de copiar, pegar y cortar en el input -->
                 <input type="text" id="userInput" placeholder="Ingrese su correo" oncopy="return false" onpaste="return false" oncut="return false" required>
             </div>
 
@@ -38,20 +38,21 @@
             </button>
         </form>
 
+        <!-- Botones de acciones inferiores -->
         <div class="bottom-actions">
-            <button class="btn-secondary" onclick="alert('Soporte técnico JIRQ')">
+            <button class="btn-secondary" id="btnContactar" onclick="alert('Soporte técnico JIRQ')">
                 <img src="https://cdn-icons-png.flaticon.com/512/5968/5968841.png" alt="Icono Contactar">
                 <span>Contactar</span>
             </button>
 
-            <button class="btn-secondary" onclick="window.close()">
+            <button class="btn-secondary" id="btnSalirIngresar" onclick="window.close()">
                 <img src="https://cdn-icons-png.flaticon.com/512/1828/1828427.png" alt="Icono Salir">
                 <span>Salir</span>
             </button>
         </div>
     </div>
 
-    <!-- Enlace exclusivo al Script JS de la página de index (con type="module" para Firebase) -->
+    <!-- Script principal de logica en modulo con Firebase -->
     <script type="module" src="js/scriptjirq_index.js"></script>
 </body>
 </html>

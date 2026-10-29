@@ -1,4 +1,4 @@
-// --- BLOQUEOS DE SEGURIDAD ---
+// --- CONFIGURACIÓN DE SEGURIDAD Y FIREBASE ---
 document.addEventListener('contextmenu', event => event.preventDefault());
 
 document.addEventListener('keydown', (e) => {
@@ -9,223 +9,316 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-        document.title = "Te espero aqui 🥺​🤲​";
-    } else {
-        document.title = "Tablero Principal - Sistema JIRQ";
-    }
+const firebaseConfig = {
+    databaseURL: "https://sistemas-jirq-default-rtdb.firebaseio.com"
+};
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
+// Referencias a los nodos en la base de datos de Firebase
+const dbRefUsuarios = firebase.database().ref('usuarios');
+const dbRefFunciones = firebase.database().ref('funciones');
+
+document.addEventListener("DOMContentLoaded", () => {
+    aplicarControlDeAccesoYPermisos();
+    cargarUsuariosFirebase();
+    cargarFuncionesFirebase();
 });
 
-// --- CONTROL DE MODALES Y FUNCIONES ---
-function abrirModal(idModal) {
-    document.getElementById(idModal).style.display = 'flex';
-    if(idModal === 'modalListadoFunciones') {
-        filtrarTabla();
+function aplicarControlDeAccesoYPermisos() {
+    const usuarioId = sessionStorage.getItem("usuario_sesion_id") || "invitado";
+    const esAdmin = sessionStorage.getItem("usuario_sesion_admin") === "true";
+    let permisos = {};
+
+    try {
+        permisos = JSON.parse(sessionStorage.getItem("usuario_sesion_permisos") || "{}");
+    } catch (e) {
+        permisos = {};
     }
-}
 
-function cerrarModal(idModal) {
-    document.getElementById(idModal).style.display = 'none';
-}
+    const bannerContainer = document.getElementById('welcomeMessageBanner');
+    if (bannerContainer) {
+        if (esAdmin) {
+            bannerContainer.textContent = "Bienvenido mi Admin";
+        } else {
+            bannerContainer.textContent = `Bienvenido(a) ${usuarioId}`;
+        }
+    }
 
-function abrirTutorial(num) {
-    document.getElementById('tituloTutorial').innerText = ":: Tutorial del Proceso #" + num + " ::";
-    abrirModal('modalTutorial');
-}
+    const btnRegistroUsuarios = document.getElementById('btnRegistroUsuarios');
+    if (btnRegistroUsuarios) {
+        btnRegistroUsuarios.style.display = esAdmin ? "flex" : "none";
+    }
 
-function cambiarTab(evt, tabId) {
-    let contents = document.querySelectorAll('#modalAyuda .tab-content');
-    contents.forEach(c => c.classList.remove('active'));
-
-    let buttons = document.querySelectorAll('#modalAyuda .tab-btn');
-    buttons.forEach(b => b.classList.remove('active'));
-
-    document.getElementById(tabId).classList.add('active');
-    evt.currentTarget.classList.add('active');
-}
-
-function cambiarTabBQ(evt, tabId) {
-    let contents = document.querySelectorAll('#modalBigquery .bq-content');
-    contents.forEach(c => {
-        c.style.display = 'none';
-        c.classList.remove('active');
+    const botonesModulos = document.querySelectorAll('.modules-grid .module-btn[data-permiso]');
+    botonesModulos.forEach(boton => {
+        const nombrePermiso = boton.getAttribute('data-permiso');
+        if (permisos[nombrePermiso] === false) {
+            boton.style.display = "none";
+        } else {
+            boton.style.display = "flex";
+        }
     });
-
-    let buttons = document.querySelectorAll('#modalBigquery .tab-btn');
-    buttons.forEach(b => b.classList.remove('active'));
-
-    let activeTab = document.getElementById(tabId);
-    activeTab.style.display = 'block';
-    activeTab.classList.add('active');
-    evt.currentTarget.classList.add('active');
 }
 
-function evaluarTurno(input) {
+// --- SINCRONIZACIÓN EN TIEMPO REAL DEL MÓDULO LISTADO DE FUNCIONES ---
+
+function cargarFuncionesFirebase() {
+    let tbody = document.getElementById('cuerpoTablaFunciones');
+    if (!tbody) return;
+
+    dbRefFunciones.on('value', (snapshot) => {
+        tbody.innerHTML = "";
+        let data = snapshot.val();
+
+        if (!data) {
+            tbody.innerHTML = `<tr><td colspan="15" style="text-align:center; padding:15px; color:#64748b;">No hay funciones registradas. Haga clic en "+ Nueva Función".</td></tr>`;
+            return;
+        }
+
+        let index = 1;
+        Object.keys(data).forEach(key => {
+            let func = data[key];
+            let nombre = func.nombre || "";
+            let platInicial = func.plat_inicial || "";
+            let platFinal = func.plat_final || "";
+            let t89 = func.t_8_9 || "";
+            let t1011 = func.t_10_11 || "";
+            let t121 = func.t_12_1 || "";
+            let t23 = func.t_2_3 || "";
+            let t45 = func.t_4_5 || "";
+            let funcionTexto = func.funcion || "";
+            let detalle = func.detalle || "";
+            let estado = func.estado || "Activo";
+            let dias = func.dias || "";
+
+            let check89 = t89 === "✓" ? "has-check" : "";
+            let check1011 = t1011 === "✓" ? "has-check" : "";
+            let check121 = t121 === "✓" ? "has-check" : "";
+            let check23 = t23 === "✓" ? "has-check" : "";
+            let check45 = t45 === "✓" ? "has-check" : "";
+
+            let tr = document.createElement('tr');
+            tr.setAttribute('data-id', key);
+            tr.draggable = true;
+            tr.setAttribute('ondragstart', 'drag(event)');
+            tr.setAttribute('ondragover', 'allowDrop(event)');
+            tr.setAttribute('ondrop', 'drop(event)');
+            tr.style.opacity = (estado === "Activo") ? "1" : "0.7";
+
+            tr.innerHTML = `
+                <td class="drag-handle" title="Arrastrar para mover">⠿</td>
+                <td class="num-fila">${index++}</td>
+                <td><input type="text" value="${nombre}" onchange="actualizarFuncionFirebase('${key}', 'nombre', this.value)"></td>
+                <td><input type="text" value="${platInicial}" onchange="actualizarFuncionFirebase('${key}', 'plat_inicial', this.value)"></td>
+                <td><input type="text" value="${platFinal}" onchange="actualizarFuncionFirebase('${key}', 'plat_final', this.value)"></td>
+                <td><input type="text" class="input-turn ${check89}" value="${t89}" onclick="toggleCheckTurnRealtime(this, '${key}', 't_8_9')" oninput="gestionarEntradaTurnoRealtime(this, '${key}', 't_8_9')"></td>
+                <td><input type="text" class="input-turn ${check1011}" value="${t1011}" onclick="toggleCheckTurnRealtime(this, '${key}', 't_10_11')" oninput="gestionarEntradaTurnoRealtime(this, '${key}', 't_10_11')"></td>
+                <td><input type="text" class="input-turn ${check121}" value="${t121}" onclick="toggleCheckTurnRealtime(this, '${key}', 't_12_1')" oninput="gestionarEntradaTurnoRealtime(this, '${key}', 't_12_1')"></td>
+                <td><input type="text" class="input-turn ${check23}" value="${t23}" onclick="toggleCheckTurnRealtime(this, '${key}', 't_2_3')" oninput="gestionarEntradaTurnoRealtime(this, '${key}', 't_2_3')"></td>
+                <td><input type="text" class="input-turn ${check45}" value="${t45}" onclick="toggleCheckTurnRealtime(this, '${key}', 't_4_5')" oninput="gestionarEntradaTurnoRealtime(this, '${key}', 't_4_5')"></td>
+                <td><input type="text" value="${funcionTexto}" onchange="actualizarFuncionFirebase('${key}', 'funcion', this.value)"></td>
+                <td><input type="text" value="${detalle}" onchange="actualizarFuncionFirebase('${key}', 'detalle', this.value)"></td>
+                <td>
+                    <select class="select-estado" onchange="actualizarFuncionFirebase('${key}', 'estado', this.value)">
+                        <option value="Activo" ${estado === 'Activo' ? 'selected' : ''}>Activo</option>
+                        <option value="Inactivo" ${estado === 'Inactivo' ? 'selected' : ''}>Inactivo</option>
+                    </select>
+                </td>
+                <td><input type="text" value="${dias}" onchange="actualizarFuncionFirebase('${key}', 'dias', this.value)"></td>
+                <td><button class="delete-row-btn" onclick="eliminarFuncionFirebase('${key}')">✕</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        filtrarFuncionesTabla();
+    });
+}
+
+// Agregar nueva función directamente a Firebase en blanco
+function agregarNuevaFilaFuncion() {
+    let nuevaKey = dbRefFunciones.push().key;
+    let nuevaFuncionData = {
+        id: nuevaKey,
+        nombre: "",
+        plat_inicial: "",
+        plat_final: "",
+        t_8_9: "",
+        t_10_11: "",
+        t_12_1: "",
+        t_2_3: "",
+        t_4_5: "",
+        funcion: "",
+        detalle: "",
+        estado: "Activo",
+        dias: ""
+    };
+
+    dbRefFunciones.child(nuevaKey).set(nuevaFuncionData).then(() => {
+        setTimeout(() => {
+            let trs = document.querySelectorAll('#cuerpoTablaFunciones tr');
+            if (trs.length > 0) {
+                let ultimoTr = trs[trs.length - 1];
+                let primerInput = ultimoTr.querySelector('td:nth-child(3) input');
+                if (primerInput) primerInput.focus();
+            }
+        }, 100);
+    });
+}
+
+function actualizarFuncionFirebase(key, campo, valor) {
+    dbRefFunciones.child(key).update({ [campo]: valor });
+}
+
+function toggleCheckTurnRealtime(input, key, campoHorario) {
+    let nuevoValor = (input.value === "✓") ? "" : "✓";
+    actualizarFuncionFirebase(key, campoHorario, nuevoValor);
+}
+
+function gestionarEntradaTurnoRealtime(input, key, campoHorario) {
     let val = input.value.trim();
+    let nuevoValor = "";
     if (val === "1") {
-        input.value = "✔";
-        input.classList.add('has-check');
-    } else if (val === "✔") {
-        input.classList.add('has-check');
+        nuevoValor = "✓";
+    } else if (val.includes("✓")) {
+        nuevoValor = "✓";
     } else {
-        input.classList.remove('has-check');
+        nuevoValor = "";
+    }
+    actualizarFuncionFirebase(key, campoHorario, nuevoValor);
+}
+
+function eliminarFuncionFirebase(key) {
+    if (confirm("¿Estás seguro de eliminar esta función de la base de datos?")) {
+        dbRefFunciones.child(key).remove();
     }
 }
 
-function eliminarFila(btn) {
-    let row = btn.closest('tr');
-    row.classList.add('fade-out');
-    setTimeout(() => {
-        row.remove();
-        actualizarNumeracion();
-        filtrarTabla();
-    }, 300);
+function cambiarEstadoFila(select) {
+    let tr = select.closest('tr');
+    tr.style.opacity = (select.value === "Activo") ? "1" : "0.7";
 }
 
-function actualizarNumeracion() {
-    let filas = document.querySelectorAll('#cuerpoTabla tr');
-    filas.forEach((row, index) => {
-        let link = row.querySelector('td:nth-child(2) a');
-        if(link) {
-            link.innerText = index + 1;
-            link.setAttribute("onclick", `abrirTutorial(${index + 1}); return false;`);
+function filtrarFuncionesTabla() {
+    let filtroTexto = document.getElementById('buscadorFunciones').value.toLowerCase();
+    let filtroEstado = document.getElementById('filtroEstadoFunciones').value;
+    let filas = document.querySelectorAll('#cuerpoTablaFunciones tr');
+
+    filas.forEach(tr => {
+        let inputListado = tr.querySelector('td:nth-child(3) input');
+        let textoListado = inputListado ? inputListado.value.toLowerCase() : "";
+        let selectEstado = tr.querySelector('.select-estado');
+        let estadoFila = selectEstado ? selectEstado.value : "";
+
+        let coincideTexto = textoListado.includes(filtroTexto);
+        let coincideEstado = (filtroEstado === "" || estadoFila === filtroEstado);
+
+        tr.style.display = (coincideTexto && coincideEstado) ? "" : "none";
+    });
+}
+
+function reindexarFilasFunciones() {
+    let filas = document.querySelectorAll('#cuerpoTablaFunciones tr');
+    filas.forEach((tr, index) => {
+        let tdNum = tr.querySelector('.num-fila');
+        if (tdNum) {
+            tdNum.textContent = index + 1;
         }
     });
 }
 
-function agregarNuevaFila() {
-    let tbody = document.getElementById('cuerpoTabla');
-    let totalFilas = tbody.rows.length + 1;
-    
-    let nuevaTr = document.createElement('tr');
-    nuevaTr.setAttribute('draggable', 'true');
-    nuevaTr.setAttribute('ondragstart', 'dragStart(event)');
-    nuevaTr.setAttribute('ondragover', 'dragOver(event)');
-    nuevaTr.setAttribute('ondrop', 'drop(event)');
-
-    nuevaTr.innerHTML = `
-            <td>${totalFilas}</td>
-            <td><input type="text" value="${idNombre}" style="width: 50px; text-align: center;"></td>
-            <td><input type="text" value="${correo}"></td>
-            <td><input type="text" value="Pendiente" style="font-family: monospace; color: #d97706; font-size: 11px;" readonly></td>
-            <td>
-                <select class="select-estado">
-                    <option value="1" selected>Activo</option>
-                    <option value="0">Inactivo</option>
-                </select>
-            </td>
-            <td><input type="text" value="Pendiente" style="color: #d97706; text-align: center;" readonly></td>
-            <td><input type="text" value="Pendiente" style="color: #d97706; text-align: center; font-size: 11px;" readonly></td>
-            <td>
-                <div class="permisos-checks-grid">
-                    <label title="Listado Funciones"><input type="checkbox" checked> Func.</label>
-                    <label title="Calcular Datos"><input type="checkbox" checked> Calc.</label>
-                    <label title="Ayuda Rápida"><input type="checkbox" checked> Ayu.</label>
-                    <label title="Conteo Tablas"><input type="checkbox" checked> Cont.</label>
-                    <label title="Metas Entel"><input type="checkbox" checked> Met.</label>
-                    <label title="Querys variadas"><input type="checkbox" checked> Var.</label>
-                </div>
-            </td>
-            <td><button class="delete-row-btn" onclick="this.closest('tr').remove();">✕</button></td>
-        `;
-
-    tbody.appendChild(nuevaTr);
-
-    let container = document.getElementById('tablaContainer');
-    container.scrollTop = container.scrollHeight;
-
-    let inputPrincipal = nuevaTr.querySelector('td:nth-child(3) input');
-    inputPrincipal.focus();
-
-    setTimeout(() => {
-        inputPrincipal.classList.remove('highlight-new');
-    }, 3000);
-    
-    filtrarTabla();
-}
-
-function filtrarTabla() {
-    let filtroEstado = document.getElementById('filtroEstado').value.trim().toLowerCase();
-    let filtroTexto = document.getElementById('filtroBuscar').value.trim().toLowerCase();
-    let filas = document.querySelectorAll('#cuerpoTabla tr');
-
-    filas.forEach(row => {
-        let inputFuncion = row.querySelector('td:nth-child(3) input');
-        let selectEstado = row.querySelector('td:nth-child(13) select');
-
-        let textoFuncion = inputFuncion ? inputFuncion.value.trim().toLowerCase() : "";
-        let valorEstado = selectEstado ? selectEstado.value.trim().toLowerCase() : "";
-
-        let coincideEstado = (filtroEstado === "" || valorEstado === filtroEstado);
-        let coincideTexto = (filtroTexto === "" || textoFuncion.includes(filtroTexto));
-
-        if (coincideEstado && coincideTexto) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
-        }
-    });
-}
-
+// Drag & Drop para reordenar filas
 let filaArrastrada = null;
-
-function dragStart(e) {
-    filaArrastrada = e.target.closest('tr');
-    e.dataTransfer.effectAllowed = 'move';
-    filaArrastrada.classList.add('dragging');
+function drag(event) {
+    filaArrastrada = event.target.closest('tr');
 }
+function allowDrop(event) {
+    event.preventDefault();
+}
+function drop(event) {
+    event.preventDefault();
+    let filaDestino = event.target.closest('tr');
+    if (filaArrastrada && filaDestino && filaArrastrada !== filaDestino) {
+        let tbody = document.getElementById('cuerpoTablaFunciones');
+        let todasFilas = Array.from(tbody.querySelectorAll('tr'));
+        let indexOrigen = todasFilas.indexOf(filaArrastrada);
+        let indexDestino = todasFilas.indexOf(filaDestino);
 
-function dragOver(e) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    let filaActual = e.target.closest('tr');
-    if (filaActual && filaActual !== filaArrastrada) {
-        let tbody = document.getElementById('cuerpoTabla');
-        let rect = filaActual.getBoundingClientRect();
-        let midY = rect.top + rect.height / 2;
-        if (e.clientY < midY) {
-            tbody.insertBefore(filaArrastrada, filaActual);
+        if (indexOrigen < indexDestino) {
+            tbody.insertBefore(filaArrastrada, filaDestino.nextSibling);
         } else {
-            tbody.insertBefore(filaArrastrada, filaActual.nextSibling);
+            tbody.insertBefore(filaArrastrada, filaDestino);
         }
-    }
-}
-
-function drop(e) {
-    e.preventDefault();
-    if (filaArrastrada) {
-        filaArrastrada.classList.remove('dragging');
-        actualizarNumeracion();
-        filaArrastrada = null;
-    }
-}
-
-// --- ACCIONES PARA LOS OTROS MÓDULOS ---
-function abrirModulo(nombreModulo) {
-    switch (nombreModulo) {
-        case 'registro_usuarios':
-            alert('Abriendo módulo: Registro de Usuarios');
-            break;
-        case 'calcular_datos':
-            alert('Abriendo módulo: Calcular Datos');
-            break;
-        case 'leeme_primero':
-            alert('¡Bienvenido! Haz clicado: Léeme primero');
-            break;
-        case 'metas_entel':
-            alert('Abriendo módulo: Metas Entel y Socios');
-            break;
-        case 'query_variadas':
-            alert('Abriendo módulo: Query Variadas');
-            break;
-        default:
-            console.log('Módulo no reconocido');
+        reindexarFilasFunciones();
     }
 }
 
 
-// --- LÓGICA DEL MÓDULO: REGISTRO DE USUARIOS ---
+// --- GESTIÓN DE USUARIOS EN TIEMPO REAL DESDE FIREBASE ---
+
+function cargarUsuariosFirebase() {
+    let tbody = document.getElementById('cuerpoTablaUsuarios');
+    if (!tbody) return;
+
+    dbRefUsuarios.on('value', (snapshot) => {
+        tbody.innerHTML = "";
+        let data = snapshot.val();
+        
+        if (!data) {
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:15px; color:#64748b;">No hay usuarios registrados en Firebase.</td></tr>`;
+            return;
+        }
+
+        let index = 1;
+        Object.keys(data).forEach(key => {
+            let user = data[key];
+            let idNombre = user.id || key;
+            let correo = user.usuario || "";
+            let clave = user.clave && user.clave !== "" ? user.clave : "Pendiente";
+            let estado = user.estado !== undefined ? user.estado : 1;
+            let pais = user.pais && user.pais !== "" ? user.pais : "Pendiente";
+            let fechaHora = user.fecha_hora && user.fecha_hora !== "" ? user.fecha_hora : "Pendiente";
+            
+            let permisos = user.permisos || {};
+            let chkFunc = permisos.listado_funciones ? "checked" : "";
+            let chkCalc = permisos.calcular_datos ? "checked" : "";
+            let chkAyu = permisos.ayuda_rapida ? "checked" : "";
+            let chkCont = permisos.conteo_tablas ? "checked" : "";
+            let chkMet = permisos.metas_entel ? "checked" : "";
+            let chkVar = permisos.querys_variadas ? "checked" : "";
+
+            let tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${index++}</td>
+                <td><input type="text" value="${idNombre}" style="width: 50px; text-align: center;" onchange="actualizarUsuarioFirebase('${key}', 'id', this.value)"></td>
+                <td><input type="text" value="${correo}" onchange="actualizarUsuarioFirebase('${key}', 'usuario', this.value)"></td>
+                <td><input type="text" value="${clave}" style="font-family: monospace; color: ${clave === 'Pendiente' ? '#d97706' : '#0284c7'};" readonly></td>
+                <td>
+                    <select class="select-estado" onchange="actualizarUsuarioFirebase('${key}', 'estado', parseInt(this.value))">
+                        <option value="1" ${estado === 1 ? 'selected' : ''}>Activo</option>
+                        <option value="0" ${estado === 0 ? 'selected' : ''}>Inactivo</option>
+                    </select>
+                </td>
+                <td><input type="text" value="${pais}" style="text-align: center; color: ${pais === 'Pendiente' ? '#d97706' : '#000'};" onchange="actualizarUsuarioFirebase('${key}', 'pais', this.value)"></td>
+                <td><input type="text" value="${fechaHora}" style="text-align: center; font-size: 11px; color: ${fechaHora === 'Pendiente' ? '#d97706' : '#000'};" readonly></td>
+                <td>
+                    <div class="permisos-checks-grid" style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; font-size: 11px;">
+                        <label title="Listado Funciones"><input type="checkbox" ${chkFunc} onchange="actualizarPermisoFirebase('${key}', 'listado_funciones', this.checked)"> Func.</label>
+                        <label title="Calcular Datos"><input type="checkbox" ${chkCalc} onchange="actualizarPermisoFirebase('${key}', 'calcular_datos', this.checked)"> Calc.</label>
+                        <label title="Ayuda Rápida"><input type="checkbox" ${chkAyu} onchange="actualizarPermisoFirebase('${key}', 'ayuda_rapida', this.checked)"> Ayu.</label>
+                        <label title="Conteo Tablas"><input type="checkbox" ${chkCont} onchange="actualizarPermisoFirebase('${key}', 'conteo_tablas', this.checked)"> Cont.</label>
+                        <label title="Metas Entel"><input type="checkbox" ${chkMet} onchange="actualizarPermisoFirebase('${key}', 'metas_entel', this.checked)"> Met.</label>
+                        <label title="Querys variadas"><input type="checkbox" ${chkVar} onchange="actualizarPermisoFirebase('${key}', 'querys_variadas', this.checked)"> Var.</label>
+                    </div>
+                </td>
+                <td><button class="delete-row-btn" onclick="eliminarUsuarioFirebase('${key}')">✕</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    });
+}
 
 function guardarNuevoUsuario() {
     let inputCorreo = document.getElementById('nuevoCorreo');
@@ -240,103 +333,93 @@ function guardarNuevoUsuario() {
         return;
     }
     
-    // Si no puso ID, usamos la parte antes del @ como ID por defecto
     if (idNombre === "") {
         idNombre = correo.split('@')[0];
     }
     
-    // Estado por defecto: 1 (Activo)
-    let estadoDefault = 1;
-    
-    // Capturar el estado de los permisos (checks) actuales de la interfaz
-    // (Puedes ajustar esto si luego deseas leer los checks reales del formulario)
-    let permisos = {
-        listado_funciones: true,
-        calcular_datos: true,
-        ayuda_rapida: true,
-        conteo_tablas: true,
-        metas_entel: true,
-        querys_variadas: true
-    };
-
-    // Objeto exacto que se enviará a Firebase con campos pendientes
     let nuevoUsuarioData = {
         id: idNombre,
         usuario: correo,
-        estado: estadoDefault,
-        clave: "",         // Vacío hasta que index.html lo genere
-        pais: "",          // Vacío / Pendiente
-        fecha_hora: "",    // Vacío / Pendiente hasta el primer login
-        permisos: permisos
+        estado: 1,
+        clave: "",
+        pais: "",
+        fecha_hora: "",
+        permisos: {
+            listado_funciones: true,
+            calcular_datos: true,
+            ayuda_rapida: true,
+            conteo_tablas: true,
+            metas_entel: true,
+            querys_variadas: true
+        }
     };
 
-    console.log("Guardando en Firebase con campos pendientes:", nuevoUsuarioData);
-    
-    // AQUÍ ES DONDE SE CONECTARÁ CON FIREBASE (Pronto añadiremos esta línea de Firebase SDK)
-    // database.ref('usuarios/' + idNombre).set(nuevoUsuarioData);
-
-    // Insertar nueva fila en la tabla visual del tablero
-    let tablaUsuarios = document.querySelector('#modalRegistroUsuarios tbody');
-    if (tablaUsuarios) {
-        let totalFilas = tablaUsuarios.rows.length + 1;
-        let nuevaTr = document.createElement('tr');
-        
-        nuevaTr.innerHTML = `
-            <td>${totalFilas}</td>
-            <td><input type="text" value="${idNombre}"></td>
-            <td><input type="text" value="${correo}"></td>
-            <td><input type="text" value="Pendiente" style="font-family: monospace; color: #d97706; font-size: 11px;" readonly></td>
-            <td>
-                <select class="select-estado">
-                    <option value="1" selected>Activo</option>
-                    <option value="0">Inactivo</option>
-                </select>
-            </td>
-            <td><input type="text" value="Pendiente" style="color: #d97706;" readonly></td>
-            <td>
-                <div class="permisos-checks-grid">
-                    <label title="Listado Funciones"><input type="checkbox" checked> Func.</label>
-                    <label title="Calcular Datos"><input type="checkbox" checked> Calc.</label>
-                    <label title="Ayuda Rápida"><input type="checkbox" checked> Ayu.</label>
-                    <label title="Conteo Tablas"><input type="checkbox" checked> Cont.</label>
-                    <label title="Metas Entel"><input type="checkbox" checked> Met.</label>
-                    <label title="Querys variadas"><input type="checkbox" checked> Var.</label>
-                </div>
-            </td>
-            <td><button class="delete-row-btn" onclick="this.closest('tr').remove();">✕</button></td>
-        `;
-        
-        tablaUsuarios.appendChild(nuevaTr);
-    }
-    
-    // Limpiar formulario y cerrar submodal silenciosamente
-    inputCorreo.value = "";
-    inputId.value = "";
-    cerrarModal('modalNuevoUsuarioForm');
+    dbRefUsuarios.child(idNombre).set(nuevoUsuarioData)
+        .then(() => {
+            inputCorreo.value = "";
+            inputId.value = "";
+            cerrarModal('modalNuevoUsuarioForm');
+        })
+        .catch((error) => {
+            alert("Error al guardar en Firebase: " + error.message);
+        });
 }
 
-// Exportar usuarios a formato CSV
+function actualizarUsuarioFirebase(userKey, campo, valor) {
+    dbRefUsuarios.child(userKey).update({ [campo]: valor });
+}
+
+function actualizarPermisoFirebase(userKey, modulo, valor) {
+    dbRefUsuarios.child(userKey).child('permisos').update({ [modulo]: valor });
+}
+
+function eliminarUsuarioFirebase(userKey) {
+    if (confirm("¿Estás seguro de eliminar este usuario del sistema?")) {
+        dbRefUsuarios.child(userKey).remove();
+    }
+}
+
+// --- GESTIÓN GENERAL DE MODALES ---
+function abrirModal(idModal) {
+    const modal = document.getElementById(idModal);
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function cerrarModal(idModal) {
+    const modal = document.getElementById(idModal);
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function abrirModulo(nombreModulo) {
+    alert(`Abriendo módulo: ${nombreModulo}`);
+}
+
 function exportarUsuariosCSV() {
-    let filas = document.querySelectorAll('#modalRegistroUsuarios table tbody tr');
+    let filas = document.querySelectorAll('#cuerpoTablaUsuarios tr');
     if (filas.length === 0) {
         alert("No hay usuarios para exportar.");
         return;
     }
     
-    let csvContent = "data:text/csv;charset=utf-8,ID,Correo,Clave,Estado,Pais\n";
+    let csvContent = "data:text/csv;charset=utf-8,ID,Correo,Clave,Estado,Pais,Fecha_Hora\n";
     
     filas.forEach(row => {
         let inputs = row.querySelectorAll('input[type="text"]');
         let selectEstado = row.querySelector('select');
         
-        if (inputs.length >= 3) {
+        if (inputs.length >= 5) {
             let id = inputs[0].value;
             let correo = inputs[1].value;
             let clave = inputs[2].value;
             let estado = selectEstado ? selectEstado.value : "1";
-            let pais = inputs[3] ? inputs[3].value : "Peru";
+            let pais = inputs[3].value;
+            let fechaHora = inputs[4].value;
             
-            csvContent += `"${id}","${correo}","${clave}","${estado}","${pais}"\n`;
+            csvContent += `"${id}","${correo}","${clave}","${estado}","${pais}","${fechaHora}"\n`;
         }
     });
     

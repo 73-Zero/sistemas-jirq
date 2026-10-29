@@ -1,11 +1,13 @@
+/* Reseteo general y bloqueo de selección de textos en todo el documento */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
-    user-select: none; /* Bloqueo de selección de texto */
+    user-select: none;
 }
 
+/* Configuracion base de la ventana del tablero */
 body {
     min-height: 100vh;
     display: flex;
@@ -15,7 +17,7 @@ body {
     padding: 20px;
 }
 
-/* Contenedor Principal con ancho fijo para 4 columnas exactas */
+/* Contenedor principal con efecto visual adaptado */
 .dashboard-card {
     background: rgba(255, 255, 255, 0.7);
     border-radius: 32px;
@@ -44,7 +46,7 @@ body {
     margin-bottom: 25px;
 }
 
-/* Caja Interna con relieve */
+/* Caja interna contenedora con relieve y efectos de profundidad */
 .menu-inner-box {
     background: rgba(240, 243, 250, 0.55);
     border-radius: 24px;
@@ -54,14 +56,25 @@ body {
         inset -4px -4px 10px rgba(255, 255, 255, 0.9);
 }
 
-/* Grilla adaptable y responsive automática */
+/* Estilo para el contenedor del mensaje de bienvenida en la parte inferior izquierda */
+.welcome-banner-container {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #475569;
+    text-align: left;
+    padding-left: 5px;
+    letter-spacing: 0.3px;
+}
+
+/* Grilla adaptable automatica para organizar los modulos */
 .modules-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 20px;
 }
 
-/* Botones con Efecto Claymorphism */
+/* Botones interactivos con diseño estilo Claymorphism */
 .module-btn {
     background: #ffffff;
     border: none;
@@ -100,7 +113,7 @@ body {
     text-align: center;
 }
 
-/* Iconos Claymorphic 3D */
+/* Iconos tridimensionales con estilos personalizados */
 .module-icon {
     width: 60px;
     height: 60px;
@@ -118,7 +131,7 @@ body {
     z-index: 2;
 }
 
-/* Variaciones de colores estilo Clay */
+/* Variaciones de colores con sombras estilo Clay */
 .icon-teal { background: linear-gradient(135deg, #00c6ff, #0072ff); box-shadow: 5px 5px 12px rgba(0, 114, 255, 0.35), inset -2px -2px 5px rgba(0, 0, 0, 0.15); }
 .icon-blue { background: linear-gradient(135deg, #3a86ff, #2554d7); box-shadow: 5px 5px 12px rgba(58, 134, 255, 0.35), inset -2px -2px 5px rgba(0, 0, 0, 0.15); }
 .icon-purple { background: linear-gradient(135deg, #a855f7, #7e22ce); box-shadow: 5px 5px 12px rgba(168, 85, 247, 0.35), inset -2px -2px 5px rgba(0, 0, 0, 0.15); }
@@ -128,7 +141,7 @@ body {
 .icon-emerald { background: linear-gradient(135deg, #059669, #064e3b); box-shadow: 5px 5px 12px rgba(5, 150, 105, 0.35), inset -2px -2px 5px rgba(0, 0, 0, 0.15); }
 .icon-rose { background: linear-gradient(135deg, #f43f5e, #be123c); box-shadow: 5px 5px 12px rgba(244, 63, 94, 0.35), inset -2px -2px 5px rgba(0, 0, 0, 0.15); }
 
-/* Ventanas Modales */
+/* Capas y estilos generales para modales flotantes */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -191,44 +204,7 @@ body {
     color: white;
 }
 
-/* Pestañas internas de modales */
-.tabs-header {
-    display: flex;
-    gap: 8px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    overflow-x: auto;
-}
-
-.tab-btn {
-    background: rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 8px 14px;
-    border-radius: 8px;
-    color: #475569;
-    font-size: 13px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s;
-}
-
-.tab-btn.active {
-    background: #7c3aed;
-    color: white;
-    border-color: #7c3aed;
-    font-weight: 500;
-}
-
-.tab-content, .bq-content {
-    display: none;
-}
-
-.tab-content.active, .bq-content.active {
-    display: block;
-}
-
-/* Tabla Interactiva Estilo Excel */
+/* Barras de herramientas para tablas interactivas */
 .table-toolbar {
     display: flex;
     gap: 15px;
@@ -253,6 +229,7 @@ body {
     border: 1px solid rgba(0,0,0,0.1);
 }
 
+/* Estructura de tablas estilo hoja de calculo */
 .excel-table {
     width: 100%;
     border-collapse: collapse;
@@ -283,24 +260,6 @@ body {
     background: rgba(124, 58, 237, 0.08);
 }
 
-.excel-table tr.dragging {
-    opacity: 0.4;
-    background: #ddd;
-}
-
-.drag-handle {
-    cursor: grab;
-    color: #94a3b8;
-    font-weight: bold;
-    font-size: 16px;
-    user-select: none;
-    padding: 0 4px;
-}
-
-.drag-handle:active {
-    cursor: grabbing;
-}
-
 .excel-table input[type="text"] {
     width: 100%;
     padding: 4px 6px;
@@ -312,9 +271,11 @@ body {
     font-weight: 500;
 }
 
+/* Foco y borde amarillo brillante únicamente en la celda activa */
 .excel-table input[type="text"]:focus {
     background: white;
-    border-color: #7c3aed;
+    border-color: #eab308;
+    box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.4);
     border-radius: 4px;
     outline: none;
 }
@@ -331,26 +292,31 @@ body {
     text-align: center;
 }
 
+/* Estilo para el Check verde brillante y más grueso */
 .input-turn {
     width: 35px !important;
     text-align: center;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .input-turn.has-check {
-    color: #10b981 !important;
-    font-size: 14px;
+    color: #059669 !important;
+    font-size: 16px !important;
+    font-weight: 900 !important;
 }
 
-.highlight-new {
-    background: #fef08a !important;
-    animation: pulse-border 1.5s infinite;
+.drag-handle {
+    cursor: grab;
+    color: #94a3b8;
+    font-weight: bold;
+    font-size: 16px;
+    user-select: none;
+    padding: 0 4px;
 }
 
-@keyframes pulse-border {
-    0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
-    70% { box-shadow: 0 0 0 6px rgba(234, 179, 8, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+.drag-handle:active {
+    cursor: grabbing;
 }
 
 .delete-row-btn {
