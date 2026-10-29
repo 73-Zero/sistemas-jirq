@@ -1,6 +1,11 @@
-// --- CONFIGURACIÓN DE SEGURIDAD Y FIREBASE ---
+/* ========================================================================== */
+/* 1. MÓDULO GENERAL: CONFIGURACIÓN DE SEGURIDAD Y FIREBASE */
+/* ========================================================================== */
+
+// Bloqueo de menú contextual (clic derecho) para proteger el sistema
 document.addEventListener('contextmenu', event => event.preventDefault());
 
+// Bloqueo de atajos de teclado para inspección de código (F12, Ctrl+Shift+I/J/C, Ctrl+U/S)
 document.addEventListener('keydown', (e) => {
     if (e.key === 'F12' || 
        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
@@ -9,6 +14,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// Configuración de conexión a Firebase Realtime Database
 const firebaseConfig = {
     databaseURL: "https://sistemas-jirq-default-rtdb.firebaseio.com"
 };
@@ -17,16 +23,35 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
-// Referencias a los nodos en la base de datos de Firebase
+// Referencias a los nodos principales en la base de datos
 const dbRefUsuarios = firebase.database().ref('usuarios');
 const dbRefFunciones = firebase.database().ref('funciones');
 
+// Inicialización general al cargar el documento HTML
 document.addEventListener("DOMContentLoaded", () => {
     aplicarControlDeAccesoYPermisos();
     cargarUsuariosFirebase();
     cargarFuncionesFirebase();
+
+    // Configurar el botón "Sí" del modal de alerta de eliminación de funciones
+    const btnConfirmar = document.getElementById('btnConfirmarEliminar');
+    if (btnConfirmar) {
+        btnConfirmar.onclick = () => {
+            if (claveFuncionAEliminar) {
+                dbRefFunciones.child(claveFuncionAEliminar).remove()
+                    .then(() => {
+                        cerrarModal('modalAlertaEliminar');
+                        claveFuncionAEliminar = null;
+                    })
+                    .catch((error) => {
+                        alert("Error al eliminar: " + error.message);
+                    });
+            }
+        };
+    }
 });
 
+// Control de roles (Administrador vs Invitado) y permisos por módulo
 function aplicarControlDeAccesoYPermisos() {
     const usuarioId = sessionStorage.getItem("usuario_sesion_id") || "invitado";
     const esAdmin = sessionStorage.getItem("usuario_sesion_admin") === "true";
@@ -63,7 +88,10 @@ function aplicarControlDeAccesoYPermisos() {
     });
 }
 
-// --- SINCRONIZACIÓN EN TIEMPO REAL DEL MÓDULO LISTADO DE FUNCIONES ---
+
+/* ========================================================================== */
+/* 2. MÓDULO LISTADO DE FUNCIONES: SINCRONIZACIÓN EN TIEMPO REAL Y EXCEL */
+/* ========================================================================== */
 
 function cargarFuncionesFirebase() {
     let tbody = document.getElementById('cuerpoTablaFunciones');
@@ -78,9 +106,17 @@ function cargarFuncionesFirebase() {
             return;
         }
 
+        let listaFunciones = Object.keys(data).map(key => ({
+            key: key,
+            ...data[key]
+        }));
+
+        // Ordenar por timestamp para que los registros más nuevos aparezcan arriba
+        listaFunciones.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
         let index = 1;
-        Object.keys(data).forEach(key => {
-            let func = data[key];
+        listaFunciones.forEach(func => {
+            let key = func.key;
             let nombre = func.nombre || "";
             let platInicial = func.plat_inicial || "";
             let platFinal = func.plat_final || "";
@@ -108,26 +144,44 @@ function cargarFuncionesFirebase() {
             tr.setAttribute('ondrop', 'drop(event)');
             tr.style.opacity = (estado === "Activo") ? "1" : "0.7";
 
+            // Control de guardado inteligente al salir de la fila (Tab o clic fuera)
+            tr.addEventListener('focusin', () => {
+                window.filaActualEditandoKey = key;
+                window.filaActualElemento = tr;
+            });
+
+            tr.addEventListener('focusout', (e) => {
+                setTimeout(() => {
+                    if (!tr.contains(document.activeElement)) {
+                        guardarFilaCompleta(key, tr);
+                        if (window.filaActualEditandoKey === key) {
+                            window.filaActualEditandoKey = null;
+                            window.filaActualElemento = null;
+                        }
+                    }
+                }, 200);
+            });
+
             tr.innerHTML = `
                 <td class="drag-handle" title="Arrastrar para mover">⠿</td>
                 <td class="num-fila">${index++}</td>
-                <td><input type="text" value="${nombre}" onchange="actualizarFuncionFirebase('${key}', 'nombre', this.value)"></td>
-                <td><input type="text" value="${platInicial}" onchange="actualizarFuncionFirebase('${key}', 'plat_inicial', this.value)"></td>
-                <td><input type="text" value="${platFinal}" onchange="actualizarFuncionFirebase('${key}', 'plat_final', this.value)"></td>
+                <td><input type="text" class="input-nombre" value="${nombre}" onmouseenter="mostrarTooltipExcel(event)" onmouseleave="ocultarTooltipExcel()"></td>
+                <td><input type="text" class="input-plat-ini" value="${platInicial}"></td>
+                <td><input type="text" class="input-plat-fin" value="${platFinal}"></td>
                 <td><input type="text" class="input-turn ${check89}" value="${t89}" onclick="toggleCheckTurnRealtime(this, '${key}', 't_8_9')" oninput="gestionarEntradaTurnoRealtime(this, '${key}', 't_8_9')"></td>
                 <td><input type="text" class="input-turn ${check1011}" value="${t1011}" onclick="toggleCheckTurnRealtime(this, '${key}', 't_10_11')" oninput="gestionarEntradaTurnoRealtime(this, '${key}', 't_10_11')"></td>
                 <td><input type="text" class="input-turn ${check121}" value="${t121}" onclick="toggleCheckTurnRealtime(this, '${key}', 't_12_1')" oninput="gestionarEntradaTurnoRealtime(this, '${key}', 't_12_1')"></td>
                 <td><input type="text" class="input-turn ${check23}" value="${t23}" onclick="toggleCheckTurnRealtime(this, '${key}', 't_2_3')" oninput="gestionarEntradaTurnoRealtime(this, '${key}', 't_2_3')"></td>
                 <td><input type="text" class="input-turn ${check45}" value="${t45}" onclick="toggleCheckTurnRealtime(this, '${key}', 't_4_5')" oninput="gestionarEntradaTurnoRealtime(this, '${key}', 't_4_5')"></td>
-                <td><input type="text" value="${funcionTexto}" onchange="actualizarFuncionFirebase('${key}', 'funcion', this.value)"></td>
-                <td><input type="text" value="${detalle}" onchange="actualizarFuncionFirebase('${key}', 'detalle', this.value)"></td>
+                <td><input type="text" class="input-funcion" value="${funcionTexto}"></td>
+                <td><input type="text" class="input-detalle" value="${detalle}" onmouseenter="mostrarTooltipExcel(event)" onmouseleave="ocultarTooltipExcel()"></td>
                 <td>
-                    <select class="select-estado" onchange="actualizarFuncionFirebase('${key}', 'estado', this.value)">
+                    <select class="select-estado" onchange="actualizarEstadoDirecto('${key}', this.value)">
                         <option value="Activo" ${estado === 'Activo' ? 'selected' : ''}>Activo</option>
                         <option value="Inactivo" ${estado === 'Inactivo' ? 'selected' : ''}>Inactivo</option>
                     </select>
                 </td>
-                <td><input type="text" value="${dias}" onchange="actualizarFuncionFirebase('${key}', 'dias', this.value)"></td>
+                <td><input type="text" class="input-dias" value="${dias}"></td>
                 <td><button class="delete-row-btn" onclick="eliminarFuncionFirebase('${key}')">✕</button></td>
             `;
             tbody.appendChild(tr);
@@ -137,7 +191,59 @@ function cargarFuncionesFirebase() {
     });
 }
 
-// Agregar nueva función directamente a Firebase en blanco
+// Guardar cambios de una fila completa y auto-limpiar filas vacías en Firebase
+function guardarFilaCompleta(key, tr) {
+    let nombre = tr.querySelector('.input-nombre')?.value.trim() || "";
+    let platInicial = tr.querySelector('.input-plat-ini')?.value.trim() || "";
+    let platFinal = tr.querySelector('.input-plat-fin')?.value.trim() || "";
+    
+    let turns = tr.querySelectorAll('.input-turn');
+    let obtenerValorCheck = (input) => {
+        if (!input) return "";
+        let val = input.value.trim();
+        return (val === "1" || val === "✓") ? "✓" : "";
+    };
+
+    let t89 = obtenerValorCheck(turns[0]);
+    let t1011 = obtenerValorCheck(turns[1]);
+    let t121 = obtenerValorCheck(turns[2]);
+    let t23 = obtenerValorCheck(turns[3]);
+    let t45 = obtenerValorCheck(turns[4]);
+
+    let funcionTexto = tr.querySelector('.input-funcion')?.value.trim() || "";
+    let detalle = tr.querySelector('.input-detalle')?.value.trim() || "";
+    let estado = tr.querySelector('.select-estado')?.value || "Activo";
+    let dias = tr.querySelector('.input-dias')?.value.trim() || "";
+
+    let estaVacia = (nombre === "" && platInicial === "" && platFinal === "" && t89 === "" && t1011 === "" && t121 === "" && t23 === "" && t45 === "" && funcionTexto === "" && detalle === "" && dias === "");
+
+    if (estaVacia) {
+        dbRefFunciones.child(key).remove();
+        return;
+    }
+
+    let datosFila = {
+        nombre: nombre,
+        plat_inicial: platInicial,
+        plat_final: platFinal,
+        t_8_9: t89,
+        t_10_11: t1011,
+        t_12_1: t121,
+        t_2_3: t23,
+        t_4_5: t45,
+        funcion: funcionTexto,
+        detalle: detalle,
+        estado: estado,
+        dias: dias
+    };
+
+    dbRefFunciones.child(key).update(datosFila);
+}
+
+function actualizarEstadoDirecto(key, valorEstado) {
+    dbRefFunciones.child(key).update({ estado: valorEstado });
+}
+
 function agregarNuevaFilaFuncion() {
     let nuevaKey = dbRefFunciones.push().key;
     let nuevaFuncionData = {
@@ -153,52 +259,48 @@ function agregarNuevaFilaFuncion() {
         funcion: "",
         detalle: "",
         estado: "Activo",
-        dias: ""
+        dias: "",
+        timestamp: Date.now()
     };
 
     dbRefFunciones.child(nuevaKey).set(nuevaFuncionData).then(() => {
         setTimeout(() => {
             let trs = document.querySelectorAll('#cuerpoTablaFunciones tr');
             if (trs.length > 0) {
-                let ultimoTr = trs[trs.length - 1];
-                let primerInput = ultimoTr.querySelector('td:nth-child(3) input');
+                let primeraTr = trs[0];
+                let primerInput = primeraTr.querySelector('td:nth-child(3) input');
                 if (primerInput) primerInput.focus();
             }
-        }, 100);
+        }, 120);
     });
-}
-
-function actualizarFuncionFirebase(key, campo, valor) {
-    dbRefFunciones.child(key).update({ [campo]: valor });
-}
-
-function toggleCheckTurnRealtime(input, key, campoHorario) {
-    let nuevoValor = (input.value === "✓") ? "" : "✓";
-    actualizarFuncionFirebase(key, campoHorario, nuevoValor);
 }
 
 function gestionarEntradaTurnoRealtime(input, key, campoHorario) {
     let val = input.value.trim();
-    let nuevoValor = "";
-    if (val === "1") {
-        nuevoValor = "✓";
-    } else if (val.includes("✓")) {
-        nuevoValor = "✓";
+    if (val === "1" || val.includes("✓")) {
+        input.value = "✓";
+        input.classList.add('has-check');
     } else {
-        nuevoValor = "";
+        input.value = "";
+        input.classList.remove('has-check');
     }
-    actualizarFuncionFirebase(key, campoHorario, nuevoValor);
 }
+
+function toggleCheckTurnRealtime(input, key, campoHorario) {
+    if (input.value === "✓") {
+        input.value = "";
+        input.classList.remove('has-check');
+    } else {
+        input.value = "✓";
+        input.classList.add('has-check');
+    }
+}
+
+let claveFuncionAEliminar = null;
 
 function eliminarFuncionFirebase(key) {
-    if (confirm("¿Estás seguro de eliminar esta función de la base de datos?")) {
-        dbRefFunciones.child(key).remove();
-    }
-}
-
-function cambiarEstadoFila(select) {
-    let tr = select.closest('tr');
-    tr.style.opacity = (select.value === "Activo") ? "1" : "0.7";
+    claveFuncionAEliminar = key;
+    abrirModal('modalAlertaEliminar');
 }
 
 function filtrarFuncionesTabla() {
@@ -229,7 +331,7 @@ function reindexarFilasFunciones() {
     });
 }
 
-// Drag & Drop para reordenar filas
+// Funciones de Drag & Drop para reordenar filas
 let filaArrastrada = null;
 function drag(event) {
     filaArrastrada = event.target.closest('tr');
@@ -255,8 +357,83 @@ function drop(event) {
     }
 }
 
+// Función de exportación profesional a .xlsx con SheetJS
+function exportarFuncionesExcelXLSX() {
+    let filas = document.querySelectorAll('#cuerpoTablaFunciones tr');
+    if (filas.length === 0) {
+        alert("No hay funciones para exportar.");
+        return;
+    }
 
-// --- GESTIÓN DE USUARIOS EN TIEMPO REAL DESDE FIREBASE ---
+    let datosExportar = [];
+    let index = 1;
+
+    filas.forEach(tr => {
+        if (tr.style.display !== "none") {
+            let nombre = tr.querySelector('.input-nombre')?.value || "";
+            let platIni = tr.querySelector('.input-plat-ini')?.value || "";
+            let platFin = tr.querySelector('.input-plat-fin')?.value || "";
+            let turns = tr.querySelectorAll('.input-turn');
+            let t89 = turns[0]?.value || "";
+            let t1011 = turns[1]?.value || "";
+            let t121 = turns[2]?.value || "";
+            let t23 = turns[3]?.value || "";
+            let t45 = turns[4]?.value || "";
+            let funcion = tr.querySelector('.input-funcion')?.value || "";
+            let detalle = tr.querySelector('.input-detalle')?.value || "";
+            let estado = tr.querySelector('.select-estado')?.value || "Activo";
+            let dias = tr.querySelector('.input-dias')?.value || "";
+
+            datosExportar.push({
+                "#": index++,
+                "Listado de funciones": nombre,
+                "Plataforma Inicial": platIni,
+                "Plataforma Final": platFin,
+                "8-9": t89,
+                "10-11": t1011,
+                "12-1": t121,
+                "2-3": t23,
+                "4-5": t45,
+                "Función": funcion,
+                "Detalle": detalle,
+                "Estado": estado,
+                "Días": dias
+            });
+        }
+    });
+
+    if (datosExportar.length === 0) {
+        alert("No hay registros visibles para exportar según el filtro actual.");
+        return;
+    }
+
+    let worksheet = XLSX.utils.json_to_sheet(datosExportar);
+    let workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Listado de Funciones");
+
+    let colWidths = [
+        { wch: 5 },  // #
+        { wch: 30 }, // Listado de funciones
+        { wch: 18 }, // Plataforma Inicial
+        { wch: 18 }, // Plataforma Final
+        { wch: 8 },  // 8-9
+        { wch: 8 },  // 10-11
+        { wch: 8 },  // 12-1
+        { wch: 8 },  // 2-3
+        { wch: 8 },  // 4-5
+        { wch: 25 }, // Función
+        { wch: 35 }, // Detalle
+        { wch: 12 }, // Estado
+        { wch: 15 }  // Días
+    ];
+    worksheet['!cols'] = colWidths;
+
+    XLSX.writeFile(workbook, "Listado_Funciones_KIWOX_ENTEL.xlsx");
+}
+
+/* ========================================================================== */
+/* 3. MÓDULO GESTIÓN DE USUARIOS: FIREBASE Y PERMISOS DE ACCESO */
+/* ========================================================================== */
 
 function cargarUsuariosFirebase() {
     let tbody = document.getElementById('cuerpoTablaUsuarios');
@@ -292,19 +469,19 @@ function cargarUsuariosFirebase() {
             let tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${index++}</td>
-                <td><input type="text" value="${idNombre}" style="width: 50px; text-align: center;" onchange="actualizarUsuarioFirebase('${key}', 'id', this.value)"></td>
+                <td><input type="text" value="${idNombre}" onchange="actualizarUsuarioFirebase('${key}', 'id', this.value)"></td>
                 <td><input type="text" value="${correo}" onchange="actualizarUsuarioFirebase('${key}', 'usuario', this.value)"></td>
                 <td><input type="text" value="${clave}" style="font-family: monospace; color: ${clave === 'Pendiente' ? '#d97706' : '#0284c7'};" readonly></td>
                 <td>
-                    <select class="select-estado" onchange="actualizarUsuarioFirebase('${key}', 'estado', parseInt(this.value))">
+                    <select class="usuarios-select-estado" onchange="actualizarUsuarioFirebase('${key}', 'estado', parseInt(this.value))">
                         <option value="1" ${estado === 1 ? 'selected' : ''}>Activo</option>
                         <option value="0" ${estado === 0 ? 'selected' : ''}>Inactivo</option>
                     </select>
                 </td>
-                <td><input type="text" value="${pais}" style="text-align: center; color: ${pais === 'Pendiente' ? '#d97706' : '#000'};" onchange="actualizarUsuarioFirebase('${key}', 'pais', this.value)"></td>
-                <td><input type="text" value="${fechaHora}" style="text-align: center; font-size: 11px; color: ${fechaHora === 'Pendiente' ? '#d97706' : '#000'};" readonly></td>
+                <td><input type="text" value="${pais}" style="color: ${pais === 'Pendiente' ? '#d97706' : '#000'};" onchange="actualizarUsuarioFirebase('${key}', 'pais', this.value)"></td>
+                <td><input type="text" value="${fechaHora}" style="font-size: 11px; color: ${fechaHora === 'Pendiente' ? '#d97706' : '#000'};" readonly></td>
                 <td>
-                    <div class="permisos-checks-grid" style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; font-size: 11px;">
+                    <div style="display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; font-size: 11px;">
                         <label title="Listado Funciones"><input type="checkbox" ${chkFunc} onchange="actualizarPermisoFirebase('${key}', 'listado_funciones', this.checked)"> Func.</label>
                         <label title="Calcular Datos"><input type="checkbox" ${chkCalc} onchange="actualizarPermisoFirebase('${key}', 'calcular_datos', this.checked)"> Calc.</label>
                         <label title="Ayuda Rápida"><input type="checkbox" ${chkAyu} onchange="actualizarPermisoFirebase('${key}', 'ayuda_rapida', this.checked)"> Ayu.</label>
@@ -379,7 +556,11 @@ function eliminarUsuarioFirebase(userKey) {
     }
 }
 
-// --- GESTIÓN GENERAL DE MODALES ---
+
+/* ========================================================================== */
+/* 4. MÓDULO NAVEGACIÓN, MODALES Y UTILITARIOS (TOOLTIP EXCEL) */
+/* ========================================================================== */
+
 function abrirModal(idModal) {
     const modal = document.getElementById(idModal);
     if (modal) {
@@ -394,10 +575,20 @@ function cerrarModal(idModal) {
     }
 }
 
+function cerrarSesionSistema() {
+    abrirModal('modalAlertaCerrarSesion');
+}
+
+function ejecutarCerrarSesion() {
+    sessionStorage.clear();
+    window.location.href = "index.html";
+}
+
 function abrirModulo(nombreModulo) {
     alert(`Abriendo módulo: ${nombreModulo}`);
 }
 
+// Exportación opcional de usuarios a CSV
 function exportarUsuariosCSV() {
     let filas = document.querySelectorAll('#cuerpoTablaUsuarios tr');
     if (filas.length === 0) {
@@ -430,4 +621,27 @@ function exportarUsuariosCSV() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+}
+
+// Funciones del globito flotante amarillo (Estilo nota de Excel para texto desbordado)
+function mostrarTooltipExcel(event) {
+    let tooltip = document.getElementById('excelTooltipGlobal');
+    if (!tooltip) return;
+    
+    let texto = event.target.value.trim();
+    if (texto === "") return;
+    
+    tooltip.textContent = texto;
+    tooltip.style.display = 'block';
+    
+    let rect = event.target.getBoundingClientRect();
+    tooltip.style.left = rect.left + 'px';
+    tooltip.style.top = (rect.top - 32) + 'px';
+}
+
+function ocultarTooltipExcel() {
+    let tooltip = document.getElementById('excelTooltipGlobal');
+    if (tooltip) {
+        tooltip.style.display = 'none';
+    }
 }

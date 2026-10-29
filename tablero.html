@@ -13,8 +13,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-    <!-- Hoja de estilos CSS exclusiva para el diseño del tablero -->
+    <!-- Hojas de estilos independientes -->
     <link rel="stylesheet" href="css/estilojirq_tablero.css">
+    <link rel="stylesheet" href="css/estilojirq_usuarios.css">
 </head>
 <body>
 
@@ -95,14 +96,25 @@
 
             </div>
 
-            <!-- Contenedor para el mensaje de bienvenida personalizado -->
-            <div class="welcome-banner-container" id="welcomeMessageBanner"></div>
+            <!-- Contenedor para el mensaje de bienvenida y botón salir -->
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 15px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.05);">
+                <div class="welcome-banner-container" id="welcomeMessageBanner"></div>
+                
+                <button onclick="cerrarSesionSistema()" class="btn-logout-animado" title="Cerrar Sesión">
+                    <div class="sign">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 17l5-5-5-5v3H3v4h7v3zm9-14H5c-1.1 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="text">Salir</div>
+                </button>
+            </div>
         </div>
     </div>
 
     <!-- MODAL 1: Gestion y Registro de Usuarios -->
     <div class="modal-overlay" id="modalRegistroUsuarios">
-        <div class="modal-window" style="max-width: 1200px;">
+        <div class="modal-window usuarios-modal-window">
             <div class="modal-header">
                 <h3>:: Gestión y Registro de Usuarios - Sistema JIRQ ::</h3>
                 <button class="close-modal" onclick="cerrarModal('modalRegistroUsuarios')">✕</button>
@@ -111,23 +123,23 @@
             <div class="table-toolbar">
                 <div>
                     <label style="font-size: 12px; font-weight: 500; margin-right: 5px;">Estado:</label>
-                    <select id="filtroEstadoUsuarios">
+                    <select id="filtroEstadoUsuarios" class="usuarios-select-estado">
                         <option value="">[ Todos ]</option>
                         <option value="1">Activo</option>
                         <option value="0">Inactivo</option>
                     </select>
                 </div>
                 <div style="flex-grow: 1;">
-                    <input type="text" id="filtroBuscarUsuario" placeholder="Buscar por correo o ID..." style="width: 100%;">
+                    <input type="text" id="filtroBuscarUsuario" class="usuarios-input-buscar" placeholder="Buscar por correo o ID..." style="width: 100%;">
                 </div>
                 <div style="display: flex; gap: 10px;">
-                    <button onclick="abrirModal('modalNuevoUsuarioForm')" style="padding: 8px 14px; background:#10b981; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">+ Nuevo Usuario</button>
-                    <button onclick="exportarUsuariosCSV()" style="padding: 8px 14px; background:#0284c7; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Exportar CSV</button>
+                    <button onclick="abrirModal('modalNuevoUsuarioForm')" class="usuarios-btn-nuevo">+ Nuevo Usuario</button>
+                    <button onclick="exportarUsuariosCSV()" class="usuarios-btn-exportar">Exportar CSV</button>
                 </div>
             </div>
 
             <div class="table-container">
-                <table class="excel-table">
+                <table class="excel-table usuarios-table">
                     <thead>
                         <tr>
                             <th style="width: 40px;">#</th>
@@ -171,7 +183,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: Listado de Funciones (Sincronizado en tiempo real con Firebase) -->
+    <!-- MODAL 2: Listado de Funciones (Con botón de exportar .xlsx) -->
     <div class="modal-overlay" id="modalListadoFunciones">
         <div class="modal-window" style="max-width: 1250px;">
             <div class="modal-header">
@@ -191,8 +203,9 @@
                 <div style="flex-grow: 1;">
                     <input type="text" id="buscadorFunciones" placeholder="Buscar función..." onkeyup="filtrarFuncionesTabla()" style="width: 100%;">
                 </div>
-                <div>
-                    <button onclick="agregarNuevaFilaFuncion()" style="padding: 8px 16px; background: #7c3aed; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">+ Nueva Función</button>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="agregarNuevaFilaFuncion()" style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">+ Nueva Función</button>
+                    <button onclick="exportarFuncionesExcelXLSX()" style="padding: 8px 16px; background: #059669; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px;">📥 Exportar .xlsx</button>
                 </div>
             </div>
 
@@ -217,9 +230,7 @@
                             <th style="width: 60px;">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="cuerpoTablaFunciones">
-                        <!-- Se llena dinámicamente desde Firebase -->
-                    </tbody>
+                    <tbody id="cuerpoTablaFunciones"></tbody>
                 </table>
             </div>
         </div>
@@ -274,11 +285,47 @@
         </div>
     </div>
 
-    <!-- SDKs de compatibilidad para Firebase Realtime Database -->
+    <!-- MODAL DE ALERTA PERSONALIZADO PARA ELIMINAR FUNCIÓN -->
+    <div class="modal-overlay" id="modalAlertaEliminar">
+        <div class="modal-window" style="max-width: 400px; height: auto; text-align: center; padding: 30px 20px;">
+            <div style="margin: 0 auto 15px auto; width: 60px; height: 60px; background: rgba(239, 68, 68, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg viewBox="0 0 24 24" style="width: 32px; height: 32px; fill: #ef4444;"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+            </div>
+            <h3 style="font-size: 17px; font-weight: 700; color: #3b2d54; margin-bottom: 8px;">¿Está seguro de eliminar esta función?</h3>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 25px;">Esta acción borrará el registro de forma permanente de la base de datos.</p>
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button onclick="cerrarModal('modalAlertaEliminar')" style="padding: 10px 24px; background: #cbd5e1; color: #1e293b; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">No</button>
+                <button id="btnConfirmarEliminar" style="padding: 10px 24px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Sí</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE ALERTA PERSONALIZADO PARA CERRAR SESIÓN -->
+    <div class="modal-overlay" id="modalAlertaCerrarSesion">
+        <div class="modal-window" style="max-width: 400px; height: auto; text-align: center; padding: 30px 20px;">
+            <div style="margin: 0 auto 15px auto; width: 60px; height: 60px; background: rgba(59, 130, 246, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg viewBox="0 0 24 24" style="width: 32px; height: 32px; fill: #3b82f6;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.03 2.75z"/></svg>
+            </div>
+            <h3 style="font-size: 17px; font-weight: 700; color: #3b2d54; margin-bottom: 8px;">¿Está seguro de cerrar sesión?</h3>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 25px;">Volverás a la pantalla de inicio de sesión del sistema.</p>
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button onclick="cerrarModal('modalAlertaCerrarSesion')" style="padding: 10px 24px; background: #cbd5e1; color: #1e293b; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">No</button>
+                <button onclick="ejecutarCerrarSesion()" style="padding: 10px 24px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Sí</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Globito flotante estilo nota de Excel -->
+    <div id="excelTooltipGlobal"></div>
+
+    <!-- Librería SheetJS (XLSX) para exportación profesional de Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <!-- SDKs de Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     
-    <!-- Script principal de logica del tablero -->
+    <!-- Script principal de lógica -->
     <script src="js/scriptjirq_tablero.js"></script>
 </body>
 </html>
