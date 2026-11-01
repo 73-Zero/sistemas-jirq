@@ -8,87 +8,93 @@
     <!-- Icono de la pestaña del navegador -->
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2950/2950683.png">
 
-    <!-- Fuentes tipograficas de Google Fonts -->
+    <!-- Fuentes tipográficas de Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-    <!-- Hojas de estilos independientes -->
+    <!-- ========================================================================== -->
+    <!-- HOJAS DE ESTILOS: TABLERO GENERAL Y MÓDULOS AISLADOS -->
+    <!-- ========================================================================== -->
     <link rel="stylesheet" href="css/estilojirq_tablero.css">
-    <link rel="stylesheet" href="css/estilojirq_usuarios.css">
+    <link rel="stylesheet" href="css/estilojirq_reg_usuarios.css">
+    <link rel="stylesheet" href="css/estilojirq_lis_funciones.css">
+    <link rel="stylesheet" href="css/estilojirq_lee_primero.css">
 </head>
-<body>
+<body class="body_tablero">
 
-    <!-- Contenedor principal de la tarjeta del tablero -->
-    <div class="dashboard-card">
-        <div class="dashboard-header">
-            <h1>Menú Inicial</h1>
-            <p>Opciones para realizar los trabajos KIWOX-ENTEL</p>
+    <!-- ========================================================================== -->
+    <!-- CONTENEDOR PRINCIPAL DEL TABLERO (ESTILO CLAYMORPHISM Y RESPONSIVO) -->
+    <!-- ========================================================================== -->
+    <div class="dashboard-card_tablero">
+        <div class="dashboard-header_tablero">
+            <h1 class="h1_tablero">Menú Inicial</h1>
+            <p class="p_tablero">Opciones para realizar los trabajos KIWOX-ENTEL</p>
         </div>
 
-        <div class="menu-inner-box">
-            <!-- Grilla contenedora de los botones de modulos -->
-            <div class="modules-grid" id="modulesGrid">
+        <div class="menu-inner-box_tablero">
+            <!-- Grilla contenedora de los 8 botones de módulos -->
+            <div class="modules-grid_tablero" id="modulesGrid_tablero">
                 
-                <!-- 1. Modulo de Registro de Usuarios (Restringido solo para Administrador) -->
-                <button class="module-btn" id="btnRegistroUsuarios" onclick="abrirModal('modalRegistroUsuarios')">
-                    <div class="module-icon icon-teal">
+                <!-- 1. Módulo de Registro de Usuarios -->
+                <button class="module-btn_tablero" id="btnRegistroUsuarios" onclick="abrirModal_reg_usuarios('modalRegistroUsuarios_reg_usuarios')">
+                    <div class="module-icon_tablero icon-teal_tablero">
                         <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                     </div>
                     <span>Registro Usuarios</span>
                 </button>
 
-                <!-- 2. Modulo de Listado de Funciones -->
-                <button class="module-btn" data-permiso="listado_funciones" onclick="abrirModal('modalListadoFunciones')">
-                    <div class="module-icon icon-blue">
+                <!-- 2. Módulo de Listado de Funciones -->
+                <button class="module-btn_tablero" data-permiso="listado_funciones" onclick="abrirModal_lis_funciones('modalListadoFunciones_lis_funciones')">
+                    <div class="module-icon_tablero icon-blue_tablero">
                         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
                     </div>
                     <span>Listado Funciones</span>
                 </button>
 
-                <!-- 3. Modulo de Calcular Datos -->
-                <button class="module-btn" data-permiso="calcular_datos" onclick="abrirModulo('calcular_datos')">
-                    <div class="module-icon icon-purple">
+                <!-- 3. Módulo de Calcular Datos -->
+                <button class="module-btn_tablero" data-permiso="calcular_datos" onclick="abrirModulo('calcular_datos')">
+                    <div class="module-icon_tablero icon-purple_tablero">
                         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 16H6V5h12v14zM7 7h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>
                     </div>
                     <span>Calcular Datos</span>
                 </button>
 
-                <!-- 4. Modulo de Ayuda Rapida -->
-                <button class="module-btn" data-permiso="ayuda_rapida" onclick="abrirModal('modalAyuda')">
-                    <div class="module-icon icon-orange">
+                <!-- 4. Módulo de Ayuda Rápida -->
+                <button class="module-btn_tablero" data-permiso="ayuda_rapida" onclick="abrirModal('modalAyuda')">
+                    <div class="module-icon_tablero icon-orange_tablero">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
                     </div>
                     <span>Ayuda Rápida</span>
                 </button>
 
-                <!-- 5. Modulo Leeme primero -->
-                <button class="module-btn" onclick="abrirModal('modalLeemePrimero')">
-                    <div class="module-icon icon-green-light">
+                <!-- 5. Módulo Léeme Primero -->
+                <button class="module-btn_tablero" onclick="abrirModalLeemePrimero_lee_primero('modalLeemePrimero_lee_primero')">
+                    <div class="module-icon_tablero icon-green-light_tablero">
                         <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
                     </div>
                     <span>Léeme primero</span>
                 </button>
 
-                <!-- 6. Modulo Bigquery Conteo -->
-                <button class="module-btn" data-permiso="conteo_tablas" onclick="abrirModal('modalBigquery')">
-                    <div class="module-icon icon-cyan">
+                <!-- 6. Módulo Bigquery Conteo -->
+                <button class="module-btn_tablero" data-permiso="conteo_tablas" onclick="abrirModal('modalBigquery')">
+                    <div class="module-icon_tablero icon-cyan_tablero">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
                     </div>
                     <span>Bigquery Conteo</span>
                 </button>
 
-                <!-- 7. Modulo Metas Entel y Socios -->
-                <button class="module-btn" data-permiso="metas_entel" onclick="abrirModulo('metas_entel')">
-                    <div class="module-icon icon-emerald">
+                <!-- 7. Módulo Metas Entel y Socios -->
+                <button class="module-btn_tablero" data-permiso="metas_entel" onclick="abrirModulo('metas_entel')">
+                    <div class="module-icon_tablero icon-emerald_tablero">
                         <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
                     </div>
                     <span>Metas Entel y Socios</span>
                 </button>
 
-                <!-- 8. Modulo Query Variadas -->
-                <button class="module-btn" data-permiso="querys_variadas" onclick="abrirModulo('query_variadas')">
-                    <div class="module-icon icon-rose">
+                <!-- 8. Módulo Query Variadas -->
+                <button class="module-btn_tablero" data-permiso="querys_variadas" onclick="abrirModulo('query_variadas')">
+                    <div class="module-icon_tablero icon-rose_tablero">
                         <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
                     </div>
                     <span>Query Variadas</span>
@@ -96,236 +102,229 @@
 
             </div>
 
-            <!-- Contenedor para el mensaje de bienvenida y botón salir -->
+            <!-- Contenedor para el banner de bienvenida y botón de salida seguro -->
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 15px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.05);">
-                <div class="welcome-banner-container" id="welcomeMessageBanner"></div>
+                <div class="welcome-banner-container_tablero" id="welcomeMessageBanner_reg_usuarios"></div>
                 
-                <button onclick="cerrarSesionSistema()" class="btn-logout-animado" title="Cerrar Sesión">
-                    <div class="sign">
+                <button onclick="cerrarSesionSistema_reg_usuarios()" class="btn-logout-animado_tablero" title="Cerrar Sesión">
+                    <div class="sign_tablero">
                         <svg viewBox="0 0 24 24">
                             <path d="M10 17l5-5-5-5v3H3v4h7v3zm9-14H5c-1.1 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
                         </svg>
                     </div>
-                    <div class="text">Salir</div>
+                    <div class="text_tablero">Salir</div>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 1: Gestion y Registro de Usuarios -->
-    <div class="modal-overlay" id="modalRegistroUsuarios">
-        <div class="modal-window usuarios-modal-window">
-            <div class="modal-header">
-                <h3>:: Gestión y Registro de Usuarios - Sistema JIRQ ::</h3>
-                <button class="close-modal" onclick="cerrarModal('modalRegistroUsuarios')">✕</button>
+    <!-- ========================================================================== -->
+    <!-- MODAL 1: GESTIÓN Y REGISTRO DE USUARIOS -->
+    <!-- ========================================================================== -->
+    <div class="modal-overlay_reg_usuarios" id="modalRegistroUsuarios_reg_usuarios">
+        <div class="modal-window_reg_usuarios usuarios-modal-window_reg_usuarios">
+            <div class="modal-header_reg_usuarios">
+                <h3 class="modal-title_reg_usuarios">:: Gestión y Registro de Usuarios - Sistema JIRQ ::</h3>
+                <button class="close-modal_reg_usuarios" onclick="cerrarModal_reg_usuarios('modalRegistroUsuarios_reg_usuarios')">✕</button>
             </div>
 
-            <div class="table-toolbar">
+            <div class="table-toolbar_reg_usuarios">
                 <div>
-                    <label style="font-size: 12px; font-weight: 500; margin-right: 5px;">Estado:</label>
-                    <select id="filtroEstadoUsuarios" class="usuarios-select-estado">
+                    <label class="toolbar-label_reg_usuarios" style="font-size: 12px; font-weight: 500; margin-right: 5px;">Estado:</label>
+                    <select id="filtroEstadoUsuarios_reg_usuarios" class="usuarios-select-estado_reg_usuarios" onchange="filtrarEstadoUsuarios_reg_usuarios()">
                         <option value="">[ Todos ]</option>
                         <option value="1">Activo</option>
                         <option value="0">Inactivo</option>
                     </select>
                 </div>
                 <div style="flex-grow: 1;">
-                    <input type="text" id="filtroBuscarUsuario" class="usuarios-input-buscar" placeholder="Buscar por correo o ID..." style="width: 100%;">
+                    <input type="text" id="filtroBuscarUsuario_reg_usuarios" class="usuarios-input-buscar_reg_usuarios" placeholder="Buscar por correo o ID..." style="width: 100%;" onkeyup="filtrarUsuarios_reg_usuarios()">
                 </div>
                 <div style="display: flex; gap: 10px;">
-                    <button onclick="abrirModal('modalNuevoUsuarioForm')" class="usuarios-btn-nuevo">+ Nuevo Usuario</button>
-                    <button onclick="exportarUsuariosCSV()" class="usuarios-btn-exportar">Exportar CSV</button>
+                <!-- Botón Nuevo Usuario -->
+                <button type="button" class="usuarios-btn-nuevo_reg_usuarios" onclick="abrirModal_reg_usuarios('modalNuevoUsuarioForm_reg_usuarios')">
+                    <span class="icon-box-nuevo-usr">+</span>
+                    Nuevo Usuario
+                    <span class="arrow-nuevo-usr">›</span>
+                </button>
+                <!-- Botón Exportar CSV -->
+                <button type="button" class="usuarios-btn-exportar_reg_usuarios" onclick="exportarUsuariosCSV_reg_usuarios()">
+                    <span class="icon-box-exp-usr">📥</span>
+                    Exportar CSV
+                    <span class="arrow-exp-usr">›</span>
+                </button>
                 </div>
             </div>
 
-            <div class="table-container">
-                <table class="excel-table usuarios-table">
+            <div class="table-container_reg_usuarios">
+                <table class="usuarios-table_reg_usuarios" id="tablaUsuarios_reg_usuarios">
                     <thead>
                         <tr>
-                            <th style="width: 40px;">#</th>
-                            <th style="width: 90px;">ID / Nombre</th>
+                            <th>#</th>
+                            <th>ID / Nombre</th>
                             <th>Correo (Usuario)</th>
-                            <th style="width: 140px;">Clave Generada</th>
-                            <th style="width: 90px;">Estado</th>
-                            <th style="width: 80px;">País</th>
-                            <th style="width: 120px;">Fecha_Hora</th>
+                            <th>Clave Generada</th>
+                            <th>Estado</th>
+                            <th>País</th>
+                            <th>Fecha_Hora</th>
                             <th>Permisos Módulos (Checks)</th>
-                            <th style="width: 70px;">Acciones</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="cuerpoTablaUsuarios"></tbody>
+                    <tbody id="cuerpoTablaUsuarios_reg_usuarios"></tbody>
                 </table>
             </div>
         </div>
     </div>
-
+usu
     <!-- SUB-MODAL: Formulario para Agregar Nuevo Usuario -->
-    <div class="modal-overlay" id="modalNuevoUsuarioForm">
-        <div class="modal-window" style="max-width: 480px; height: auto;">
-            <div class="modal-header">
-                <h3>:: Registrar Nuevo Usuario ::</h3>
-                <button class="close-modal" onclick="cerrarModal('modalNuevoUsuarioForm')">✕</button>
+    <div class="modal-overlay_reg_usuarios" id="modalNuevoUsuarioForm_reg_usuarios">
+        <div class="modal-window_reg_usuarios" style="max-width: 480px; height: auto;">
+            <div class="modal-header_reg_usuarios">
+                <h3 class="modal-title_reg_usuarios">:: Registrar Nuevo Usuario ::</h3>
+                <button class="close-modal_reg_usuarios" onclick="cerrarModal_reg_usuarios('modalNuevoUsuarioForm_reg_usuarios')">✕</button>
             </div>
             <div style="padding: 15px; display: flex; flex-direction: column; gap: 14px;">
                 <div>
                     <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 5px; color: #3b2d54;">Correo Electrónico (Usuario):</label>
-                    <input type="text" id="nuevoCorreo" placeholder="ej. nombre_apellido@empresa.com.pe" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.15);">
+                    <input type="text" id="nuevoCorreo_reg_usuarios" placeholder="ej. nombre_apellido@empresa.com.pe" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.15);">
                 </div>
                 <div>
                     <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 5px; color: #3b2d54;">ID o Nombre Corto:</label>
-                    <input type="text" id="nuevoId" placeholder="ej. jose_admin" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.15);">
+                    <input type="text" id="nuevoId_reg_usuarios" placeholder="ej. jose_admin" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.15);">
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 5px;">
-                    <button onclick="cerrarModal('modalNuevoUsuarioForm')" style="padding: 8px 16px; background: #64748b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">Cancelar</button>
-                    <button onclick="guardarNuevoUsuario()" style="padding: 8px 16px; background: #7c3aed; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Guardar</button>
+                    <button onclick="cerrarModal_reg_usuarios('modalNuevoUsuarioForm_reg_usuarios')" style="padding: 8px 16px; background: #64748b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">Cancelar</button>
+                    <button onclick="guardarNuevoUsuario_reg_usuarios()" style="padding: 8px 16px; background: #7c3aed; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Guardar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 2: Listado de Funciones (Con botón de exportar .xlsx) -->
-    <div class="modal-overlay" id="modalListadoFunciones">
-        <div class="modal-window" style="max-width: 1250px;">
-            <div class="modal-header">
-                <h3>:: Listado de Funciones - KIWOX ENTEL ::</h3>
-                <button class="close-modal" onclick="cerrarModal('modalListadoFunciones')">✕</button>
-            </div>
-            
-            <div class="table-toolbar">
-                <div>
-                    <label style="font-size: 12px; font-weight: 500; margin-right: 5px;">Estado:</label>
-                    <select id="filtroEstadoFunciones" onchange="filtrarFuncionesTabla()">
-                        <option value="">[ Todos ]</option>
-                        <option value="Activo">Activo</option>
-                        <option value="Inactivo">Inactivo</option>
-                    </select>
-                </div>
-                <div style="flex-grow: 1;">
-                    <input type="text" id="buscadorFunciones" placeholder="Buscar función..." onkeyup="filtrarFuncionesTabla()" style="width: 100%;">
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button onclick="agregarNuevaFilaFuncion()" style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">+ Nueva Función</button>
-                    <button onclick="exportarFuncionesExcelXLSX()" style="padding: 8px 16px; background: #059669; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px;">📥 Exportar .xlsx</button>
-                </div>
-            </div>
-
-            <div class="table-container">
-                <table class="excel-table" id="tablaFunciones">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px;">::</th>
-                            <th style="width: 40px;">#</th>
-                            <th>Listado de funciones</th>
-                            <th>Plataforma Inicial</th>
-                            <th>Plataforma Final</th>
-                            <th style="width: 55px;">8-9</th>
-                            <th style="width: 55px;">10-11</th>
-                            <th style="width: 55px;">12-1</th>
-                            <th style="width: 55px;">2-3</th>
-                            <th style="width: 55px;">4-5</th>
-                            <th>Función</th>
-                            <th>Detalle</th>
-                            <th style="width: 110px;">Estado</th>
-                            <th>Días</th>
-                            <th style="width: 60px;">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="cuerpoTablaFunciones"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 3: Ayuda Rápida -->
-    <div class="modal-overlay" id="modalAyuda">
-        <div class="modal-window">
-            <div class="modal-header">
-                <h3>:: Ayuda Rápida y Soporte ::</h3>
-                <button class="close-modal" onclick="cerrarModal('modalAyuda')">✕</button>
-            </div>
-            <div style="padding: 15px; color: #3b2d54;">
-                <p>Sección de asistencia técnica y manuales rápidos de uso.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 4: Léeme Primero -->
-    <div class="modal-overlay" id="modalLeemePrimero">
-        <div class="modal-window" style="max-width: 900px;">
-            <div class="modal-header">
-                <h3>::: Leer no cuesta nada: :::</h3>
-                <button class="close-modal" onclick="cerrarModal('modalLeemePrimero')">✕</button>
-            </div>
-            <div style="padding: 10px 15px; max-height: 65vh; overflow-y: auto; color: #2b284c; font-size: 13.5px; line-height: 1.6;">
-                <p style="margin-bottom: 12px;"><strong>1.-</strong> Antes de usar el sistema debes saber que tu carpeta descargas será donde se descarguen los archivos según sea el caso</p>
-                <p style="margin-bottom: 12px; padding-left: 20px; color: #475569;">Así también, habrán otros procesos de donde es recomendable subir archivos desde ahí.............</p>
-                <p style="margin-bottom: 12px;"><strong>2.-</strong> La 1era Opción de Listado de funciones el excel es editable para que puedas agregar o quitar funciones.</p>
-                <p style="margin-bottom: 12px;"><strong>3.-</strong> La Opción Calcular Datos: es para realizar la suma de los leads brutos, netos, las preventas y las válidas según socio/canal editable.</p>
-                <p style="margin-bottom: 12px;"><strong>4.-</strong> La Opción de Ayuda Rápida es para realizar trabajos de:<br><span style="color: #7c3aed; font-weight: 500; padding-left: 20px; display:inline-block; margin-top: 3px;">NAC DEACS Anonimizador / Transportar campañas / Alignet / IVR#1 / IVR#2</span></p>
-                <p style="margin-bottom: 12px;"><strong>5.-</strong> La Opción de Bigquery conteo: es para revisar las tablas y cantidad de registros por cada una de ellas (conteo de filas), tanto por día, mes y año.</p>
-                <p style="margin-bottom: 12px;"><strong>6.-</strong> También está de Bigquery Meta Entel y Socios : es para verificar los leads, válidas, activas, resumen general.</p>
-                <p style="margin-bottom: 15px;"><strong>7.-</strong> La Opción de Query varios: es para tener aquellas consultas que puedan facilitar alguna tarea.</p>
-            </div>
-            <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px; margin-top: 10px; text-align: right;">
-                <p style="font-style: italic; font-weight: bold; color: #7c3aed; font-size: 14px;">¡Que tengas un lindo Día!</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 5: Bigquery Conteo -->
-    <div class="modal-overlay" id="modalBigquery">
-        <div class="modal-window">
-            <div class="modal-header">
-                <h3>:: Bigquery Conteo de Tablas ::</h3>
-                <button class="close-modal" onclick="cerrarModal('modalBigquery')">✕</button>
-            </div>
-            <div style="padding: 15px; color: #3b2d54;">
-                <p>Panel de consulta y conteo de registros en Bigquery.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE ALERTA PERSONALIZADO PARA ELIMINAR FUNCIÓN -->
-    <div class="modal-overlay" id="modalAlertaEliminar">
-        <div class="modal-window" style="max-width: 400px; height: auto; text-align: center; padding: 30px 20px;">
-            <div style="margin: 0 auto 15px auto; width: 60px; height: 60px; background: rgba(239, 68, 68, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                <svg viewBox="0 0 24 24" style="width: 32px; height: 32px; fill: #ef4444;"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-            </div>
-            <h3 style="font-size: 17px; font-weight: 700; color: #3b2d54; margin-bottom: 8px;">¿Está seguro de eliminar esta función?</h3>
-            <p style="font-size: 13px; color: #64748b; margin-bottom: 25px;">Esta acción borrará el registro de forma permanente de la base de datos.</p>
-            <div style="display: flex; justify-content: center; gap: 15px;">
-                <button onclick="cerrarModal('modalAlertaEliminar')" style="padding: 10px 24px; background: #cbd5e1; color: #1e293b; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">No</button>
-                <button id="btnConfirmarEliminar" style="padding: 10px 24px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Sí</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE ALERTA PERSONALIZADO PARA CERRAR SESIÓN -->
-    <div class="modal-overlay" id="modalAlertaCerrarSesion">
-        <div class="modal-window" style="max-width: 400px; height: auto; text-align: center; padding: 30px 20px;">
+    <!-- MODAL DE ALERTA PARA CERRAR SESIÓN -->
+    <div class="modal-overlay_reg_usuarios" id="modalAlertaCerrarSesion_reg_usuarios" style="display: none;">
+        <div class="modal-window_reg_usuarios" style="max-width: 400px; height: auto; text-align: center; padding: 30px 20px;">
             <div style="margin: 0 auto 15px auto; width: 60px; height: 60px; background: rgba(59, 130, 246, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                 <svg viewBox="0 0 24 24" style="width: 32px; height: 32px; fill: #3b82f6;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.03 2.75z"/></svg>
             </div>
             <h3 style="font-size: 17px; font-weight: 700; color: #3b2d54; margin-bottom: 8px;">¿Está seguro de cerrar sesión?</h3>
             <p style="font-size: 13px; color: #64748b; margin-bottom: 25px;">Volverás a la pantalla de inicio de sesión del sistema.</p>
             <div style="display: flex; justify-content: center; gap: 15px;">
-                <button onclick="cerrarModal('modalAlertaCerrarSesion')" style="padding: 10px 24px; background: #cbd5e1; color: #1e293b; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">No</button>
-                <button onclick="ejecutarCerrarSesion()" style="padding: 10px 24px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Sí</button>
+                <button onclick="cerrarModal_reg_usuarios('modalAlertaCerrarSesion_reg_usuarios')" style="padding: 10px 24px; background: #cbd5e1; color: #1e293b; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">No</button>
+                <button onclick="ejecutarCerrarSesion_reg_usuarios()" style="padding: 10px 24px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Sí</button>
             </div>
         </div>
     </div>
 
-    <!-- Globito flotante estilo nota de Excel -->
+
+<!-- MODAL PERSONALIZADO: CONFIRMAR ELIMINAR USUARIO -->
+<div class="modal-overlay_reg_usuarios" id="modalAlertaEliminarUsuario_reg_usuarios" style="display: none;">
+    <div class="modal-window_reg_usuarios" style="max-width: 380px; height: auto; text-align: center; padding: 30px 20px; border-radius: 16px; background: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+        
+        <!-- Ícono decorativo de alerta -->
+        <div style="margin: 0 auto 15px auto; width: 55px; height: 55px; background: rgba(59, 30, 84, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <svg viewBox="0 0 24 24" style="width: 28px; height: 28px; fill: #3b1e54;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+        </div>
+
+        <!-- Textos con color uvita -->
+        <h3 style="font-size: 17px; font-weight: 700; color: #3b1e54; margin-bottom: 8px;">¿Desea eliminar usuario?</h3>
+        <p style="font-size: 13px; color: #64748b; margin-bottom: 25px;">Esta acción eliminará el registro permanentemente del sistema.</p>
+
+        <!-- Botones de Acción (Sí / No) -->
+        <div style="display: flex; justify-content: center; gap: 15px;">
+            <button type="button" onclick="cerrarModal_reg_usuarios('modalAlertaEliminarUsuario_reg_usuarios')" style="padding: 10px 22px; background: #cbd5e1; color: #1e293b; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s;">No</button>
+            <button type="button" id="btnConfirmarEliminacionUsuario_reg_usuarios" style="padding: 10px 22px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s;">Sí</button>
+        </div>
+    </div>
+</div>
+
+    <!-- ========================================================================== -->
+    <!-- MODAL 2: LISTADO DE FUNCIONES - KIWOX ENTEL -->
+    <!-- ========================================================================== -->
+    <div class="modal-overlay_lis_funciones" id="modalListadoFunciones_lis_funciones" style="display: none;">
+        <div class="modal-window_lis_funciones">
+            <div class="table-toolbar_lis_funciones" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 16px; font-weight: 700; color: #3b1e54; margin: 0;">:: Listado de Funciones - KIWOX ENTEL ::</h3>
+                <button class="close-modal_lis_funciones" onclick="cerrarModal_lis_funciones('modalListadoFunciones_lis_funciones')" style="background:none; border:none; font-size: 18px; cursor:pointer;">✕</button>
+            </div>
+
+            <div class="table-toolbar_lis_funciones">
+                <div>
+                    <label style="font-size: 12px; font-weight: 500; margin-right: 5px;">Estado:</label>
+                    <select id="filtroEstadoFunciones_lis_funciones" class="select-estado-excel_lis_funciones" onchange="filtrarFuncionesTabla_lis_funciones()" style="width: 110px; border: 1px solid rgba(0,0,0,0.15); border-radius: 6px; padding: 6px;">
+                        <option value="[ Todos ]">[ Todos ]</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div style="flex-grow: 1;">
+                    <input type="text" id="buscadorFunciones_lis_funciones" placeholder="Buscar función..." onkeyup="filtrarFuncionesTabla_lis_funciones()" style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.15);">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="btn-nuevo-funcion_lis_funciones" onclick="agregarNuevaFilaFuncion_lis_funciones()">
+                    <span class="icon-box-nuevo">+</span>
+                    Nueva Función
+                    <span class="arrow-nuevo">›</span>
+                </button>
+                    <button type="button" class="btn-exportar-xlsx_lis_funciones" onclick="exportarFuncionesExcelXLSX_lis_funciones()">
+                    <span class="icon-box-xlsx">📥</span>
+                    Descargar .xlsx
+                    <span class="arrow-xlsx">›</span>
+                </button>
+                </div>
+            </div>
+
+            <div class="table-container_lis_funciones">
+                <table class="excel-table_lis_funciones" id="tablaFunciones_lis_funciones">
+                    <thead>
+                        <tr>
+                            <th>::</th>
+                            <th>#</th>
+                            <th class="con-comentario" style="text-align: center;">Listado de funciones</th>
+                            <th>Plataforma Inicial</th>
+                            <th>Plataforma Final</th>
+                            <th>8-9</th>
+                            <th>10-11</th>
+                            <th>12-1</th>
+                            <th>2-3</th>
+                            <th>4-5</th>
+                            <th>Función</th>
+                            <th class="con-comentario" style="text-align: center;">Detalle</th>
+                            <th>Estado</th>
+                            <th>Días</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTablaFunciones_lis_funciones"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE ALERTA: ELIMINAR FUNCIÓN -->
+    <div class="modal-overlay_lis_funciones" id="modalAlertaEliminar_lis_funciones" style="display: none;">
+        <div class="modal-window_lis_funciones" style="max-width: 380px; height: auto; text-align: center; padding: 30px 20px; border-radius: 16px; background: #ffffff;">
+            <h3 style="font-size: 17px; font-weight: 700; color: #3b1e54; margin-bottom: 8px;">¿Desea eliminar función?</h3>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 25px;">Esta acción eliminará la fila permanentemente.</p>
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button type="button" onclick="cerrarModal_lis_funciones('modalAlertaEliminar_lis_funciones')" style="padding: 10px 22px; background: #cbd5e1; color: #1e293b; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">No</button>
+                <button type="button" id="btnConfirmarEliminar_lis_funciones" style="padding: 10px 22px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Sí</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip Global de Excel -->
     <div id="excelTooltipGlobal"></div>
 
-    <!-- Librería SheetJS (XLSX) para exportación profesional de Excel -->
+    <!-- SDKs de Firebase y SheetJS -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
-    <!-- SDKs de Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     
-    <!-- Script principal de lógica -->
+    <!-- Scripts de módulos -->
     <script src="js/scriptjirq_tablero.js"></script>
+    <script src="js/scriptjirq_reg_usuarios.js"></script>
+    <script src="js/scriptjirq_lis_funciones.js"></script>
+    <script src="js/scriptjirq_lee_primero.js"></script>
 </body>
 </html>

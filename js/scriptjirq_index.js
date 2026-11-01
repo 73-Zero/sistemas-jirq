@@ -25,6 +25,20 @@ let usuarioDataCache = null;
 // URL del Web App de Google Apps Script para notificaciones de seguridad
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOaipfJ-Jfmm44xxTzJ5bR_rRpwZ8SFFucK1Pmqx3ywuXhmRi5yc32hindxhs62OpG/exec";
 
+// Funcion para mostrar la notificacion flotante personalizada (Toast)
+function mostrarToast(mensaje) {
+    const toast = document.getElementById('toastNotificacion');
+    const texto = document.getElementById('toastTexto');
+    if (!toast || !texto) return;
+
+    texto.textContent = mensaje;
+    toast.classList.add('mostrar');
+
+    setTimeout(() => {
+        toast.classList.remove('mostrar');
+    }, 3000);
+}
+
 // Funcion principal que controla las fases de autenticacion, validacion y registro automatico
 window.handleLogin = async function(event) {
     event.preventDefault();
@@ -40,7 +54,7 @@ window.handleLogin = async function(event) {
 
     const estadoActual = btnAction.getAttribute('data-estado');
 
-    // FASE 1: Verificacion del correo ingresado reconociendo claves Base64 o IDs directos
+    // FASE 1: Verificacion del correo ingresado reconociendo claves Base64 o registros por push
     if (estadoActual === "ingresar_correo") {
         correoGlobal = inputVal.toLowerCase();
         const safeEmailKey = btoa(correoGlobal).replace(/=/g, '');
@@ -57,14 +71,19 @@ window.handleLogin = async function(event) {
                 userData = snapAdmin.val();
                 nodoEncontradoKey = safeEmailKey;
             } else {
-                // Intento 2: Si no esta en Base64, recorrer los nodos hijos buscando coincidencia en el campo 'usuario' (Caso Invitados / Nuevos)
+                // Intento 2: Buscar en los nodos hijos evaluando correo, email, usuario o id (Usuarios nuevos con push)
                 const refGeneral = ref(db, 'usuarios');
                 const snapGeneral = await get(refGeneral);
 
                 if (snapGeneral.exists()) {
                     snapGeneral.forEach((childSnap) => {
                         const data = childSnap.val();
-                        if (data.usuario && data.usuario.toLowerCase() === correoGlobal) {
+                        const cVal = (data.correo || "").toLowerCase();
+                        const eVal = (data.email || "").toLowerCase();
+                        const uVal = (data.usuario || "").toLowerCase();
+                        const iVal = (data.id || "").toLowerCase();
+
+                        if (cVal === correoGlobal || eVal === correoGlobal || uVal === correoGlobal || iVal === correoGlobal) {
                             userData = data;
                             nodoEncontradoKey = childSnap.key;
                         }
@@ -83,8 +102,8 @@ window.handleLogin = async function(event) {
                 return;
             }
 
-            // Validar que el estado del usuario sea activo (1)
-            if (userData.estado !== 1 && userData.estado !== "activo") {
+            // Validar que el estado del usuario sea activo (1 o "1")
+            if (userData.estado != 1 && userData.estado !== "activo") {
                 alert("Su cuenta se encuentra inactiva.");
                 return;
             }
@@ -167,10 +186,10 @@ window.handleLogin = async function(event) {
             console.error("Error en conexion con Firebase:", error);
         }
     } 
-    // FASE 2: Accion de copiar la contraseña autogenerada al portapapeles
+    // FASE 2: Accion de copiar la contraseña autogenerada al portapapeles con Toast personalizado
     else if (estadoActual === "copiar_clave") {
         navigator.clipboard.writeText(inputField.value);
-        alert("¡Contraseña copiada al portapapeles!");
+        mostrarToast("¡Contraseña copiada al portapapeles!");
     }
     // FASE 3: Validacion de la contraseña ingresada para permitir acceso al tablero
     else if (estadoActual === "ingresar_clave") {

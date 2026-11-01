@@ -1,0 +1,359 @@
+/* ========================================================================== */
+/* MÓDULO REGISTRO DE USUARIOS: ESTILOS EXCLUSIVOS Y AISLADOS (TONO UVA/MORADO) */
+/* ========================================================================== */
+
+/* Importación de la tipografía oficial Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+/* 1. Fondo oscuro translúcido con desenfoque para los modales de usuarios */
+.modal-overlay_reg_usuarios {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 15px;
+    font-family: 'Roboto', sans-serif !important;
+}
+
+/* ========================================================================== */
+/* 2. VENTANA PRINCIPAL CON ESTILO FROSTED GLASS Y RESPLANDOR DE BORDES SUAVE */
+/* ========================================================================== */
+.modal-window_reg_usuarios {
+    background: rgba(248, 250, 252, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 24px;
+    width: 95%;
+    max-width: 1200px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    /* Resplandor ambiental de bordes con tonos morado, azul y un toque rosado suave */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                0 0 30px rgba(139, 92, 246, 0.18),
+                0 0 60px rgba(236, 72, 153, 0.12),
+                inset 0 1px 2px rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif !important;
+    animation: modalScaleIn_reg_usuarios 0.3s ease forwards;
+}
+
+/* 3. Animación de apertura suave tipo escala */
+@keyframes modalScaleIn_reg_usuarios {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* 4. Encabezado superior del modal */
+.modal-header_reg_usuarios {
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.15);
+    background: transparent;
+}
+
+/* 5. Título principal del modal con color uva institucional */
+.modal-title_reg_usuarios {
+    font-size: 16px;
+    font-weight: 700;
+    color: #3b1e54;
+}
+
+/* 6. Botón redondo (X) para cerrar la ventana modal principal */
+.close-modal_reg_usuarios {
+    background: rgba(91, 33, 182, 0.1);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    color: #5b21b6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: background 0.2s, color 0.2s;
+    z-index: 5;
+}
+
+/* 7. Efecto Hover para el botón de cerrar modal principal (se pone rojo) */
+.close-modal_reg_usuarios:hover {
+    background: #ef4444 !important;
+    color: white !important;
+}
+
+/* 8. Barra de herramientas superior (Buscador, Filtros y Botones de Acción) */
+.table-toolbar_reg_usuarios {
+    padding: 15px 24px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    background: transparent;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+    flex-wrap: wrap;
+    z-index: 5;
+}
+
+/* 9. Contenedor interno que permite desplazamiento vertical en la tabla */
+.table-container_reg_usuarios {
+    padding: 15px 24px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+/* 10. Estructura general de la tabla de usuarios con diseño Excel */
+.usuarios-table_reg_usuarios {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 12px;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+/* 11. Encabezados de columnas de la tabla (Cabecera Uva Morada Fija clásica) */
+.usuarios-table_reg_usuarios th {
+    background: #6d28d9 !important;
+    color: white;
+    padding: 12px 8px;
+    text-align: center;
+    font-weight: 500;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    word-break: break-word;
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 2px solid rgba(139, 92, 246, 0.4);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.usuarios-table_reg_usuarios th:last-child {
+    border-right: none;
+}
+
+/* 12. Celdas de datos de la tabla de usuarios con bordes suaves */
+.usuarios-table_reg_usuarios td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.12);
+    border-right: 1px solid rgba(139, 92, 246, 0.08);
+    text-align: center;
+    color: #000000;
+    word-break: break-word;
+    vertical-align: middle;
+}
+
+/* 13. Efecto Hover al pasar el puntero sobre una fila de usuarios */
+.usuarios-table_reg_usuarios tr:hover {
+    background: rgba(109, 40, 217, 0.05);
+}
+
+/* 14. Anchos proporcionales fijos para cada una de las 9 columnas */
+.usuarios-table_reg_usuarios th:nth-child(1), .usuarios-table_reg_usuarios td:nth-child(1) { width: 50px; }  /* # */
+.usuarios-table_reg_usuarios th:nth-child(2), .usuarios-table_reg_usuarios td:nth-child(2) { width: 110px; } /* ID / Nombre */
+.usuarios-table_reg_usuarios th:nth-child(3), .usuarios-table_reg_usuarios td:nth-child(3) { width: 220px; } /* Correo */
+.usuarios-table_reg_usuarios th:nth-child(4), .usuarios-table_reg_usuarios td:nth-child(4) { width: 170px; } /* Clave Generada */
+.usuarios-table_reg_usuarios th:nth-child(5), .usuarios-table_reg_usuarios td:nth-child(5) { width: 100px; } /* Estado */
+.usuarios-table_reg_usuarios th:nth-child(6), .usuarios-table_reg_usuarios td:nth-child(6) { width: 85px; }  /* País */
+.usuarios-table_reg_usuarios th:nth-child(7), .usuarios-table_reg_usuarios td:nth-child(7) { width: 130px; } /* Fecha_Hora */
+.usuarios-table_reg_usuarios th:nth-child(8), .usuarios-table_reg_usuarios td:nth-child(8) { width: 210px; } /* Permisos (Checks) */
+.usuarios-table_reg_usuarios th:nth-child(9), .usuarios-table_reg_usuarios td:nth-child(9) { width: 70px; }  /* Acciones */
+
+/* 15. Inputs editables dentro de la tabla de usuarios */
+.usuarios-table_reg_usuarios input[type="text"] {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    font-size: 12px;
+    text-align: center;
+    color: #000000;
+}
+
+/* 16. Enfoque visual al hacer clic para editar una celda */
+.usuarios-table_reg_usuarios input[type="text"]:focus {
+    background: white;
+    border-color: #eab308;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+    border-radius: 4px;
+    outline: none;
+}
+
+/* 17. Selector desplegable de Estado */
+.usuarios-select-estado_reg_usuarios {
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    background: #ffffff;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* ========================================================================== */
+/* 18. BOTÓN NUEVO USUARIO (ESTILO NEUMÓRFICO CON RESPLANDOR ESMERALDA/AZUL) */
+/* ========================================================================== */
+.usuarios-btn-nuevo_reg_usuarios {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 16px 7px 8px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    color: #065f46;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.25),
+                4px 4px 10px rgba(160, 174, 192, 0.4), 
+                -4px -4px 10px rgba(255, 255, 255, 0.9),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 10;
+}
+
+.usuarios-btn-nuevo_reg_usuarios span {
+    pointer-events: none; /* Vital para que el clic pase directo al botón */
+}
+
+.usuarios-btn-nuevo_reg_usuarios .icon-box-nuevo-usr {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 15px;
+    box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+}
+
+.usuarios-btn-nuevo_reg_usuarios .arrow-nuevo-usr {
+    font-size: 13px;
+    color: #059669;
+    margin-left: 4px;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+}
+
+.usuarios-btn-nuevo_reg_usuarios:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+    box-shadow: 0 0 18px rgba(16, 185, 129, 0.4),
+                2px 2px 5px rgba(160, 174, 192, 0.4), 
+                -2px -2px 5px rgba(255, 255, 255, 0.9);
+    color: #047857;
+}
+
+.usuarios-btn-nuevo_reg_usuarios:hover .arrow-nuevo-usr {
+    transform: translateX(3px);
+}
+
+/* ========================================================================== */
+/* 19. BOTÓN EXPORTAR CSV (ESTILO NEUMÓRFICO CON RESPLANDOR MORADO/AZUL/ROSA) */
+/* ========================================================================== */
+.usuarios-btn-exportar_reg_usuarios {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 16px 7px 8px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    color: #334155;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    box-shadow: 0 0 14px rgba(139, 92, 246, 0.25), 
+                0 0 25px rgba(236, 72, 153, 0.15),
+                4px 4px 10px rgba(160, 174, 192, 0.4), 
+                -4px -4px 10px rgba(255, 255, 255, 0.9),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 10;
+}
+
+.usuarios-btn-exportar_reg_usuarios span {
+    pointer-events: none; /* Vital para que el clic pase directo al botón */
+}
+
+.usuarios-btn-exportar_reg_usuarios .icon-box-exp-usr {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 13px;
+    box-shadow: 0 4px 6px rgba(139, 92, 246, 0.3);
+}
+
+.usuarios-btn-exportar_reg_usuarios .arrow-exp-usr {
+    font-size: 13px;
+    color: #64748b;
+    margin-left: 4px;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+}
+
+.usuarios-btn-exportar_reg_usuarios:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.4), 
+                0 0 30px rgba(236, 72, 153, 0.25),
+                2px 2px 5px rgba(160, 174, 192, 0.4), 
+                -2px -2px 5px rgba(255, 255, 255, 0.9);
+    color: #1e1b4b;
+}
+
+.usuarios-btn-exportar_reg_usuarios:hover .arrow-exp-usr {
+    transform: translateX(3px);
+    color: #a855f7;
+}
+
+/* ========================================================================== */
+/* 20. BOTÓN CIRCULAR DE ELIMINAR FILA EN REGISTRO DE USUARIOS               */
+/* ========================================================================== */
+.usuarios-table_reg_usuarios button[title="Eliminar Usuario"],
+#cuerpoTablaUsuarios_reg_usuarios button {
+    background: #fee2e2 !important;
+    color: #ef4444 !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 26px !important;
+    height: 26px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+    font-weight: 900 !important;
+    cursor: pointer !important;
+    transition: transform 0.15s, background 0.15s !important;
+}
+
+.usuarios-table_reg_usuarios button[title="Eliminar Usuario"]:hover,
+#cuerpoTablaUsuarios_reg_usuarios button:hover {
+    background: #fca5a5 !important;
+    color: #dc2626 !important;
+    transform: scale(1.1);
+}
+

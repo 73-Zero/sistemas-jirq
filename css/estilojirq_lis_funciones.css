@@ -1,0 +1,400 @@
+/* ========================================================================== */
+/* MÓDULO LISTADO DE FUNCIONES: ESTILOS IDÉNTICOS AL DISEÑO ORIGINAL (UVITA) */
+/* ========================================================================== */
+
+/* Importación de la tipografía oficial Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+/* 1. Fondo oscuro translúcido y desenfocado para la ventana flotante del modal */
+.modal-overlay_lis_funciones {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 15px;
+    font-family: 'Roboto', sans-serif !important;
+}
+
+/* ========================================================================== */
+/* 2. VENTANA PRINCIPAL CON ESTILO FROSTED GLASS Y RESPLANDOR DE BORDES SUAVE */
+/* ========================================================================== */
+.modal-window_lis_funciones {
+    background: rgba(248, 250, 252, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 24px;
+    width: 98%;
+    max-width: 1320px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    /* Resplandor ambiental de bordes con tonos morado, azul y un toque rosado suave */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                0 0 30px rgba(139, 92, 246, 0.18),
+                0 0 60px rgba(236, 72, 153, 0.12),
+                inset 0 1px 2px rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif !important;
+    animation: modalScaleIn_lis_funciones 0.25s ease forwards;
+}
+
+@keyframes modalScaleIn_lis_funciones {
+    from { transform: scale(0.96); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* 3. Botón de cerrar ventana superior (X) con estilo idéntico al de Registro de Usuarios */
+.close-modal_lis_funciones {
+    background: rgba(91, 33, 182, 0.08);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    color: #5b21b6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.close-modal_lis_funciones:hover {
+    background: #ef4444 !important;
+    color: white !important;
+}
+
+/* 4. Barra de herramientas superior (filtros y buscador) */
+.table-toolbar_lis_funciones {
+    padding: 12px 20px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: transparent;
+    flex-wrap: wrap;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* 5. Contenedor con scroll para la tabla */
+.table-container_lis_funciones {
+    padding: 0 20px 20px 20px;
+    overflow-y: auto;
+    overflow-x: auto;
+    flex-grow: 1;
+}
+
+/* 6. Estructura general de la tabla tipo Excel */
+.excel-table_lis_funciones {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 11px;
+    background: #ffffff;
+    font-family: 'Roboto', sans-serif !important;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+/* 7. Cabecera con degradado elegante */
+.excel-table_lis_funciones th {
+    background: #7c3aed !important;
+    color: #ffffff !important;
+    padding: 10px 4px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 11px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    word-break: break-word;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-family: 'Roboto', sans-serif !important;
+}
+
+.excel-table_lis_funciones th:last-child {
+    border-right: none;
+}
+
+/* 8. Indicador amarillo de comentario tipo Excel */
+.excel-table_lis_funciones th.con-comentario {
+    position: relative;
+}
+.excel-table_lis_funciones th.con-comentario::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-top: 7px solid #facc15;
+    border-left: 7px solid transparent;
+}
+
+/* 9. Celdas de datos individuales */
+.excel-table_lis_funciones td {
+    padding: 7px 5px;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+    color: #1e293b;
+    vertical-align: middle;
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 11px;
+}
+
+.excel-table_lis_funciones tr:hover {
+    background: #f8fafc;
+}
+
+/* 10. ANCHOS PROPORCIONALES CORREGIDOS */
+.excel-table_lis_funciones th:nth-child(1), .excel-table_lis_funciones td:nth-child(1) { width: 28px; background: #fafafa; color: #64748b; }
+.excel-table_lis_funciones th:nth-child(2), .excel-table_lis_funciones td:nth-child(2) { width: 30px; background: #fafafa; color: #334155; font-weight: 600; }
+.excel-table_lis_funciones th:nth-child(3), .excel-table_lis_funciones td:nth-child(3) { width: 165px; text-align: left; }
+.excel-table_lis_funciones th:nth-child(4), .excel-table_lis_funciones td:nth-child(4) { width: 90px; }
+.excel-table_lis_funciones th:nth-child(5), .excel-table_lis_funciones td:nth-child(5) { width: 90px; }
+.excel-table_lis_funciones td:nth-child(6), 
+.excel-table_lis_funciones td:nth-child(7), 
+.excel-table_lis_funciones td:nth-child(8), 
+.excel-table_lis_funciones td:nth-child(9), 
+.excel-table_lis_funciones td:nth-child(10) { 
+    width: 36px; 
+    color: #10b981; 
+    font-weight: 900; 
+    font-size: 13px; 
+    cursor: pointer;
+}
+.excel-table_lis_funciones th:nth-child(11), .excel-table_lis_funciones td:nth-child(11) { width: 100px; }
+.excel-table_lis_funciones th:nth-child(12), .excel-table_lis_funciones td:nth-child(12) { width: 175px; text-align: left; }
+.excel-table_lis_funciones th:nth-child(13), .excel-table_lis_funciones td:nth-child(13) { width: 85px; }
+.excel-table_lis_funciones th:nth-child(14), .excel-table_lis_funciones td:nth-child(14) { width: 65px; }
+.excel-table_lis_funciones th:nth-child(15), .excel-table_lis_funciones td:nth-child(15) { width: 65px; }
+
+/* 11. Inputs de texto editables */
+.excel-table_lis_funciones input[type="text"] {
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    font-size: 11px;
+    color: #1e293b;
+    font-family: 'Roboto', sans-serif !important;
+    border-radius: 4px;
+}
+
+.excel-table_lis_funciones input[type="text"]:focus {
+    background: #fffbeb;
+    border: 1px solid #f59e0b;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+    outline: none;
+}
+
+/* 12. Select de Estado con bordes redondeados */
+.select-estado-excel_lis_funciones {
+    width: 100%;
+    padding: 4px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    background: #ffffff;
+    font-size: 11px;
+    cursor: pointer;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    color: #1e293b;
+}
+
+.select-estado-excel_lis_funciones:focus {
+    background: #fffbeb;
+    border-color: #f59e0b;
+    outline: none;
+}
+
+/* ========================================================================== */
+/* 13. BOTÓN NUEVA FUNCIÓN (ESTILO NEUMÓRFICO CON RESPLANDOR SUAVE ESMERALDA/AZUL) */
+/* ========================================================================== */
+.btn-nuevo-funcion_lis_funciones {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 16px 7px 8px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    color: #065f46;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.25),
+                4px 4px 10px rgba(160, 174, 192, 0.4), 
+                -4px -4px 10px rgba(255, 255, 255, 0.9),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transition: all 0.2s ease;
+}
+
+.btn-nuevo-funcion_lis_funciones .icon-box-nuevo {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 15px;
+    box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+}
+
+.btn-nuevo-funcion_lis_funciones .arrow-nuevo {
+    font-size: 13px;
+    color: #059669;
+    margin-left: 4px;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+}
+
+.btn-nuevo-funcion_lis_funciones:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+    box-shadow: 0 0 18px rgba(16, 185, 129, 0.4),
+                2px 2px 5px rgba(160, 174, 192, 0.4), 
+                -2px -2px 5px rgba(255, 255, 255, 0.9);
+    color: #047857;
+}
+
+.btn-nuevo-funcion_lis_funciones:hover .arrow-nuevo {
+    transform: translateX(3px);
+}
+
+/* ========================================================================== */
+/* 14. BOTÓN EXPORTAR .XLSX (ESTILO NEUMÓRFICO CON RESPLANDOR MORADO/AZUL/ROSA) */
+/* ========================================================================== */
+.btn-exportar-xlsx_lis_funciones {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 16px 7px 8px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    color: #334155;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    box-shadow: 0 0 14px rgba(139, 92, 246, 0.25), 
+                0 0 25px rgba(236, 72, 153, 0.15),
+                4px 4px 10px rgba(160, 174, 192, 0.4), 
+                -4px -4px 10px rgba(255, 255, 255, 0.9),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transition: all 0.2s ease;
+}
+
+.btn-exportar-xlsx_lis_funciones .icon-box-xlsx {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 13px;
+    box-shadow: 0 4px 6px rgba(139, 92, 246, 0.3);
+}
+
+.btn-exportar-xlsx_lis_funciones .arrow-xlsx {
+    font-size: 13px;
+    color: #64748b;
+    margin-left: 4px;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+}
+
+.btn-exportar-xlsx_lis_funciones:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.4), 
+                0 0 30px rgba(236, 72, 153, 0.25),
+                2px 2px 5px rgba(160, 174, 192, 0.4), 
+                -2px -2px 5px rgba(255, 255, 255, 0.9);
+    color: #1e1b4b;
+}
+
+.btn-exportar-xlsx_lis_funciones:hover .arrow-xlsx {
+    transform: translateX(3px);
+    color: #a855f7;
+}
+
+/* 15. Botón circular de eliminar con fondo rosado suave y X roja fuerte */
+.btn-eliminar-fila_lis_funciones {
+    background: #fee2e2 !important;
+    color: #ef4444 !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 26px !important;
+    height: 26px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 11px !important;
+    font-weight: 900 !important;
+    cursor: pointer !important;
+    transition: transform 0.15s, background 0.15s !important;
+}
+
+.btn-eliminar-fila_lis_funciones:hover {
+    background: #fca5a5 !important;
+    color: #dc2626 !important;
+    transform: scale(1.1);
+}
+
+/* 16. Tooltip flotante amarillo estilo comentario de Excel */
+#excelTooltipGlobal {
+    position: absolute;
+    display: none;
+    background: #fef08a;
+    color: #713f12;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'Roboto', sans-serif;
+    z-index: 99999;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.15);
+    border: 1px solid #facc15;
+    pointer-events: none;
+    max-width: 320px;
+    word-break: break-word;
+}
+
+/* ========================================================================== */
+/* ESTILOS PARA LA COLUMNA DE ARRASTRE Y REORDENAMIENTO DE FILAS (DRAG & DROP) */
+/* ========================================================================== */
+.excel-table_lis_funciones td:first-child {
+    cursor: grab !important;
+    user-select: none;
+    font-size: 14px;
+    color: #94a3b8;
+    transition: background 0.15s, color 0.15s;
+}
+
+.excel-table_lis_funciones td:first-child:active {
+    cursor: grabbing !important;
+}
+
+.excel-table_lis_funciones tr.fila-arrastrando_lis_funciones {
+    opacity: 0.4;
+    background: #ede9fe !important;
+}
+
+.excel-table_lis_funciones tr.fila-sobre_lis_funciones {
+    border-top: 2px dashed #7c3aed;
+    background: #f5f3ff !important;
+}
