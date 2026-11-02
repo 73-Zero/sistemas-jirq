@@ -1,29 +1,30 @@
 /* ========================================================================== */
-/* MÓDULO LÉEME PRIMERO */
+/* MÓDULO LÉEME PRIMERO: ESTILOS VISUALES Y CONTROL DE CAPAS                  */
 /* ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
-/* Fondo oscuro translúcido con desenfoque */
+/* Fondo oscuro translúcido con desenfoque superpuesto */
 .modal-overlay_lee_primero {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(15, 23, 42, 0.45);
-    backdrop-filter: blur(8px);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(15, 23, 42, 0.45) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
     display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 99999 !important; /* Capa superior absoluta para evitar bloqueos del modo admin */
     padding: 15px;
     font-family: 'Roboto', sans-serif !important;
 }
 
 /* Ventana principal del modal */
 .modal-window_lee_primero {
-    background: rgba(248, 250, 252, 0.90);
+    background: rgba(248, 250, 252, 0.95);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-radius: 24px;
@@ -32,18 +33,24 @@
     max-height: 85vh;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
-                0 0 30px rgba(16, 185, 129, 0.15),
-                0 0 60px rgba(59, 130, 246, 0.1),
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(16, 185, 129, 0.2),
+                0 0 60px rgba(59, 130, 246, 0.15),
                 inset 0 1px 2px rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.8);
     overflow: hidden;
-    animation: modalScaleIn_lee_primero 0.3s ease forwards;
+    animation: modalScaleIn_lee_primero 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes modalScaleIn_lee_primero {
-    from { transform: scale(0.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+    from { 
+        transform: scale(0.92); 
+        opacity: 0; 
+    }
+    to { 
+        transform: scale(1); 
+        opacity: 1; 
+    }
 }
 
 /* Cabecera del modal */
@@ -60,6 +67,7 @@
     font-size: 16px;
     font-weight: 700;
     color: #3b1e54;
+    margin: 0;
 }
 
 /* Botón de cierre (X) */
@@ -76,12 +84,13 @@
     align-items: center;
     justify-content: center;
     font-size: 16px;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.2s, color 0.2s, transform 0.1s;
 }
 
 .close-modal_lee_primero:hover {
     background: #ef4444 !important;
-    color: white !important;
+    color: #ffffff !important;
+    transform: scale(1.05);
 }
 
 /* Contenido interno con scroll elegante */
@@ -89,21 +98,22 @@
     padding: 20px 28px;
     overflow-y: auto;
     flex-grow: 1;
-    font-size: 13px;
+    font-size: 13.5px;
     line-height: 1.6;
     color: #1e293b;
 }
 
+.modal-body_lee_primero ul,
 .modal-body_lee_primero ol {
-    padding-left: 20px;
+    padding-left: 0;
     margin: 0;
 }
 
 .modal-body_lee_primero li {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
-/* Numeración de lista con estilo */
+/* Resaltado de texto */
 .modal-body_lee_primero li strong {
     color: #3b1e54;
 }
@@ -115,7 +125,7 @@
     font-style: italic;
     font-weight: 700;
     color: #059669;
-    background: rgba(255, 255, 255, 0.5);
-    border-top: 1px solid rgba(16, 185, 129, 0.1);
+    background: rgba(255, 255, 255, 0.6);
+    border-top: 1px solid rgba(16, 185, 129, 0.15);
     font-size: 13px;
 }

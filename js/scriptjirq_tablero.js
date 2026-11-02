@@ -1,21 +1,8 @@
 /* ========================================================================== */
-/* MÓDULO GENERAL TABLERO: SEGURIDAD MÁXIMA Y CONFIGURACIÓN FIREBASE */
+/* MÓDULO GENERAL TABLERO: CONFIGURACIÓN FIREBASE (SIN BLOQUEO DE F12)        */
 /* ========================================================================== */
 
-// Bloqueo total de menú contextual (clic derecho) para proteger el sistema
-document.addEventListener('contextmenu', event => event.preventDefault());
-
-// Blindaje anti-hackers e inspectores (Bloqueo de F12, Ctrl+Shift+I/J/C, Ctrl+U/S)
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'F12' || 
-       (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
-       (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S'))) {
-        e.preventDefault();
-        return false;
-    }
-});
-
-// Configuración de conexión a Firebase Realtime Database
+// Configuración de conexión a Firebase Realtime Database[cite: 8]
 const firebaseConfig = {
     databaseURL: "https://sistemas-jirq-default-rtdb.firebaseio.com"
 };
@@ -24,12 +11,12 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
-// Inicialización general al cargar el documento del tablero
+// Inicialización general al cargar el documento del tablero[cite: 8]
 document.addEventListener("DOMContentLoaded", () => {
     aplicarControlDeAccesoYPermisos_tablero();
 });
 
-// Control de roles (Administrador vs Invitado) y visualización del banner de bienvenida
+// Control de roles (Administrador vs Invitado) y visualización del banner de bienvenida[cite: 8]
 function aplicarControlDeAccesoYPermisos_tablero() {
     const usuarioId = sessionStorage.getItem("usuario_sesion_id") || "invitado";
     const esAdmin = sessionStorage.getItem("usuario_sesion_admin") === "true";
@@ -41,7 +28,7 @@ function aplicarControlDeAccesoYPermisos_tablero() {
         permisos = {};
     }
 
-    // Mostrar mensaje de bienvenida personalizado en el banner
+    // Mostrar mensaje de bienvenida personalizado en el banner[cite: 8]
     const bannerContainer = document.getElementById('welcomeMessageBanner_reg_usuarios');
     if (bannerContainer) {
         if (esAdmin) {
@@ -51,13 +38,13 @@ function aplicarControlDeAccesoYPermisos_tablero() {
         }
     }
 
-    // Control de visibilidad del botón de Registro de Usuarios (Exclusivo Administrador)
+    // Control de visibilidad del botón de Registro de Usuarios (Exclusivo Administrador)[cite: 8]
     const btnRegistroUsuarios = document.getElementById('btnRegistroUsuarios');
     if (btnRegistroUsuarios) {
         btnRegistroUsuarios.style.display = esAdmin ? "flex" : "none";
     }
 
-    // Control de permisos dinámicos por módulo para usuarios invitados
+    // Control de permisos dinámicos por módulo para usuarios invitados[cite: 8]
     const botonesModulos = document.querySelectorAll('.modules-grid_tablero .module-btn_tablero[data-permiso]');
     botonesModulos.forEach(boton => {
         const nombrePermiso = boton.getAttribute('data-permiso');
@@ -70,14 +57,18 @@ function aplicarControlDeAccesoYPermisos_tablero() {
 }
 
 /* ========================================================================== */
-/* FUNCIONES GLOBALES DE NAVEGACIÓN Y APERTURA DE MÓDULOS */
+/* FUNCIONES GLOBALES DE NAVEGACIÓN Y APERTURA DE MÓDULOS                    */
 /* ========================================================================== */
 
 function abrirModulo(nombreModulo) {
-    alert(`Abriendo módulo: ${nombreModulo}`);
+    if (nombreModulo === 'leeme_primero') {
+        abrirModalLeemePrimero_lee_primero('modalLeemePrimero_lee_primero');
+        return;
+    }
+    // ... tus otros modulos
 }
 
-// Función general para abrir modales que aún no se han independizado
+// Función general para abrir modales que aún no se han independizado[cite: 8]
 function abrirModal(idModal) {
     const modal = document.getElementById(idModal);
     if (modal) {
@@ -85,7 +76,7 @@ function abrirModal(idModal) {
     }
 }
 
-// Función general para cerrar modales
+// Función general para cerrar modales[cite: 8]
 function cerrarModal(idModal) {
     const modal = document.getElementById(idModal);
     if (modal) {
@@ -94,3 +85,34 @@ function cerrarModal(idModal) {
 }
 
 
+/* ========================================================================== */
+/* APERTURA ESPECÍFICA PARA EL MÓDULO LÉEME PRIMERO                           */
+/* ========================================================================== */
+
+function abrirModalLeemePrimero_lee_primero(idModal, evento) {
+    if (evento && evento.stopPropagation) {
+        evento.stopPropagation();
+    }
+    const modal = document.getElementById(idModal || 'modalLeemePrimero_lee_primero');
+    if (modal) {
+        modal.style.setProperty('display', 'flex', 'important');
+        modal.style.setProperty('z-index', '999999', 'important');
+        modal.style.setProperty('position', 'fixed', 'important');
+        modal.style.setProperty('top', '0', 'important');
+        modal.style.setProperty('left', '0', 'important');
+        modal.style.setProperty('width', '100vw', 'important');
+        modal.style.setProperty('height', '100vh', 'important');
+    } else {
+        console.warn("No se encontró el modal de Léeme Primero.");
+    }
+}
+
+function cerrarModalLeemePrimero_lee_primero(idModal, evento) {
+    if (evento && evento.stopPropagation) {
+        evento.stopPropagation();
+    }
+    const modal = document.getElementById(idModal || 'modalLeemePrimero_lee_primero');
+    if (modal) {
+        modal.style.setProperty('display', 'none', 'important');
+    }
+}

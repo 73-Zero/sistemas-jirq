@@ -45,7 +45,7 @@
                 </button>
 
                 <!-- 2. Módulo de Listado de Funciones -->
-                <button class="module-btn_tablero" data-permiso="listado_funciones" onclick="abrirModal_lis_funciones('modalListadoFunciones_lis_funciones')">
+                <button class="module-btn_tablero" onclick="abrirModal_lis_funciones('modalListadoFunciones_lis_funciones')">
                     <div class="module-icon_tablero icon-blue_tablero">
                         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
                     </div>
@@ -68,13 +68,13 @@
                     <span>Ayuda Rápida</span>
                 </button>
 
-                <!-- 5. Módulo Léeme Primero -->
-                <button class="module-btn_tablero" onclick="abrirModalLeemePrimero_lee_primero('modalLeemePrimero_lee_primero')">
-                    <div class="module-icon_tablero icon-green-light_tablero">
-                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
-                    </div>
-                    <span>Léeme primero</span>
-                </button>
+                 <!-- 5. Módulo Léeme Primero -->
+                <button class="module-btn_tablero" onclick="abrirModalLeemePrimero_lee_primero(event)">
+                <div class="module-icon_tablero icon-green-light_tablero">
+                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
+                </div>
+                <span>Léeme primero</span>
+                 </button>
 
                 <!-- 6. Módulo Bigquery Conteo -->
                 <button class="module-btn_tablero" data-permiso="conteo_tablas" onclick="abrirModal('modalBigquery')">
@@ -217,28 +217,28 @@
     </div>
 
 
-<!-- MODAL PERSONALIZADO: CONFIRMAR ELIMINAR USUARIO -->
-<div class="modal-overlay_reg_usuarios" id="modalAlertaEliminarUsuario_reg_usuarios" style="display: none;">
-    <div class="modal-window_reg_usuarios" style="max-width: 380px; height: auto; text-align: center; padding: 30px 20px; border-radius: 16px; background: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-        
-        <!-- Ícono decorativo de alerta -->
-        <div style="margin: 0 auto 15px auto; width: 55px; height: 55px; background: rgba(59, 30, 84, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-            <svg viewBox="0 0 24 24" style="width: 28px; height: 28px; fill: #3b1e54;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-        </div>
+    <!-- MODAL PERSONALIZADO: CONFIRMAR ELIMINAR USUARIO -->
+    <div class="modal-overlay_reg_usuarios" id="modalAlertaEliminarUsuario_reg_usuarios" style="display: none;">
+        <div class="modal-window_reg_usuarios" style="max-width: 380px; height: auto; text-align: center; padding: 30px 20px; border-radius: 16px; background: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            
+            <!-- Ícono decorativo de alerta -->
+            <div style="margin: 0 auto 15px auto; width: 55px; height: 55px; background: rgba(59, 30, 84, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg viewBox="0 0 24 24" style="width: 28px; height: 28px; fill: #3b1e54;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            </div>
 
-        <!-- Textos con color uvita -->
-        <h3 style="font-size: 17px; font-weight: 700; color: #3b1e54; margin-bottom: 8px;">¿Desea eliminar usuario?</h3>
-        <p style="font-size: 13px; color: #64748b; margin-bottom: 25px;">Esta acción eliminará el registro permanentemente del sistema.</p>
+            <!-- Textos con color uvita -->
+            <h3 style="font-size: 17px; font-weight: 700; color: #3b1e54; margin-bottom: 8px;">¿Desea eliminar usuario?</h3>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 25px;">Esta acción eliminará el registro permanentemente del sistema.</p>
 
-        <!-- Botones de Acción (Sí / No) -->
-        <div style="display: flex; justify-content: center; gap: 15px;">
-            <button type="button" onclick="cerrarModal_reg_usuarios('modalAlertaEliminarUsuario_reg_usuarios')" style="padding: 10px 22px; background: #cbd5e1; color: #1e293b; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s;">No</button>
-            <button type="button" id="btnConfirmarEliminacionUsuario_reg_usuarios" style="padding: 10px 22px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s;">Sí</button>
+            <!-- Botones de Acción (Sí / No) -->
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button type="button" onclick="cerrarModal_reg_usuarios('modalAlertaEliminarUsuario_reg_usuarios')" style="padding: 10px 22px; background: #cbd5e1; color: #1e293b; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s;">No</button>
+                <button type="button" id="btnConfirmarEliminacionUsuario_reg_usuarios" style="padding: 10px 22px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s;">Sí</button>
+            </div>
         </div>
     </div>
-</div>
 
-   <!-- ========================================================================== -->
+    <!-- ========================================================================== -->
     <!-- MODAL 2: LISTADO DE FUNCIONES - KIWOX ENTEL -->
     <!-- ========================================================================== -->
     <div class="modal-overlay_lis_funciones" id="modalListadoFunciones_lis_funciones" style="display: none;">
@@ -268,7 +268,7 @@
                 </button>
                     <button type="button" class="btn-exportar-xlsx_lis_funciones" onclick="exportarFuncionesExcelXLSX_lis_funciones()">
                     <span class="icon-box-xlsx">📥</span>
-                    Descargar .xlsx
+                    Descargar .csv
                     <span class="arrow-xlsx">›</span>
                 </button>
                 </div>
@@ -300,42 +300,38 @@
             </div>
         </div>
 
-        <!-- Input file oculto para buscar archivos en las carpetas de la laptop (.xlsx, .docx, .pdf, .jpg, .jpeg) -->
-        <input type="file" id="inputArchivoOculto_lis_funciones" style="display: none;" accept=".xlsx,.xls,.doc,.docx,.pdf,.jpg,.jpeg" onchange="procesarSubidaArchivo_lis_funciones(this)">
+        <!-- Input oculto para que el botón 📁 dispare el selector de archivos -->
+        <input type="file" id="inputArchivoOculto_lis_funciones" style="display: none;" accept=".pdf,.docx,.xlsx,.jpg,.png" onchange="procesarSubidaArchivo_lis_funciones(this)">
 
-        <!-- MODAL FLOTANTE DE CARGA / PROGRESO DE SUBIDA -->
-        <div class="modal-overlay_lis_funciones" id="modalCargaSubida_lis_funciones" style="display: none; z-index: 9999;">
-            <div class="modal-window_lis_funciones" style="max-width: 400px; height: auto; text-align: center; padding: 35px 25px; background: rgba(248, 250, 252, 0.95);">
-                <div style="margin: 0 auto 15px auto; width: 60px; height: 60px; background: rgba(124, 58, 237, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <div class="spinner-carga_lis_funciones"></div>
+        <!-- Modal de carga de subida -->
+        <div id="modalCargaSubida_lis_funciones" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 9999;">
+            <div style="background: white; padding: 30px; border-radius: 8px; text-align: center; width: 350px;">
+                <p id="textoPorcentajeCarga_lis_funciones" style="margin-bottom: 15px; font-weight: 500;">Subiendo archivo...</p>
+                <div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; overflow: hidden; margin-bottom: 20px;">
+                    <div id="barraProgresoSubida_lis_funciones" style="background: #3b82f6; width: 0%; height: 100%; transition: width 0.2s;"></div>
                 </div>
-                <h3 style="font-size: 17px; font-weight: 700; color: #3b1e54; margin-bottom: 8px;">Subiendo archivo a la nube...</h3>
-                <p id="textoPorcentajeCarga_lis_funciones" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Preparando archivo (0%)...</p>
-                <!-- Barra de progreso con diseño estético -->
-                <div style="width: 100%; background: #e2e8f0; border-radius: 10px; height: 10px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);">
-                    <div id="barraProgresoSubida_lis_funciones" style="width: 0%; height: 100%; background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); transition: width 0.2s ease;"></div>
+                <button type="button" onclick="cancelarSubidaArchivo_lis_funciones()" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Cancelar Subida</button>
+            </div>
+        </div>
+
+        <!-- MODAL DE ALERTA: ELIMINAR FUNCIÓN -->
+        <div class="modal-overlay_lis_funciones" id="modalAlertaEliminar_lis_funciones" style="display: none;">
+            <div class="modal-window_lis_funciones" style="max-width: 380px; height: auto; text-align: center; padding: 30px 20px; border-radius: 16px; background: #ffffff;">
+                <h3 style="font-size: 17px; font-weight: 700; color: #3b1e54; margin-bottom: 8px;">¿Desea eliminar función?</h3>
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 25px;">Esta acción eliminará la fila permanentemente.</p>
+                <div style="display: flex; justify-content: center; gap: 15px;">
+                    <button type="button" onclick="cerrarModal_lis_funciones('modalAlertaEliminar_lis_funciones')" style="padding: 10px 22px; background: #cbd5e1; color: #1e293b; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">No</button>
+                    <button type="button" id="btnConfirmarEliminar_lis_funciones" style="padding: 10px 22px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Sí</button>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- MODAL DE ALERTA: ELIMINAR FUNCIÓN -->
-    <div class="modal-overlay_lis_funciones" id="modalAlertaEliminar_lis_funciones" style="display: none;">
-        <div class="modal-window_lis_funciones" style="max-width: 380px; height: auto; text-align: center; padding: 30px 20px; border-radius: 16px; background: #ffffff;">
-            <h3 style="font-size: 17px; font-weight: 700; color: #3b1e54; margin-bottom: 8px;">¿Desea eliminar función?</h3>
-            <p style="font-size: 13px; color: #64748b; margin-bottom: 25px;">Esta acción eliminará la fila permanentemente.</p>
-            <div style="display: flex; justify-content: center; gap: 15px;">
-                <button type="button" onclick="cerrarModal_lis_funciones('modalAlertaEliminar_lis_funciones')" style="padding: 10px 22px; background: #cbd5e1; color: #1e293b; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">No</button>
-                <button type="button" id="btnConfirmarEliminar_lis_funciones" style="padding: 10px 22px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Sí</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tooltip Global de Excel -->
-    <div id="excelTooltipGlobal"></div>
+        <!-- Tooltip Global de Excel -->
+        <div id="excelTooltipGlobal"></div>
+    </div> <!-- Cierre correcto de modalListadoFunciones_lis_funciones -->
 
     <!-- ========================================================================== -->
-    <!-- MODAL 5: MÓDULO LÉEME PRIMERO -->
+    <!-- MODAL 5: MÓDULO LÉEME PRIMERO (100% INDEPENDIENTE)                         -->
     <!-- ========================================================================== -->
     <div class="modal-overlay_lee_primero" id="modalLeemePrimero_lee_primero" style="display: none;">
         <div class="modal-window_lee_primero">
@@ -367,7 +363,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
-    
     
     <!-- Scripts de módulos -->
     <script src="js/scriptjirq_tablero.js"></script>

@@ -424,3 +424,22 @@
     border-top: 2px dashed #7c3aed;
     background: #f5f3ff !important;
 }
+
+/* Estilo opcional para diferenciar el botón de descarga */
+.btn-descargar-archivo_lis_funciones {
+    background-color: #3b82f6; /* Un azul claro atractivo */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.btn-descargar-archivo_lis_funciones:hover {
+    background-color: #2563eb;
+}
