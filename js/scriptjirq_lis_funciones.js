@@ -2,6 +2,9 @@
 /* MÓDULO LISTADO DE FUNCIONES: LÓGICA Y FIREBASE EN TIEMPO REAL             */
 /* ========================================================================== */
 
+let filaActivaSubidaKey_lis_funciones = null;
+let ordenActivoSubida_lis_funciones = null;
+
 function abrirModal_lis_funciones(idModal) {
     const modal = document.getElementById(idModal);
     if (modal) {
@@ -22,7 +25,6 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
     const tbody = document.getElementById('cuerpoTablaFunciones_lis_funciones');
     if (!tbody) return;
 
-    // Escuchamos y ordenamos los registros basándonos en el campo 'orden' almacenado en Firebase
     dbRef.orderByChild('orden').on('value', (snapshot) => {
         tbody.innerHTML = '';
         const data = snapshot.val();
@@ -31,7 +33,6 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
             return;
         }
 
-        // Ordenamos las llaves asegurando que el índice local respete el orden guardado
         let contador = 1;
         const keysOrdenadas = Object.keys(data).sort((a, b) => {
             const ordenA = data[a].orden !== undefined ? data[a].orden : 9999;
@@ -42,9 +43,6 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
         keysOrdenadas.forEach(firebaseKey => {
             const func = data[firebaseKey];
 
-            /**
-             * Convierte valores guardados (1, true, ✓, ✔, ✅) en el emoticón visual ✅.
-             */
             const formatearCheck = (val) => {
                 if (!val) return '';
                 const v = String(val).trim().toLowerCase();
@@ -56,15 +54,12 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
 
             const nombreVal = func.nombre || '';
             const detalleVal = func.detalle || '';
-            
-            // Calculamos el número de orden real basado en Firebase o en el contador de respaldo
             const numeroOrdenReal = (func.orden !== undefined) ? (func.orden + 1) : contador++;
 
             const tr = document.createElement('tr');
-            tr.setAttribute('draggable', 'true'); // Habilita el arrastre de fila
+            tr.setAttribute('draggable', 'true');
             tr.dataset.firebaseKey = firebaseKey;
 
-            // Eventos de Drag & Drop para reordenar filas con los puntitos
             tr.addEventListener('dragstart', (e) => {
                 e.dataTransfer.setData('text/plain', firebaseKey);
                 tr.classList.add('fila-arrastrando_lis_funciones');
@@ -94,6 +89,14 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
                 }
             });
 
+            // Definir botón de archivo adjunto (si ya tiene archivo subido, se muestra diferente o con enlace directo)
+            let botonArchivoHTML = '';
+            if (func.archivo_url) {
+                botonArchivoHTML = `<a href="${func.archivo_url}" target="_blank" class="btn-subir-archivo_lis_funciones" title="Ver/Descargar archivo: ${func.archivo_nombre || 'Manual'}">📎</a>`;
+            } else {
+                botonArchivoHTML = `<button type="button" class="btn-subir-archivo_lis_funciones" onclick="dispararSelectorArchivo_lis_funciones('${firebaseKey}', ${numeroOrdenReal})" title="Subir archivo (.xlsx, .docx, .pdf, .jpg)">📁</button>`;
+            }
+
             tr.innerHTML = `
                 <td style="cursor: grab; text-align:center;" title="Arrastrar para mover posición">⋮⋮</td>
                 <td style="color: #64748b; font-weight: 500;">${numeroOrdenReal}</td>
@@ -106,7 +109,6 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
                 <td><input type="text" value="${func.plat_inicial || func.plataforma_inicial || ''}" onchange="actualizarDatoFuncion_lis_funciones('${firebaseKey}', 'plat_inicial', this.value)"></td>
                 <td><input type="text" value="${func.plat_final || func.plataforma_final || ''}" onchange="actualizarDatoFuncion_lis_funciones('${firebaseKey}', 'plat_final', this.value)"></td>
                 
-                <!-- Casillas de horarios: Escribes '1' (o cualquier check) y se convierte automáticamente en ✅ -->
                 <td><input type="text" style="text-align:center;" value="${formatearCheck(func.t_8_9 || func.h_8_9)}" onchange="procesarEscrituraCheck_lis_funciones(this, '${firebaseKey}', 't_8_9')"></td>
                 <td><input type="text" style="text-align:center;" value="${formatearCheck(func.t_10_11 || func.h_10_11)}" onchange="procesarEscrituraCheck_lis_funciones(this, '${firebaseKey}', 't_10_11')"></td>
                 <td><input type="text" style="text-align:center;" value="${formatearCheck(func.t_12_1 || func.h_12_1)}" onchange="procesarEscrituraCheck_lis_funciones(this, '${firebaseKey}', 't_12_1')"></td>
@@ -128,7 +130,10 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
                 </td>
                 <td><input type="text" value="${func.dias || ''}" onchange="actualizarDatoFuncion_lis_funciones('${firebaseKey}', 'dias', this.value)"></td>
                 <td>
-                    <button type="button" class="btn-eliminar-fila_lis_funciones" onclick="confirmarEliminarFuncion_lis_funciones('${firebaseKey}')" title="Eliminar Fila">✕</button>
+                    <div style="display: flex; gap: 4px; justify-content: center; align-items: center;">
+                        ${botonArchivoHTML}
+                        <button type="button" class="btn-eliminar-fila_lis_funciones" onclick="confirmarEliminarFuncion_lis_funciones('${firebaseKey}')" title="Eliminar Fila">✕</button>
+                    </div>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -136,9 +141,6 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
     });
 }
 
-/**
- * Actualiza un campo genérico directamente en Firebase.
- */
 function actualizarDatoFuncion_lis_funciones(firebaseKey, campo, valor) {
     firebase.database().ref('funciones/' + firebaseKey).update({
         [campo]: valor
@@ -147,9 +149,6 @@ function actualizarDatoFuncion_lis_funciones(firebaseKey, campo, valor) {
     });
 }
 
-/**
- * Reordena las posiciones en Firebase al arrastrar y soltar una fila.
- */
 function intercambiarOrdenFilas_lis_funciones(origenKey, destinoKey, allData) {
     const keys = Object.keys(allData).sort((a, b) => {
         const ordenA = allData[a].orden !== undefined ? allData[a].orden : 9999;
@@ -175,10 +174,6 @@ function intercambiarOrdenFilas_lis_funciones(origenKey, destinoKey, allData) {
     }
 }
 
-/**
- * Procesa cuando el usuario escribe '1' o un check en el input de horario,
- * transformándolo en ✅ al salir de la celda (con Tab o clic fuera).
- */
 function procesarEscrituraCheck_lis_funciones(inputElement, firebaseKey, campoHorario) {
     const val = inputElement.value.trim().toLowerCase();
     let valorAGuardar = '';
@@ -187,7 +182,7 @@ function procesarEscrituraCheck_lis_funciones(inputElement, firebaseKey, campoHo
         inputElement.value = '✅';
         valorAGuardar = '✅';
     } else {
-        inputElement.value = ''; // Si escribe otra cosa o borra, queda vacío
+        inputElement.value = '';
         valorAGuardar = '';
     }
 
@@ -213,7 +208,7 @@ function agregarNuevaFilaFuncion_lis_funciones() {
             detalle: "Detalle operativo",
             estado: "Activo",
             dias: "Lu a Vi",
-            orden: totalItems // Se asigna al final de la lista
+            orden: totalItems
         };
 
         dbRef.push(nuevaFuncion).catch(error => {
@@ -240,9 +235,67 @@ function confirmarEliminarFuncion_lis_funciones(firebaseKey) {
     }
 }
 
-/**
- * Filtra la tabla en tiempo real enfocándose específicamente en la columna "Listado de funciones" y por Estado.
- */
+/* ========================================================================== */
+/* LÓGICA DE SUBIDA DE ARCHIVOS A FIREBASE STORAGE (REEMPLAZO AUTOMÁTICO)      */
+/* ========================================================================== */
+
+function dispararSelectorArchivo_lis_funciones(firebaseKey, numeroOrden) {
+    filaActivaSubidaKey_lis_funciones = firebaseKey;
+    ordenActivoSubida_lis_funciones = numeroOrden;
+    const inputOculto = document.getElementById('inputArchivoOculto_lis_funciones');
+    if (inputOculto) {
+        inputOculto.value = ''; // Limpiar para permitir re-seleccionar el mismo archivo
+        inputOculto.click(); // Abre carpetas de la laptop
+    }
+}
+
+function procesarSubidaArchivo_lis_funciones(inputElement) {
+    const archivo = inputElement.files[0];
+    if (!archivo || !filaActivaSubidaKey_lis_funciones) return;
+
+    const firebaseKey = filaActivaSubidaKey_lis_funciones;
+    const numeroOrden = ordenActivoSubida_lis_funciones;
+
+    // Mostrar modal de carga
+    const modalCarga = document.getElementById('modalCargaSubida_lis_funciones');
+    const barraProgreso = document.getElementById('barraProgresoSubida_lis_funciones');
+    const textoPorcentaje = document.getElementById('textoPorcentajeCarga_lis_funciones');
+    
+    if (modalCarga) modalCarga.style.display = 'flex';
+    if (barraProgreso) barraProgreso.style.width = '0%';
+    if (textoPorcentaje) textoPorcentaje.textContent = `Iniciando subida de "${archivo.name}"... (0%)`;
+
+    // Ruta en Firebase Storage: manuales_funciones/funcion_01.ext (Reemplaza automáticamente si ya existe)
+    const extension = archivo.name.split('.').pop().toLowerCase();
+    const rutaStorage = `manuales_funciones/funcion_${numeroOrden}.${extension}`;
+    const storageRef = firebase.storage().ref().child(rutaStorage);
+
+    const uploadTask = storageRef.put(archivo);
+
+    uploadTask.on('state_changed',
+        (snapshot) => {
+            const progreso = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            if (barraProgreso) barraProgreso.style.width = progreso + '%';
+            if (textoPorcentaje) textoPorcentaje.textContent = `Subiendo archivo... (${progreso}%)`;
+        },
+        (error) => {
+            if (modalCarga) modalCarga.style.display = 'none';
+            alert("Error al subir el archivo: " + error.message);
+        },
+        () => {
+            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                firebase.database().ref('funciones/' + firebaseKey).update({
+                    archivo_url: downloadURL,
+                    archivo_nombre: archivo.name
+                }).then(() => {
+                    if (modalCarga) modalCarga.style.display = 'none';
+                    // Al terminar se cierra solito y vuelve al listado
+                });
+            });
+        }
+    );
+}
+
 function filtrarFuncionesTabla_lis_funciones() {
     const buscadorInput = document.getElementById('buscadorFunciones_lis_funciones');
     const estadoSelect = document.getElementById('filtroEstadoFunciones_lis_funciones');
@@ -253,7 +306,6 @@ function filtrarFuncionesTabla_lis_funciones() {
     const filas = document.querySelectorAll('#cuerpoTablaFunciones_lis_funciones tr');
 
     filas.forEach(fila => {
-        // Tomamos específicamente el valor del input de la columna "Listado de funciones" (tercera columna, índice 2)
         const inputNombreFuncion = fila.querySelector('td:nth-child(3) input[type="text"]');
         const textoNombreFuncion = inputNombreFuncion ? inputNombreFuncion.value.toLowerCase() : '';
         
@@ -272,7 +324,50 @@ function filtrarFuncionesTabla_lis_funciones() {
 }
 
 function exportarFuncionesExcelXLSX_lis_funciones() {
-    console.log("Función de exportación en desarrollo...");
+    const tabla = document.getElementById('tablaFunciones_lis_funciones');
+    if (!tabla) return;
+
+    let csv = [];
+    const filas = tabla.querySelectorAll('tr');
+
+    filas.forEach((fila, idx) => {
+        if (fila.style.display === 'none') return; // Omitir filtrados ocultos
+        const cols = fila.querySelectorAll('th, td');
+        let filaDatos = [];
+
+        cols.forEach((col, cIdx) => {
+            // Omitir la primera columna (arrastre ::) y última columna (Acciones)
+            if (cIdx === 0 || cIdx === cols.length - 1) return;
+
+            let texto = "";
+            const input = col.querySelector('input[type="text"]');
+            const select = col.querySelector('select');
+
+            if (input) {
+                texto = input.value;
+            } else if (select) {
+                texto = select.value;
+            } else {
+                texto = col.innerText;
+            }
+
+            // Limpiar comillas y saltos
+            texto = texto.replace(/"/g, '""');
+            filaDatos.push(`"${texto}"`);
+        });
+
+        csv.push(filaDatos.join(","));
+    });
+
+    const csvBlob = new Blob(["\ufeff" + csv.join("\n")], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(csvBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Listado_Funciones_KIWOX_${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 function mostrarTooltipExcel(event, texto) {

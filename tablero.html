@@ -176,7 +176,7 @@
             </div>
         </div>
     </div>
-usu
+
     <!-- SUB-MODAL: Formulario para Agregar Nuevo Usuario -->
     <div class="modal-overlay_reg_usuarios" id="modalNuevoUsuarioForm_reg_usuarios">
         <div class="modal-window_reg_usuarios" style="max-width: 480px; height: auto;">
@@ -238,7 +238,7 @@ usu
     </div>
 </div>
 
-    <!-- ========================================================================== -->
+   <!-- ========================================================================== -->
     <!-- MODAL 2: LISTADO DE FUNCIONES - KIWOX ENTEL -->
     <!-- ========================================================================== -->
     <div class="modal-overlay_lis_funciones" id="modalListadoFunciones_lis_funciones" style="display: none;">
@@ -299,6 +299,24 @@ usu
                 </table>
             </div>
         </div>
+
+        <!-- Input file oculto para buscar archivos en las carpetas de la laptop (.xlsx, .docx, .pdf, .jpg, .jpeg) -->
+        <input type="file" id="inputArchivoOculto_lis_funciones" style="display: none;" accept=".xlsx,.xls,.doc,.docx,.pdf,.jpg,.jpeg" onchange="procesarSubidaArchivo_lis_funciones(this)">
+
+        <!-- MODAL FLOTANTE DE CARGA / PROGRESO DE SUBIDA -->
+        <div class="modal-overlay_lis_funciones" id="modalCargaSubida_lis_funciones" style="display: none; z-index: 9999;">
+            <div class="modal-window_lis_funciones" style="max-width: 400px; height: auto; text-align: center; padding: 35px 25px; background: rgba(248, 250, 252, 0.95);">
+                <div style="margin: 0 auto 15px auto; width: 60px; height: 60px; background: rgba(124, 58, 237, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <div class="spinner-carga_lis_funciones"></div>
+                </div>
+                <h3 style="font-size: 17px; font-weight: 700; color: #3b1e54; margin-bottom: 8px;">Subiendo archivo a la nube...</h3>
+                <p id="textoPorcentajeCarga_lis_funciones" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Preparando archivo (0%)...</p>
+                <!-- Barra de progreso con diseño estético -->
+                <div style="width: 100%; background: #e2e8f0; border-radius: 10px; height: 10px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);">
+                    <div id="barraProgresoSubida_lis_funciones" style="width: 0%; height: 100%; background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); transition: width 0.2s ease;"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL DE ALERTA: ELIMINAR FUNCIÓN -->
@@ -316,10 +334,40 @@ usu
     <!-- Tooltip Global de Excel -->
     <div id="excelTooltipGlobal"></div>
 
+    <!-- ========================================================================== -->
+    <!-- MODAL 5: MÓDULO LÉEME PRIMERO -->
+    <!-- ========================================================================== -->
+    <div class="modal-overlay_lee_primero" id="modalLeemePrimero_lee_primero" style="display: none;">
+        <div class="modal-window_lee_primero">
+            <div class="modal-header_lee_primero">
+                <h3 class="modal-title_lee_primero">:: Leer no cuesta nada ::</h3>
+                <button class="close-modal_lee_primero" onclick="cerrarModalLeemePrimero_lee_primero('modalLeemePrimero_lee_primero')">✕</button>
+            </div>
+
+            <div class="modal-body_lee_primero">
+                <ul style="list-style-type: none; padding: 0; margin: 0;">
+                    <li style="margin-bottom: 12px;"><strong>1.-</strong> Antes de usar el sistema debes saber que es mejor realizarlo desde tu carpeta descargas tanto subida como descarga de archivos.<br> Recordar verificar el tipo de archivo a subir y el tamaño de archivo</em></li>
+                    <li style="margin-bottom: 12px;"><strong>2.-</strong> La 1era Opción de Listado de funciones, podrás editar, mover el orden y subir el tutorial en formato .word, .pdf o .xlsx, para marcar check de hora promedio es escribiendo 1.</li>
+                    <li style="margin-bottom: 12px;"><strong>3.-</strong> La Opción <strong style="color: #3b1e54;">Calcular Datos</strong>: es para realizar la suma de los leads brutos, netos, las preventas y las válidas según socio/canal editable.</li>
+                    <li style="margin-bottom: 12px;"><strong>4.-</strong> La Opción de <strong style="color: #3b1e54;">Ayuda Rápida</strong> es para realizar trabajos de: <br>NAC DEACS Anonimizador / Transportar campañas / Alignet / IVR#1 / IVR#2</li>
+                    <li style="margin-bottom: 12px;"><strong>5.-</strong> La Opción de <strong style="color: #3b1e54;">Bigquery conteo</strong>: es para revisar las tablas y cantidad de registros por cada una de ellas (conteo de filas), tanto por día, mes y año, dividivo en 3 pestañas para obtener uno día y otro mensual.</li>
+                    <li style="margin-bottom: 12px;"><strong>6.-</strong> La Opción de <strong style="color: #3b1e54;">Metas Socios/Entel</strong>: También está de Bigquery Meta Entel y Socios: es para verificar las leads, válidas, activas, resumen general esta contiene pestañas donde está agrupado por socios, fuente.</li>
+                    <li style="margin-bottom: 12px;"><strong>7.-</strong> La Opción de <strong style="color: #3b1e54;">Query varios</strong>: es para tener aquellas consultas que puedan facilitar alguna tarea y/o obtener alguna respuesta más rápida</li>
+                </ul>
+            </div>
+
+            <div class="modal-footer_lee_primero">
+                ¡Que tengas un lindo Día!
+            </div>
+        </div>
+    </div>
+
     <!-- SDKs de Firebase y SheetJS -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+    
     
     <!-- Scripts de módulos -->
     <script src="js/scriptjirq_tablero.js"></script>
