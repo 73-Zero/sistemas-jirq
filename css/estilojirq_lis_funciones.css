@@ -142,11 +142,15 @@
     background: #f8fafc;
 }
 
+/* ========================================================================== */
+/* ANCHOS DE COLUMNAS AJUSTADOS                                               */
+/* ========================================================================== */
 .excel-table_lis_funciones th:nth-child(1), .excel-table_lis_funciones td:nth-child(1) { width: 28px; background: #fafafa; color: #64748b; }
 .excel-table_lis_funciones th:nth-child(2), .excel-table_lis_funciones td:nth-child(2) { width: 30px; background: #fafafa; color: #334155; font-weight: 600; }
-.excel-table_lis_funciones th:nth-child(3), .excel-table_lis_funciones td:nth-child(3) { width: 165px; text-align: left; }
-.excel-table_lis_funciones th:nth-child(4), .excel-table_lis_funciones td:nth-child(4) { width: 90px; }
-.excel-table_lis_funciones th:nth-child(5), .excel-table_lis_funciones td:nth-child(5) { width: 90px; }
+.excel-table_lis_funciones th:nth-child(3), .excel-table_lis_funciones td:nth-child(3) { width: 115px; text-align: left; }
+.excel-table_lis_funciones th:nth-child(4), .excel-table_lis_funciones td:nth-child(4) { width: 65px; }  /* Inicial */
+.excel-table_lis_funciones th:nth-child(5), .excel-table_lis_funciones td:nth-child(5) { width: 65px; }  /* Final */
+
 .excel-table_lis_funciones td:nth-child(6), 
 .excel-table_lis_funciones td:nth-child(7), 
 .excel-table_lis_funciones td:nth-child(8), 
@@ -158,11 +162,12 @@
     font-size: 13px; 
     cursor: pointer;
 }
-.excel-table_lis_funciones th:nth-child(11), .excel-table_lis_funciones td:nth-child(11) { width: 100px; }
-.excel-table_lis_funciones th:nth-child(12), .excel-table_lis_funciones td:nth-child(12) { width: 175px; text-align: left; }
-.excel-table_lis_funciones th:nth-child(13), .excel-table_lis_funciones td:nth-child(13) { width: 85px; }
-.excel-table_lis_funciones th:nth-child(14), .excel-table_lis_funciones td:nth-child(14) { width: 65px; }
-.excel-table_lis_funciones th:nth-child(15), .excel-table_lis_funciones td:nth-child(15) { width: 95px; } /* Ancho ajustado para Acciones con 2 botones */
+
+.excel-table_lis_funciones th:nth-child(11), .excel-table_lis_funciones td:nth-child(11) { width: 90px; }
+.excel-table_lis_funciones th:nth-child(12), .excel-table_lis_funciones td:nth-child(12) { width: 120px; text-align: left; }
+.excel-table_lis_funciones th:nth-child(13), .excel-table_lis_funciones td:nth-child(13) { width: 80px; }
+.excel-table_lis_funciones th:nth-child(14), .excel-table_lis_funciones td:nth-child(14) { width: 60px; }
+.excel-table_lis_funciones th:nth-child(15), .excel-table_lis_funciones td:nth-child(15) { width: 115px; } /* Acciones con 4 botones */
 
 .excel-table_lis_funciones input[type="text"] {
     width: 100%;
@@ -201,7 +206,7 @@
     outline: none;
 }
 
-/* BOTÓN NUEVA FUNCIÓN Y SU FILTRADO DE CLICS */
+/* BOTÓN NUEVA FUNCIÓN */
 .btn-nuevo-funcion_lis_funciones {
     display: inline-flex;
     align-items: center;
@@ -224,9 +229,7 @@
     z-index: 10;
 }
 
-.btn-nuevo-funcion_lis_funciones span {
-    pointer-events: none; /* Soluciona el problema de clics en hijos */
-}
+.btn-nuevo-funcion_lis_funciones span { pointer-events: none; }
 
 .btn-nuevo-funcion_lis_funciones .icon-box-nuevo {
     width: 28px;
@@ -257,11 +260,9 @@
     color: #047857;
 }
 
-.btn-nuevo-funcion_lis_funciones:hover .arrow-nuevo {
-    transform: translateX(3px);
-}
+.btn-nuevo-funcion_lis_funciones:hover .arrow-nuevo { transform: translateX(3px); }
 
-/* BOTÓN EXPORTAR .XLSX */
+/* BOTÓN EXPORTAR .CSV */
 .btn-exportar-xlsx_lis_funciones {
     display: inline-flex;
     align-items: center;
@@ -285,9 +286,7 @@
     z-index: 10;
 }
 
-.btn-exportar-xlsx_lis_funciones span {
-    pointer-events: none;
-}
+.btn-exportar-xlsx_lis_funciones span { pointer-events: none; }
 
 .btn-exportar-xlsx_lis_funciones .icon-box-xlsx {
     width: 28px;
@@ -330,12 +329,12 @@
     color: #ef4444 !important;
     border: none !important;
     border-radius: 50% !important;
-    width: 26px !important;
-    height: 26px !important;
+    width: 24px !important;
+    height: 24px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 11px !important;
+    font-size: 10px !important;
     font-weight: 900 !important;
     cursor: pointer !important;
     transition: transform 0.15s, background 0.15s !important;
@@ -347,18 +346,18 @@
     transform: scale(1.1);
 }
 
-/* BOTÓN SUBIR ARCHIVO (AL COSTADO DE LA X) */
+/* BOTÓN DE ACCIÓN / SUBIR / LUPA */
 .btn-subir-archivo_lis_funciones {
     background: #ede9fe !important;
     color: #7c3aed !important;
     border: none !important;
     border-radius: 50% !important;
-    width: 26px !important;
-    height: 26px !important;
+    width: 24px !important;
+    height: 24px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 12px !important;
+    font-size: 11px !important;
     cursor: pointer !important;
     transition: transform 0.15s, background 0.15s, color 0.15s !important;
     text-decoration: none !important;
@@ -401,45 +400,4 @@
     pointer-events: none;
     max-width: 320px;
     word-break: break-word;
-}
-
-.excel-table_lis_funciones td:first-child {
-    cursor: grab !important;
-    user-select: none;
-    font-size: 14px;
-    color: #94a3b8;
-    transition: background 0.15s, color 0.15s;
-}
-
-.excel-table_lis_funciones td:first-child:active {
-    cursor: grabbing !important;
-}
-
-.excel-table_lis_funciones tr.fila-arrastrando_lis_funciones {
-    opacity: 0.4;
-    background: #ede9fe !important;
-}
-
-.excel-table_lis_funciones tr.fila-sobre_lis_funciones {
-    border-top: 2px dashed #7c3aed;
-    background: #f5f3ff !important;
-}
-
-/* Estilo opcional para diferenciar el botón de descarga */
-.btn-descargar-archivo_lis_funciones {
-    background-color: #3b82f6; /* Un azul claro atractivo */
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 10px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    transition: background 0.2s;
-}
-
-.btn-descargar-archivo_lis_funciones:hover {
-    background-color: #2563eb;
 }

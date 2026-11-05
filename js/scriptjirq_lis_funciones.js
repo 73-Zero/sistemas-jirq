@@ -100,18 +100,25 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
                 }
             });
 
-            // Botón de subir o ver el archivo existente (Izquierda)
+            // 1º BOTÓN: Subir archivo o ver carpeta (Izquierda)
             let botonArchivoHTML = '';
             if (func.archivo_url) {
-                botonArchivoHTML = `<a href="${func.archivo_url}" target="_blank" class="btn-subir-archivo_lis_funciones" title="Ver archivo en el navegador">📎</a>`;
+                botonArchivoHTML = `<a href="${func.archivo_url}" target="_blank" class="btn-subir-archivo_lis_funciones" title="Ver archivo en pestaña nueva">📎</a>`;
             } else {
                 botonArchivoHTML = `<button type="button" class="btn-subir-archivo_lis_funciones" onclick="dispararSelectorArchivo_lis_funciones('${firebaseKey}', ${numeroOrdenReal})" title="Subir archivo (.xlsx, .docx, .pdf, .jpg)">📁</button>`;
             }
 
-            // Botón de descarga en el medio (Fuerza la descarga directa en Windows y macOS)
+            // 2º BOTÓN: Lupa (🔍) para abrir el archivo en otra pestaña del navegador y permitir lectura/edición nativa
+            let botonLupaHTML = '';
+            if (func.archivo_url && func.archivo_url.trim() !== "") {
+                botonLupaHTML = `<a href="${func.archivo_url}" target="_blank" class="btn-subir-archivo_lis_funciones" title="Abrir formato en pestaña nueva para leer y copiar">🔍</a>`;
+            } else {
+                botonLupaHTML = `<button type="button" class="btn-subir-archivo_lis_funciones" disabled style="opacity: 0.4; cursor: not-allowed;" title="No hay archivo adjunto para previsualizar">🔍</button>`;
+            }
+
+            // 3º BOTÓN: Descarga directa (Fuerza descarga en Windows/Mac)
             let botonDescargaHTML = '';
             if (func.archivo_url && func.archivo_url.trim() !== "") {
-                // Insertamos 'fl_attachment' en la URL de Cloudinary para que el navegador entienda que es una descarga obligatoria
                 let urlDescargaForzada = func.archivo_url;
                 if (urlDescargaForzada.includes('/upload/')) {
                     urlDescargaForzada = urlDescargaForzada.replace('/upload/', '/upload/fl_attachment/');
@@ -122,6 +129,7 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
                 botonDescargaHTML = `<button type="button" class="btn-subir-archivo_lis_funciones" disabled style="opacity: 0.4; cursor: not-allowed;" title="No hay archivo adjunto para descargar">⬇️</button>`;
             }
 
+            // Orden estricto: Subir Archivo (📁/📎) -> Lupa (🔍) -> Descarga (⬇️) -> Eliminar (✕)
             tr.innerHTML = `
                 <td style="cursor: grab; text-align:center;" title="Arrastrar para mover posición">⋮⋮</td>
                 <td style="color: #64748b; font-weight: 500;">${numeroOrdenReal}</td>
@@ -153,8 +161,9 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
                 </td>
                 <td><input type="text" data-campo="dias" value="${func.dias || ''}"></td>
                 <td>
-                    <div style="display: flex; gap: 4px; justify-content: center; align-items: center;">
+                    <div style="display: flex; gap: 3px; justify-content: center; align-items: center;">
                         ${botonArchivoHTML}
+                        ${botonLupaHTML}
                         ${botonDescargaHTML}
                         <button type="button" class="btn-eliminar-fila_lis_funciones" onclick="confirmarEliminarFuncion_lis_funciones('${firebaseKey}')" title="Eliminar Fila">✕</button>
                     </div>
@@ -164,6 +173,10 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
         });
     });
 }
+
+/* ========================================================================== */
+/* GUARDAR, ORDENAR Y GESTIÓN GENERAL DE FILAS                                */
+/* ========================================================================== */
 
 function guardarFilaCompleta_lis_funciones(trElemento, firebaseKey) {
     const inputs = trElemento.querySelectorAll('input[data-campo], select[data-campo]');
@@ -274,7 +287,7 @@ function confirmarEliminarFuncion_lis_funciones(firebaseKey) {
 }
 
 /* ========================================================================== */
-/* MÓDULO DE SUBIDA DE ARCHIVOS ADAPTADO A CLOUDINARY (SIN TARJETA)           */
+/* MÓDULO DE SUBIDA DE ARCHIVOS ADAPTADO A CLOUDINARY                        */
 /* ========================================================================== */
 
 function dispararSelectorArchivo_lis_funciones(firebaseKey, numeroOrden) {
@@ -302,7 +315,7 @@ async function procesarSubidaArchivo_lis_funciones(inputElement) {
 
     const formData = new FormData();
     formData.append("file", archivo);
-    formData.append("upload_preset", "preset_sistema_jirq"); // Tu preset sin firmar
+    formData.append("upload_preset", "preset_sistema_jirq");
 
     try {
         if (barraProgreso) barraProgreso.style.width = '60%';
@@ -348,7 +361,6 @@ function cancelarSubidaArchivo_lis_funciones() {
         inputOculto.value = '';
     }
     filaActivaSubidaKey_lis_funciones = null;
-    console.log("Subida cancelada por el usuario.");
 }
 
 function filtrarFuncionesTabla_lis_funciones() {
@@ -385,15 +397,13 @@ function exportarFuncionesExcelXLSX_lis_funciones() {
     let csv = [];
     const filas = tabla.querySelectorAll('tr');
 
-    filas.forEach((fila, idx) => {
-        // Si la fila está oculta por el buscador o filtros, la ignoramos
+    filas.forEach((fila) => {
         if (fila.style.display === 'none') return;
         
         const cols = fila.querySelectorAll('th, td');
         let filaDatos = [];
 
         cols.forEach((col, cIdx) => {
-            // Omitimos la primera columna de arrastrar (::) y la última de acciones
             if (cIdx === 0 || cIdx === cols.length - 1) return;
 
             let texto = "";
@@ -402,7 +412,6 @@ function exportarFuncionesExcelXLSX_lis_funciones() {
 
             if (input) {
                 texto = input.value;
-                // Si es una columna de horario (checks), asegurémonos de exportarla limpia con el icono si está marcada
                 if (cIdx >= 5 && cIdx <= 9) {
                     const v = texto.trim().toLowerCase();
                     if (v === '1' || v === 'true' || v === '✓' || v === '✔' || v === '✅') {
@@ -417,7 +426,6 @@ function exportarFuncionesExcelXLSX_lis_funciones() {
                 texto = col.innerText;
             }
 
-            // Limpiamos comillas dobles para evitar romper el formato CSV
             texto = texto.replace(/"/g, '""');
             filaDatos.push(`"${texto}"`);
         });
@@ -425,7 +433,6 @@ function exportarFuncionesExcelXLSX_lis_funciones() {
         csv.push(filaDatos.join(","));
     });
 
-    // Creamos el archivo con codificación UTF-8 y extensión .csv (compatible perfectamente con Excel)
     const csvBlob = new Blob(["\ufeff" + csv.join("\n")], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(csvBlob);
     const a = document.createElement('a');
