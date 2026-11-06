@@ -116,3 +116,16 @@ function cerrarModalLeemePrimero_lee_primero(idModal, evento) {
         modal.style.setProperty('display', 'none', 'important');
     }
 }
+
+// Detectar cuando el usuario cambia de pestaña
+const tituloOriginal_tablero = document.title;
+
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        // Cuando el usuario sale de la pestaña
+        document.title = "Vuelve pronto 👨🏻‍💻 - Sistema JIRQ";
+    } else {
+        // Cuando el usuario regresa a la pestaña
+        document.title = tituloOriginal_tablero;
+    }
+});

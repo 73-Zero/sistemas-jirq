@@ -6,7 +6,7 @@
     <title>Tablero Principal - Sistema JIRQ</title>
 
     <!-- Icono de la pestaña del navegador -->
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2950/2950683.png">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/14106/14106057.png">
 
     <!-- Fuentes tipográficas de Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,11 +20,13 @@
     <link rel="stylesheet" href="css/estilojirq_reg_usuarios.css">
     <link rel="stylesheet" href="css/estilojirq_lis_funciones.css">
     <link rel="stylesheet" href="css/estilojirq_lee_primero.css">
+    <link rel="stylesheet" href="css/estilojirq_big_conteo.css">
+    <link rel="stylesheet" href="css/estilojirq_met_sociosentel.css">
 </head>
 <body class="body_tablero">
 
     <!-- ========================================================================== -->
-    <!-- CONTENEDOR PRINCIPAL DEL TABLERO (ESTILO CLAYMORPHISM Y RESPONSIVO) -->
+    <!-- CONTENEDOR PRINCIPAL DEL TABLERO -->
     <!-- ========================================================================== -->
     <div class="dashboard-card_tablero">
         <div class="dashboard-header_tablero">
@@ -55,7 +57,7 @@
                 <!-- 3. Módulo de Calcular Datos -->
                 <button class="module-btn_tablero" data-permiso="calcular_datos" onclick="abrirModulo('calcular_datos')">
                     <div class="module-icon_tablero icon-purple_tablero">
-                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 16H6V5h12v14zM7 7h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 16H6V5h12v14zM7 7h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2H-2zm4 0h2v2H-2zm-8 4h2v2H7zm4 0h2v2H-2zm4 0h2v2H-2z"/></svg>
                     </div>
                     <span>Calcular Datos</span>
                 </button>
@@ -77,7 +79,7 @@
                  </button>
 
                 <!-- 6. Módulo Bigquery Conteo -->
-                <button class="module-btn_tablero" data-permiso="conteo_tablas" onclick="abrirModal('modalBigquery')">
+                <button class="module-btn_tablero" onclick="abrirModalBigquery_big_conteo()">
                     <div class="module-icon_tablero icon-cyan_tablero">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
                     </div>
@@ -85,7 +87,7 @@
                 </button>
 
                 <!-- 7. Módulo Metas Entel y Socios -->
-                <button class="module-btn_tablero" data-permiso="metas_entel" onclick="abrirModulo('metas_entel')">
+                <button class="module-btn_tablero" data-permiso="metas_entel" onclick="abrirModalMetas_met_sociosentel()">
                     <div class="module-icon_tablero icon-emerald_tablero">
                         <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
                     </div>
@@ -141,18 +143,18 @@
                     <input type="text" id="filtroBuscarUsuario_reg_usuarios" class="usuarios-input-buscar_reg_usuarios" placeholder="Buscar por correo o ID..." style="width: 100%;" onkeyup="filtrarUsuarios_reg_usuarios()">
                 </div>
                 <div style="display: flex; gap: 10px;">
-                <!-- Botón Nuevo Usuario -->
-                <button type="button" class="usuarios-btn-nuevo_reg_usuarios" onclick="abrirModal_reg_usuarios('modalNuevoUsuarioForm_reg_usuarios')">
-                    <span class="icon-box-nuevo-usr">+</span>
-                    Nuevo Usuario
-                    <span class="arrow-nuevo-usr">›</span>
-                </button>
-                <!-- Botón Exportar CSV -->
-                <button type="button" class="usuarios-btn-exportar_reg_usuarios" onclick="exportarUsuariosCSV_reg_usuarios()">
-                    <span class="icon-box-exp-usr">📥</span>
-                    Exportar CSV
-                    <span class="arrow-exp-usr">›</span>
-                </button>
+                    <!-- Botón Nuevo Usuario -->
+                    <button type="button" class="usuarios-btn-nuevo_reg_usuarios" onclick="abrirModal_reg_usuarios('modalNuevoUsuarioForm_reg_usuarios')">
+                        <span class="icon-box-nuevo-usr">+</span>
+                        Nuevo Usuario
+                        <span class="arrow-nuevo-usr">›</span>
+                    </button>
+                    <!-- Botón Exportar CSV -->
+                    <button type="button" class="usuarios-btn-exportar_reg_usuarios" onclick="exportarUsuariosCSV_reg_usuarios()">
+                        <span class="icon-box-exp-usr">📥</span>
+                        Exportar CSV
+                        <span class="arrow-exp-usr">›</span>
+                    </button>
                 </div>
             </div>
 
@@ -216,21 +218,17 @@
         </div>
     </div>
 
-
     <!-- MODAL PERSONALIZADO: CONFIRMAR ELIMINAR USUARIO -->
     <div class="modal-overlay_reg_usuarios" id="modalAlertaEliminarUsuario_reg_usuarios" style="display: none;">
         <div class="modal-window_reg_usuarios" style="max-width: 380px; height: auto; text-align: center; padding: 30px 20px; border-radius: 16px; background: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
             
-            <!-- Ícono decorativo de alerta -->
             <div style="margin: 0 auto 15px auto; width: 55px; height: 55px; background: rgba(59, 30, 84, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                 <svg viewBox="0 0 24 24" style="width: 28px; height: 28px; fill: #3b1e54;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
             </div>
 
-            <!-- Textos con color uvita -->
             <h3 style="font-size: 17px; font-weight: 700; color: #3b1e54; margin-bottom: 8px;">¿Desea eliminar usuario?</h3>
             <p style="font-size: 13px; color: #64748b; margin-bottom: 25px;">Esta acción eliminará el registro permanentemente del sistema.</p>
 
-            <!-- Botones de Acción (Sí / No) -->
             <div style="display: flex; justify-content: center; gap: 15px;">
                 <button type="button" onclick="cerrarModal_reg_usuarios('modalAlertaEliminarUsuario_reg_usuarios')" style="padding: 10px 22px; background: #cbd5e1; color: #1e293b; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s;">No</button>
                 <button type="button" id="btnConfirmarEliminacionUsuario_reg_usuarios" style="padding: 10px 22px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s;">Sí</button>
@@ -300,10 +298,8 @@
             </div>
         </div>
 
-        <!-- Input oculto para que el botón 📁 dispare el selector de archivos -->
-        <input type="file" id="inputArchivoOculto_lis_funciones" style="display: none;" accept=".pdf,.docx,.xlsx,.jpg,.png" onchange="procesarSubidaArchivo_lis_funciones(this)">
+        <input type="file" id="inputArchivoOculto_lis_funciones" style="display: none;" accept=".xlsx,.xlsm,.docx,.doc,.pdf,.jpg,.jpeg" onchange="procesarSubidaArchivo_lis_funciones(this)">
 
-        <!-- Modal de carga de subida -->
         <div id="modalCargaSubida_lis_funciones" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 9999;">
             <div style="background: white; padding: 30px; border-radius: 8px; text-align: center; width: 350px;">
                 <p id="textoPorcentajeCarga_lis_funciones" style="margin-bottom: 15px; font-weight: 500;">Subiendo archivo...</p>
@@ -314,7 +310,6 @@
             </div>
         </div>
 
-        <!-- MODAL DE ALERTA: ELIMINAR FUNCIÓN -->
         <div class="modal-overlay_lis_funciones" id="modalAlertaEliminar_lis_funciones" style="display: none;">
             <div class="modal-window_lis_funciones" style="max-width: 380px; height: auto; text-align: center; padding: 30px 20px; border-radius: 16px; background: #ffffff;">
                 <h3 style="font-size: 17px; font-weight: 700; color: #3b1e54; margin-bottom: 8px;">¿Desea eliminar función?</h3>
@@ -326,12 +321,11 @@
             </div>
         </div>
 
-        <!-- Tooltip Global de Excel -->
         <div id="excelTooltipGlobal"></div>
-    </div> <!-- Cierre correcto de modalListadoFunciones_lis_funciones -->
+    </div>
 
     <!-- ========================================================================== -->
-    <!-- MODAL 5: MÓDULO LÉEME PRIMERO (100% INDEPENDIENTE)                         -->
+    <!-- MODAL 5: MÓDULO LÉEME PRIMERO -->
     <!-- ========================================================================== -->
     <div class="modal-overlay_lee_primero" id="modalLeemePrimero_lee_primero" style="display: none;">
         <div class="modal-window_lee_primero">
@@ -342,7 +336,7 @@
 
             <div class="modal-body_lee_primero">
                 <ul style="list-style-type: none; padding: 0; margin: 0;">
-                    <li style="margin-bottom: 12px;"><strong>1.-</strong> Antes de usar el sistema debes saber que es mejor realizarlo desde tu carpeta descargas tanto subida como descarga de archivos.<br> Recordar verificar el tipo de archivo a subir y el tamaño de archivo</em></li>
+                    <li style="margin-bottom: 12px;"><strong>1.-</strong> Antes de usar el sistema debes saber que es mejor realizarlo desde tu carpeta descargas tanto subida como descarga de archivos.<br> Recordar verificar el tipo de archivo a subir y el tamaño de archivo</li>
                     <li style="margin-bottom: 12px;"><strong>2.-</strong> La 1era Opción de Listado de funciones, podrás editar, mover el orden y subir el tutorial en formato .word, .pdf o .xlsx, para marcar check de hora promedio es escribiendo 1.</li>
                     <li style="margin-bottom: 12px;"><strong>3.-</strong> La Opción <strong style="color: #3b1e54;">Calcular Datos</strong>: es para realizar la suma de los leads brutos, netos, las preventas y las válidas según socio/canal editable.</li>
                     <li style="margin-bottom: 12px;"><strong>4.-</strong> La Opción de <strong style="color: #3b1e54;">Ayuda Rápida</strong> es para realizar trabajos de: <br>NAC DEACS Anonimizador / Transportar campañas / Alignet / IVR#1 / IVR#2</li>
@@ -358,6 +352,135 @@
         </div>
     </div>
 
+   <!-- ========================================================================== -->
+   <!-- MODAL 6: BIGQUERY CONTEO - SISTEMA JIRQ -->
+   <!-- ========================================================================== -->
+    <div class="modal-overlay_big_conteo" id="modalBigqueryConteo_big_conteo" style="display: none;">
+        <div class="modal-window_big_conteo">
+            
+            <!-- Cabecera -->
+            <div class="modal-header_big_conteo">
+                <h3 class="modal-title_big_conteo">::: Bigquery Conteo :::</h3>
+                <button class="close-modal_big_conteo" onclick="cerrarModal_big_conteo('modalBigqueryConteo_big_conteo')">✕</button>
+            </div>
+
+            <!-- Cuerpo -->
+            <div class="modal-body_big_conteo">
+                
+                <fieldset class="fieldset-opciones_big_conteo">
+                    <legend class="legend-opciones_big_conteo">::: Tienes 3 opciones de Querys</legend>
+                    
+                    <!-- Barra de Herramientas Superior -->
+                    <div class="top-toolbar_big_conteo">
+                        <!-- Pestañas -->
+                        <div class="tabs-bar_big_conteo">
+                            <button type="button" class="tab-btn_big_conteo active_big_conteo" onclick="cambiarPestana_big_conteo('conteo_diario')">Conteo diario</button>
+                            <button type="button" class="tab-btn_big_conteo" onclick="cambiarPestana_big_conteo('conteo_mensual')">Conteo Mensual</button>
+                            <button type="button" class="tab-btn_big_conteo" onclick="cambiarPestana_big_conteo('dias_reg')">Días Reg x Mes</button>
+                        </div>
+
+                        <!-- Botones de Acción (Copiar / Actualizar) -->
+                        <div class="action-buttons_big_conteo">
+                            <!-- Botón Copiar (Amarillo) -->
+                            <button type="button" class="btn-top_big_conteo btn-copiar_big_conteo" onclick="copiarQuery_big_conteo()" title="Copiar consulta SQL">
+                                <span class="icon-box_big">📋</span>
+                                Copiar
+                                <span class="arrow_big">›</span>
+                            </button>
+                            <!-- Botón Actualizar (Celeste) -->
+                            <button type="button" class="btn-top_big_conteo btn-actualizar_big_conteo" onclick="guardarQuery_big_conteo()" title="Actualizar script">
+                                <span class="icon-box_big">🔄</span>
+                                Actualizar
+                                <span class="arrow_big">›</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Banner de Instrucciones -->
+                    <div class="banner-instrucciones_big_conteo">
+                        Si quieres modificar algo solo pega el nuevo contenido o modifica aquí mismo y dale click en actualizar
+                    </div>
+
+                    <!-- Área de Edición del Código -->
+                    <div class="editor-container_big_conteo">
+                        <textarea id="textareaQuery_big_conteo" class="textarea-query_big_conteo" spellcheck="false" placeholder="Cargando consulta SQL..."></textarea>
+                    </div>
+
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================== -->
+    <!-- MODAL 7: METAS ENTEL Y SOCIOS - SISTEMA JIRQ -->
+    <!-- ========================================================================== -->
+    <div class="modal-overlay_met_sociosentel" id="modalMetasEntel_met_sociosentel" style="display: none;">
+        <div class="modal-window_met_sociosentel">
+            
+            <!-- Cabecera -->
+            <div class="modal-header_met_sociosentel">
+                <h3 class="modal-title_met_sociosentel">::: Bigquery => Metas Entel y Socios :::</h3>
+                <button class="close-modal_met_sociosentel" onclick="cerrarModal_met_sociosentel('modalMetasEntel_met_sociosentel')">✕</button>
+            </div>
+
+            <!-- Cuerpo -->
+            <div class="modal-body_met_sociosentel">
+                
+                <fieldset class="fieldset-opciones_met_sociosentel">
+                    <legend class="legend-opciones_met_sociosentel">::: Tiene 3 opciones de Querys</legend>
+                    
+                    <!-- Barra de Herramientas Superior -->
+                    <div class="top-toolbar_met_sociosentel">
+                        <!-- Pestañas -->
+                        <div class="tabs-bar_met_sociosentel">
+                            <button type="button" class="tab-btn_met_sociosentel active_met_sociosentel" onclick="cambiarPestana_met_sociosentel('general_mensual')">General Mensual</button>
+                            <button type="button" class="tab-btn_met_sociosentel" onclick="cambiarPestana_met_sociosentel('por_dias')">Por Días</button>
+                            <button type="button" class="tab-btn_met_sociosentel" onclick="cambiarPestana_met_sociosentel('por_fuente')">Por Fuente</button>
+                        </div>
+
+                        <!-- Botones de Acción (Copiar / Actualizar) -->
+                        <div class="action-buttons_met_sociosentel">
+                            <!-- Botón Copiar (Amarillo) -->
+                            <button type="button" class="btn-top_met_sociosentel btn-copiar_met_sociosentel" onclick="copiarQuery_met_sociosentel()" title="Copiar consulta SQL">
+                                <span class="icon-box_met_sociosentel">📋</span>
+                                Copiar
+                                <span class="arrow_met_sociosentel">›</span>
+                            </button>
+                            <!-- Botón Actualizar (Celeste) -->
+                            <button type="button" class="btn-top_met_sociosentel btn-actualizar_met_sociosentel" onclick="guardarQuery_met_sociosentel()" title="Actualizar script">
+                                <span class="icon-box_met_sociosentel">🔄</span>
+                                Actualizar
+                                <span class="arrow_met_sociosentel">›</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Banner de Instrucciones -->
+                    <div class="banner-instrucciones_met_sociosentel">
+                        Si quieres modificar algo solo pega el nuevo contenido o modifica aquí mismo y dale click en actualizar
+                    </div>
+
+                    <!-- Área de Edición del Código -->
+                    <div class="editor-container_met_sociosentel">
+                        <textarea id="textareaQuery_met_sociosentel" class="textarea-query_met_sociosentel" spellcheck="false" placeholder="Cargando consulta SQL..."></textarea>
+                    </div>
+
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Mensaje Flotante (Toast) para Metas Entel -->
+    <div id="notif-script-actualizado-met-sociosentel">
+        <span style="font-weight:bold; font-size:16px;">✓</span>
+        <span id="texto-notif-met-sociosentel"></span>
+    </div>
+
+    <!-- SDKs de Firebase y SheetJS -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    ...
+
     <!-- SDKs de Firebase y SheetJS -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -369,5 +492,8 @@
     <script src="js/scriptjirq_reg_usuarios.js"></script>
     <script src="js/scriptjirq_lis_funciones.js"></script>
     <script src="js/scriptjirq_lee_primero.js"></script>
+    <script src="js/scriptjirq_big_conteo.js"></script>
+    <script src="js/scriptjirq_met_sociosentel.js"></script>
+
 </body>
 </html>

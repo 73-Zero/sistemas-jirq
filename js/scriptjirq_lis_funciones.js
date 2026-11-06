@@ -100,23 +100,23 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
                 }
             });
 
-            // 1º BOTÓN: Subir archivo o ver carpeta (Izquierda)
+            // 1º BOTÓN: Subir / Reemplazar Archivo (📁 si está vacío, 📎 si ya tiene archivo)
             let botonArchivoHTML = '';
-            if (func.archivo_url) {
-                botonArchivoHTML = `<a href="${func.archivo_url}" target="_blank" class="btn-subir-archivo_lis_funciones" title="Ver archivo en pestaña nueva">📎</a>`;
+            if (func.archivo_url && func.archivo_url.trim() !== "") {
+                botonArchivoHTML = `<button type="button" class="btn-subir-archivo_lis_funciones" onclick="dispararSelectorArchivo_lis_funciones('${firebaseKey}', ${numeroOrdenReal})" title="Archivo subido">📎</button>`;
             } else {
-                botonArchivoHTML = `<button type="button" class="btn-subir-archivo_lis_funciones" onclick="dispararSelectorArchivo_lis_funciones('${firebaseKey}', ${numeroOrdenReal})" title="Subir archivo (.xlsx, .docx, .pdf, .jpg)">📁</button>`;
+                botonArchivoHTML = `<button type="button" class="btn-subir-archivo_lis_funciones" onclick="dispararSelectorArchivo_lis_funciones('${firebaseKey}', ${numeroOrdenReal})" title="Subir archivo">📁</button>`;
             }
 
-            // 2º BOTÓN: Lupa (🔍) para abrir el archivo en otra pestaña del navegador y permitir lectura/edición nativa
+            // 2º BOTÓN: Lupa (🔍) para previsualizar en pestaña nueva (Habilitado solo si hay archivo)
             let botonLupaHTML = '';
             if (func.archivo_url && func.archivo_url.trim() !== "") {
-                botonLupaHTML = `<a href="${func.archivo_url}" target="_blank" class="btn-subir-archivo_lis_funciones" title="Abrir formato en pestaña nueva para leer y copiar">🔍</a>`;
+                botonLupaHTML = `<a href="${func.archivo_url}" target="_blank" class="btn-subir-archivo_lis_funciones" title="Ver Archivo">🔍</a>`;
             } else {
-                botonLupaHTML = `<button type="button" class="btn-subir-archivo_lis_funciones" disabled style="opacity: 0.4; cursor: not-allowed;" title="No hay archivo adjunto para previsualizar">🔍</button>`;
+                botonLupaHTML = `<button type="button" class="btn-subir-archivo_lis_funciones" disabled style="opacity: 0.4; cursor: not-allowed;" title="No hay archivo a visualizar">🔍</button>`;
             }
 
-            // 3º BOTÓN: Descarga directa (Fuerza descarga en Windows/Mac)
+            // 3º BOTÓN: Descarga directa (Habilitado solo si hay archivo)
             let botonDescargaHTML = '';
             if (func.archivo_url && func.archivo_url.trim() !== "") {
                 let urlDescargaForzada = func.archivo_url;
@@ -124,12 +124,12 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
                     urlDescargaForzada = urlDescargaForzada.replace('/upload/', '/upload/fl_attachment/');
                 }
 
-                botonDescargaHTML = `<a href="${urlDescargaForzada}" download="${func.archivo_nombre || 'archivo.xlsx'}" class="btn-subir-archivo_lis_funciones" title="Descargar: ${func.archivo_nombre || 'Archivo'}">⬇️</a>`;
+                botonDescargaHTML = `<a href="${urlDescargaForzada}" download="${func.archivo_nombre || 'archivo.xlsx'}" class="btn-subir-archivo_lis_funciones" title="Descargar Archivo">⬇️</a>`;
             } else {
-                botonDescargaHTML = `<button type="button" class="btn-subir-archivo_lis_funciones" disabled style="opacity: 0.4; cursor: not-allowed;" title="No hay archivo adjunto para descargar">⬇️</button>`;
+                botonDescargaHTML = `<button type="button" class="btn-subir-archivo_lis_funciones" disabled style="opacity: 0.4; cursor: not-allowed;" title="No hay archivo a descargar">⬇️</button>`;
             }
 
-            // Orden estricto: Subir Archivo (📁/📎) -> Lupa (🔍) -> Descarga (⬇️) -> Eliminar (✕)
+            // Orden estricto de los 4 botones: 1. Subir/Reemplazar (📁/📎) -> 2. Lupa (🔍) -> 3. Descarga (⬇️) -> 4. Eliminar (✕)
             tr.innerHTML = `
                 <td style="cursor: grab; text-align:center;" title="Arrastrar para mover posición">⋮⋮</td>
                 <td style="color: #64748b; font-weight: 500;">${numeroOrdenReal}</td>
@@ -165,7 +165,7 @@ function cargarFuncionesDesdeFirebase_lis_funciones() {
                         ${botonArchivoHTML}
                         ${botonLupaHTML}
                         ${botonDescargaHTML}
-                        <button type="button" class="btn-eliminar-fila_lis_funciones" onclick="confirmarEliminarFuncion_lis_funciones('${firebaseKey}')" title="Eliminar Fila">✕</button>
+                        <button type="button" class="btn-eliminar-fila_lis_funciones" onclick="confirmarEliminarFuncion_lis_funciones('${firebaseKey}')" title="Eliminar fila">✕</button>
                     </div>
                 </td>
             `;
